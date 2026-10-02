@@ -1,0 +1,79 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Instance-implementation expansion."><title>instances_macros::impls - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-0c87338a.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="instances_macros" data-themes="" data-resource-suffix="" data-rustdoc-version="1.99.0 (b940084d7 2026-09-28)" data-channel="1.99.0" data-search-js="search-cf4fc35e.js" data-stringdex-js="stringdex-b5109af9.js" data-settings-js="settings-170eb4bf.js" ><script src="../../static.files/storage-41dd4d93.js"></script><script defer src="../sidebar-items.js"></script><script defer src="../../static.files/main-417ebf0a.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-9f56287d.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc mod"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><rustdoc-topbar><h2><a href="#">Module impls</a></h2></rustdoc-topbar><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../../instances_macros/index.html">instances_<wbr>macros</a><span class="version">0.1.0</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">Module impls</a></h2><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#mental-model" title="Mental Model">Mental Model</a></li><li><a href="#expansion-pipeline" title="Expansion Pipeline">Expansion Pipeline</a></li><li><a href="#boundary-specialization" title="Boundary Specialization">Boundary Specialization</a></li><li><a href="#supplementary-expansion" title="Supplementary Expansion">Supplementary Expansion</a></li><li><a href="#documentation-vs-compilation-targets" title="Documentation vs Compilation Targets">Documentation vs Compilation Targets</a></li><li><a href="#post-expansion" title="Post Expansion">Post Expansion</a></li></ul><h3><a href="#modules">Module Items</a></h3><ul class="block"><li><a href="#modules" title="Modules">Modules</a></li><li><a href="#structs" title="Structs">Structs</a></li></ul></section><div id="rustdoc-modnav"><h2 class="in-crate"><a href="../index.html">In crate instances_<wbr>macros</a></h2></div></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><div class="width-limiter"><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><div class="rustdoc-breadcrumbs"><a href="../index.html">instances_macros</a></div><h1>Module <span>impls</span>&nbsp;<button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../../src/instances_macros/impls/mod.rs.html#16-569">Source</a> </span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Instance-implementation expansion.</p>
+<p>This module implements the core transformations performed by the
+<code>#[instance_impl]</code> and <code>#[last_instance]</code> proc macros.</p>
+<p>Whereas instance-trait expansion (see <a href="../traits/index.html" title="mod instances_macros::traits"><code>crate::traits</code></a>) defines the
+compile-time contracts for an instance hierarchy, this module
+provides the concrete implementation of those contracts for each
+individual instance.</p>
+<h3 id="mental-model"><a class="doc-anchor" href="#mental-model">§</a>Mental Model</h3>
+<p>An instance trait defines the coordinate system:</p>
+<div class="example-wrap"><pre class="language-text"><code>(CATEGORY, ALGORITHM)</code></pre></div>
+<p>while each implementation represents exactly one coordinate:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="attr">#[instance_impl(<span class="number">1</span>, <span class="number">2</span>)]
+</span><span class="kw">impl </span>Example&lt;<span class="number">0</span>, <span class="number">1</span>&gt; <span class="kw">for </span>MyType { ... }</code></pre></div>
+<p>The purpose of implementation expansion is to enrich that single
+implementation with all metadata required to participate in the
+complete instance graph.</p>
+<h3 id="expansion-pipeline"><a class="doc-anchor" href="#expansion-pipeline">§</a>Expansion Pipeline</h3>
+<p><code>#[instance_impl]</code> performs the common expansion shared by every
+implementation:</p>
+<div class="example-wrap"><pre class="language-text"><code>Counter Extraction
+        +-- TypeNum replacement
+        +-- Metadata
+        +-- Identifier metadata
+        +-- Affiliate metadata
+        +-- Compile-time validation</code></pre></div>
+<p>These phases generate:</p>
+<ul>
+<li>typenum counter projections (see <a href="typenum/index.html" title="mod instances_macros::impls::typenum"><code>typenum</code></a>),</li>
+<li>reflected implementation metadata (see <a href="meta/index.html" title="mod instances_macros::impls::meta"><code>meta</code></a>),</li>
+<li>semantic identifier metadata and collections (see <a href="idents/index.html" title="mod instances_macros::impls::idents"><code>idents</code></a>),</li>
+<li>affiliate projections (see <a href="affiliates/index.html" title="mod instances_macros::impls::affiliates"><code>affiliates</code></a>),</li>
+<li>compile-time validation,</li>
+<li>and the default cumulative checker.</li>
+</ul>
+<h3 id="boundary-specialization"><a class="doc-anchor" href="#boundary-specialization">§</a>Boundary Specialization</h3>
+<p>Most implementations follow the common expansion path above.</p>
+<p>However, instances that terminate one or more counter dimensions
+require specialized affiliate semantics.</p>
+<p>Such implementations additionally participate in
+<code>#[last_instance(...)]</code>, which replaces boundary-independent
+projections with boundary-aware implementations.</p>
+<p>These replacements specialize:</p>
+<ul>
+<li>terminal next affiliates,</li>
+<li>floor-affiliate boundaries,</li>
+<li>predecessor recovery,</li>
+<li>affiliate consistency assertions,</li>
+<li>and installation of the cumulative checker that forces validation
+across every reachable instance.</li>
+</ul>
+<h3 id="supplementary-expansion"><a class="doc-anchor" href="#supplementary-expansion">§</a>Supplementary Expansion</h3>
+<p>Additional helper implementations are emitted alongside the expanded
+instance (see <a href="addon/index.html" title="mod instances_macros::impls::addon"><code>addon</code></a>).</p>
+<p>These expose compile-time lookup facilities that recover an
+instance’s typenum counter tuple from its semantic identifier hashes
+and implementing <code>Self</code> type.</p>
+<h3 id="documentation-vs-compilation-targets"><a class="doc-anchor" href="#documentation-vs-compilation-targets">§</a>Documentation vs Compilation Targets</h3>
+<p>Two expansion targets exist.</p>
+<p><a href="struct.InstanceImpl.html" title="struct instances_macros::impls::InstanceImpl"><code>InstanceImpl</code></a> performs the complete implementation expansion used
+during normal compilation.</p>
+<p><a href="struct.InstanceImplDocTarget.html" title="struct instances_macros::impls::InstanceImplDocTarget"><code>InstanceImplDocTarget</code></a> produces a documentation-oriented view that
+removes expansion-only attributes before documentation generation.</p>
+<h3 id="post-expansion"><a class="doc-anchor" href="#post-expansion">§</a>Post Expansion</h3>
+<p>After all transformations have completed, temporary expansion
+metadata is removed by the post-expansion cleanup phase (see
+<a href="post/index.html" title="mod instances_macros::impls::post"><code>post</code></a>) so the final implementation contains only meaningful Rust
+items.</p>
+</div></details><h2 id="modules" class="section-header">Modules<a href="#modules" class="anchor">§</a></h2><dl class="item-table"><dt><a class="mod" href="addon/index.html" title="mod instances_macros::impls::addon">addon</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Generates supplementary implementations alongside each expanded
+instance implementation.</dd><dt><a class="mod" href="affiliates/index.html" title="mod instances_macros::impls::affiliates">affiliates</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>This module generates hidden implementation-side affiliate items used
+to realize affiliate relationships declared by trait-side expansion.
+(See <a href="../traits/affiliates/index.html" title="mod instances_macros::traits::affiliates"><code>affiliates</code></a>)</dd><dt><a class="mod" href="counters/index.html" title="mod instances_macros::impls::counters">counters</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>This module extracts and validates impl-side const-generic arguments
+used as instance counters.</dd><dt><a class="mod" href="errors/index.html" title="mod instances_macros::impls::errors">errors</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Diagnostics emitted by the instance-impl proc-macro pipeline.</dd><dt><a class="mod" href="idents/index.html" title="mod instances_macros::impls::idents">idents</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Generates implementation-side identifier topology metadata for instance impls.</dd><dt><a class="mod" href="last/index.html" title="mod instances_macros::impls::last">last</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Applies terminal-boundary corrections to affiliate projections
+generated during earlier implementation expansion phases.</dd><dt><a class="mod" href="meta/index.html" title="mod instances_macros::impls::meta">meta</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Generates implementation-side metadata and validation checkpoints
+used by the instance-trait proc-macro pipeline.</dd><dt><a class="mod" href="post/index.html" title="mod instances_macros::impls::post">post</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Post-expansion implementation cleanup phase.</dd><dt><a class="mod" href="typenum/index.html" title="mod instances_macros::impls::typenum">typenum</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Rewrites extracted instance-counter const arguments into a synthesized
+typenum carrier type argument.</dd><dt><a class="mod" href="utils/index.html" title="mod instances_macros::impls::utils">utils</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Shared extraction utilities and validation helpers used throughout the
+instance-impl proc-macro pipeline.</dd></dl><h2 id="structs" class="section-header">Structs<a href="#structs" class="anchor">§</a></h2><dl class="item-table"><dt><a class="struct" href="struct.InstanceImpl.html" title="struct instances_macros::impls::InstanceImpl">Instance<wbr>Impl</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Expands the internal implementation representation.</dd><dt><a class="struct" href="struct.InstanceImplAddons.html" title="struct instances_macros::impls::InstanceImplAddons">Instance<wbr>Impl<wbr>Addons</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Generates supplementary implementation items outside the instance
+implementation itself.</dd><dt><a class="struct" href="struct.InstanceImplDocTarget.html" title="struct instances_macros::impls::InstanceImplDocTarget">Instance<wbr>Impl<wbr>DocTarget</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Produces the documentation-oriented implementation view.</dd><dt><a class="struct" href="struct.LastInstanceImpl.html" title="struct instances_macros::impls::LastInstanceImpl">Last<wbr>Instance<wbr>Impl</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Applies boundary-specific specialization for instances annotated by
+the <code>#[last_instance(...)]</code> proc macro.</dd><dt><a class="struct" href="struct.LastInstanceSpace.html" title="struct instances_macros::impls::LastInstanceSpace">Last<wbr>Instance<wbr>Space</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dt><a class="struct" href="struct.PostInstanceImpl.html" title="struct instances_macros::impls::PostInstanceImpl">Post<wbr>Instance<wbr>Impl</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Executes the post-expansion cleanup phase for implementation items.</dd></dl></section></div></main></body></html>

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["I16Type","I32Type","I8Type","U16Type","U32Type","U8Type"],"trait":["BoundMax","BoundMin"]};

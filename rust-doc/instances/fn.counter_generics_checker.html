@@ -1,0 +1,53 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Validates that implementation-side counter generic indexes match the corresponding indexes reflected by the trait metadata."><title>counter_generics_checker in instances - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../static.files/rustdoc-0c87338a.css"><meta name="rustdoc-vars" data-root-path="../" data-static-root-path="../static.files/" data-current-crate="instances" data-themes="" data-resource-suffix="" data-rustdoc-version="1.99.0 (b940084d7 2026-09-28)" data-channel="1.99.0" data-search-js="search-cf4fc35e.js" data-stringdex-js="stringdex-b5109af9.js" data-settings-js="settings-170eb4bf.js" ><script src="../static.files/storage-41dd4d93.js"></script><script defer src="sidebar-items.js"></script><script defer src="../static.files/main-417ebf0a.js"></script><noscript><link rel="stylesheet" href="../static.files/noscript-9f56287d.css"></noscript><link rel="alternate icon" type="image/png" href="../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../static.files/favicon-044be391.svg"></head><body class="rustdoc fn"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><rustdoc-topbar><h2><a href="#">counter_generics_checker</a></h2></rustdoc-topbar><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../instances/index.html">instances</a><span class="version">0.1.0</span></h2></div><div class="sidebar-elems"><div id="rustdoc-modnav"></div></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><div class="width-limiter"><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><div class="rustdoc-breadcrumbs"><a href="index.html">instances</a></div><h1>Function <span class="fn">counter_<wbr>generics_<wbr>checker</span>&nbsp;<button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../src/instances/idents.rs.html#142-159">Source</a> </span></div><pre class="rust item-decl"><code>pub const fn counter_generics_checker(
+    trait_meta: &amp;[(<a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.usize.html">usize</a>, &amp;'static <a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.str.html">str</a>)],
+    impl_indexes: &amp;[<a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.usize.html">usize</a>],
+) -&gt; <a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.bool.html">bool</a></code></pre><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Validates that implementation-side counter generic indexes match the
+corresponding indexes reflected by the trait metadata.</p>
+<p>The <code>trait_meta</code> slice contains the trait-side metadata entries, where each
+entry stores a generic index together with its generic name. The
+<code>impl_indexes</code> slice contains the generic indexes extracted from the
+implementation-side counter arguments.</p>
+<p>Validation succeeds only when:</p>
+<ul>
+<li>both slices contain the same number of entries, and</li>
+<li>each trait-side generic index matches the implementation-side index at
+the same position.</li>
+</ul>
+<p>The generic names stored in <code>trait_meta</code> are intentionally ignored; this
+function validates only the structural relationship between the counter
+positions represented by the two metadata sources.</p>
+<p>This function is <code>const</code> so that the generated implementation-side
+validation checkpoint can evaluate the comparison during compilation.</p>
+<p>For example:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">const </span>TRAIT_META: <span class="kw-2">&amp;</span>[(usize, <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str)] = <span class="kw-2">&amp;</span>[
+    (<span class="number">0</span>, <span class="string">"A"</span>),
+    (<span class="number">2</span>, <span class="string">"C"</span>),
+];
+
+<span class="kw">const </span>IMPL_INDEXES: <span class="kw-2">&amp;</span>[usize] = <span class="kw-2">&amp;</span>[<span class="number">0</span>, <span class="number">2</span>];
+
+<span class="macro">assert!</span>(counter_generics_checker(
+    TRAIT_META,
+    IMPL_INDEXES,
+));</code></pre></div>
+<p>A mismatch in either the number or ordering of indexes causes validation
+to fail:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">const </span>TRAIT_META: <span class="kw-2">&amp;</span>[(usize, <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str)] = <span class="kw-2">&amp;</span>[
+    (<span class="number">0</span>, <span class="string">"A"</span>),
+    (<span class="number">2</span>, <span class="string">"C"</span>),
+];
+
+<span class="kw">const </span>IMPL_INDEXES: <span class="kw-2">&amp;</span>[usize] = <span class="kw-2">&amp;</span>[<span class="number">0</span>, <span class="number">1</span>];
+
+<span class="macro">assert!</span>(!counter_generics_checker(
+    TRAIT_META,
+    IMPL_INDEXES,
+));</code></pre></div>
+<p>This provides the final structural comparison  after the
+implementation-side metadata has been reconstructed. The surrounding
+generated checker is responsible for comparing the metadata length
+before invoking this function and for producing the appropriate diagnostic
+when validation fails.</p>
+</div></details></section></div></main></body></html>

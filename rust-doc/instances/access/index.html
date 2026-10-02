@@ -1,0 +1,55 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Internal access traits used by the instances system to carry and recover compile-time metadata across generated instance implementations."><title>instances::access - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-0c87338a.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="instances" data-themes="" data-resource-suffix="" data-rustdoc-version="1.99.0 (b940084d7 2026-09-28)" data-channel="1.99.0" data-search-js="search-cf4fc35e.js" data-stringdex-js="stringdex-b5109af9.js" data-settings-js="settings-170eb4bf.js" ><script src="../../static.files/storage-41dd4d93.js"></script><script defer src="../sidebar-items.js"></script><script defer src="../../static.files/main-417ebf0a.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-9f56287d.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc mod"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><rustdoc-topbar><h2><a href="#">Module access</a></h2></rustdoc-topbar><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../../instances/index.html">instances</a><span class="version">0.1.0</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">Module access</a></h2><h3><a href="#traits">Module Items</a></h3><ul class="block"><li><a href="#traits" title="Traits">Traits</a></li></ul></section><div id="rustdoc-modnav"><h2 class="in-crate"><a href="../index.html">In crate instances</a></h2></div></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><div class="width-limiter"><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><div class="rustdoc-breadcrumbs"><a href="../index.html">instances</a></div><h1>Module <span>access</span>&nbsp;<button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../../src/instances/access.rs.html#16-715">Source</a> </span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Internal access traits used by the instances system to carry and recover
+compile-time metadata across generated instance implementations.</p>
+<p>This module defines the type-level access interfaces used by the
+<a href="../index.html" title="mod instances"><code>crate</code></a> re-exported proc-macros to communicate instance metadata through Rust’s trait
+system. The access traits identify generated instance metadata by
+identifier hashes, contextual instance types, counter positions, and other
+compile-time parameters, allowing later generated code to recover metadata
+without revisiting the original instance definition.</p>
+<p>The access interfaces are implementation details of the instances macros
+and are intended to be used only by generated code produced by those macros.
+They are not intended for direct use by library users or by unrelated parts
+of the crate.</p>
+<p>The traits are public only where required so that generated implementations
+and generated access sites can cross the visibility boundaries imposed by
+Rust’s type system. Their public visibility should therefore not be
+interpreted as a stable API guarantee.</p>
+<p>The signatures of these traits may change as the instances system evolves.
+Code outside the generated instances machinery should not depend on their
+names, generic parameter ordering, associated types, or other signature
+details.</p>
+<p>The module currently provides access to:</p>
+<ul>
+<li><code>CounterAccess</code> - Complete counter tuple for an identified instance.</li>
+<li><code>TerminalAccess</code> - Complete counter tuple for the terminal instance.</li>
+<li><code>BoundaryAccess</code> - Boundary counter tuple and final identifier hash.</li>
+<li><code>OnSetAccess</code> - Boundary counter tuple and initial identifier hash.</li>
+<li><code>IdentHashLenAccess</code> - Identifier length associated with a counter generic position.</li>
+</ul>
+<p>All metadata exposed through these interfaces is resolved at compile time
+through trait implementations generated by the instances macros.</p>
+</div></details><h2 id="traits" class="section-header">Traits<a href="#traits" class="anchor">§</a></h2><dl class="item-table"><dt><a class="trait" href="trait.BoundaryAccess0.html" title="trait instances::access::BoundaryAccess0">Boundary<wbr>Access0</a></dt><dd>Resolves the boundary counter tuple and the final identifier hash for the
+root identifier sequence.</dd><dt><a class="trait" href="trait.BoundaryAccess1.html" title="trait instances::access::BoundaryAccess1">Boundary<wbr>Access1</a></dt><dd>Resolves the boundary counter tuple and the final identifier hash for a
+boundary identified by one preceding compile-time identifier hash.</dd><dt><a class="trait" href="trait.BoundaryAccess2.html" title="trait instances::access::BoundaryAccess2">Boundary<wbr>Access2</a></dt><dd>Resolves the boundary counter tuple and the final identifier hash for a
+boundary identified by a two-element sequence of compile-time identifier
+hashes.</dd><dt><a class="trait" href="trait.BoundaryAccess3.html" title="trait instances::access::BoundaryAccess3">Boundary<wbr>Access3</a></dt><dd>Resolves the boundary counter tuple and the final identifier hash for a
+boundary identified by a three-element sequence of compile-time identifier
+hashes.</dd><dt><a class="trait" href="trait.CounterAccess1.html" title="trait instances::access::CounterAccess1">Counter<wbr>Access1</a></dt><dd>Resolves the counter tuple associated with an instance identified by one
+compile-time identifier hash.</dd><dt><a class="trait" href="trait.CounterAccess2.html" title="trait instances::access::CounterAccess2">Counter<wbr>Access2</a></dt><dd>Resolves the counter tuple associated with an instance identified by a
+two-element sequence of compile-time identifier hashes.</dd><dt><a class="trait" href="trait.CounterAccess3.html" title="trait instances::access::CounterAccess3">Counter<wbr>Access3</a></dt><dd>Resolves the counter tuple associated with an instance identified by a
+three-element sequence of compile-time identifier hashes.</dd><dt><a class="trait" href="trait.CounterAccess4.html" title="trait instances::access::CounterAccess4">Counter<wbr>Access4</a></dt><dd>Resolves the counter tuple associated with an instance identified by a
+four-element sequence of compile-time identifier hashes.</dd><dt><a class="trait" href="trait.IdentHashLenAccess1.html" title="trait instances::access::IdentHashLenAccess1">Ident<wbr>Hash<wbr>LenAccess1</a></dt><dd>Resolves the identifier length associated with a counter generic position
+within an instance identified by one compile-time identifier hash.</dd><dt><a class="trait" href="trait.IdentHashLenAccess2.html" title="trait instances::access::IdentHashLenAccess2">Ident<wbr>Hash<wbr>LenAccess2</a></dt><dd>Resolves the identifier length associated with a counter generic position
+within an instance identified by a two-element sequence of compile-time
+identifier hashes.</dd><dt><a class="trait" href="trait.IdentHashLenAccess3.html" title="trait instances::access::IdentHashLenAccess3">Ident<wbr>Hash<wbr>LenAccess3</a></dt><dd>Resolves the identifier length associated with a counter generic position
+within an instance identified by a three-element sequence of compile-time
+identifier hashes.</dd><dt><a class="trait" href="trait.IdentHashLenAccess4.html" title="trait instances::access::IdentHashLenAccess4">Ident<wbr>Hash<wbr>LenAccess4</a></dt><dd>Resolves the identifier length associated with a counter generic position
+within an instance identified by a four-element sequence of compile-time
+identifier hashes.</dd><dt><a class="trait" href="trait.OnSetAccess0.html" title="trait instances::access::OnSetAccess0">OnSet<wbr>Access0</a></dt><dd>Resolves the on-set counter tuple and the initial identifier hash for the
+root identifier sequence.</dd><dt><a class="trait" href="trait.OnSetAccess1.html" title="trait instances::access::OnSetAccess1">OnSet<wbr>Access1</a></dt><dd>Resolves the on-set counter tuple and the initial identifier hash for a
+boundary identified by one preceding compile-time identifier hash.</dd><dt><a class="trait" href="trait.OnSetAccess2.html" title="trait instances::access::OnSetAccess2">OnSet<wbr>Access2</a></dt><dd>Resolves the on-set counter tuple and the initial identifier hash for a
+boundary identified by a two-element sequence of compile-time identifier
+hashes.</dd><dt><a class="trait" href="trait.OnSetAccess3.html" title="trait instances::access::OnSetAccess3">OnSet<wbr>Access3</a></dt><dd>Resolves the on-set counter tuple and the initial identifier hash for a
+boundary identified by a three-element sequence of compile-time identifier
+hashes.</dd><dt><a class="trait" href="trait.TerminalAccess.html" title="trait instances::access::TerminalAccess">Terminal<wbr>Access</a></dt><dd>Resolves the counter tuple associated with the uniquely identified
+terminal instance impl implemented towards <code>SelfTy</code>.</dd></dl></section></div></main></body></html>

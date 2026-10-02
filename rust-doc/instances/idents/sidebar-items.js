@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["counter_generics_checker","counter_ident_generic_collection_append","counter_ident_generic_hash_collection_append","counters_hash_consistency_checker","hash_ident","historical_collection_1","historical_collection_2","historical_collection_3","historical_collection_4","ident_check"],"trait":["CountersCollectionLen"]};

@@ -1,0 +1,138 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="This module generates hidden implementation-side affiliate items used to realize affiliate relationships declared by trait-side expansion. (See `affiliates`)"><title>instances_macros::impls::affiliates - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-0c87338a.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="instances_macros" data-themes="" data-resource-suffix="" data-rustdoc-version="1.99.0 (b940084d7 2026-09-28)" data-channel="1.99.0" data-search-js="search-cf4fc35e.js" data-stringdex-js="stringdex-b5109af9.js" data-settings-js="settings-170eb4bf.js" ><script src="../../../static.files/storage-41dd4d93.js"></script><script defer src="../sidebar-items.js"></script><script defer src="../../../static.files/main-417ebf0a.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-9f56287d.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc mod"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><rustdoc-topbar><h2><a href="#">Module affiliates</a></h2></rustdoc-topbar><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../../../instances_macros/index.html">instances_<wbr>macros</a><span class="version">0.1.0</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">Module affiliates</a></h2><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#why-this-exists" title="Why this exists">Why this exists</a></li><li><a href="#what-this-module-generates" title="What this module generates">What this module generates</a></li><li><a href="#structural-affiliates" title="Structural Affiliates">Structural Affiliates</a></li><li><a href="#semantic-affiliates" title="Semantic Affiliates">Semantic Affiliates</a></li><li><a href="#affiliate-instance-projections" title="Affiliate Instance Projections">Affiliate Instance Projections</a></li><li><a href="#affiliate-checker" title="Affiliate Checker">Affiliate Checker</a></li><li><a href="#structural-vs-semantic-navigation" title="Structural vs Semantic Navigation">Structural vs Semantic Navigation</a></li><li><a href="#generated-items" title="Generated Items">Generated Items</a></li><li><a href="#what-this-enables" title="What this enables">What this enables</a></li></ul><h3><a href="#structs">Module Items</a></h3><ul class="block"><li><a href="#structs" title="Structs">Structs</a></li><li><a href="#functions" title="Functions">Functions</a></li></ul></section><div id="rustdoc-modnav"><h2><a href="../index.html">In instances_<wbr>macros::<wbr>impls</a></h2></div></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><div class="width-limiter"><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><div class="rustdoc-breadcrumbs"><a href="../../index.html">instances_macros</a>::<wbr><a href="../index.html">impls</a></div><h1>Module <span>affiliates</span>&nbsp;<button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../../../src/instances_macros/impls/affiliates.rs.html#16-1791">Source</a> </span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>This module generates hidden implementation-side affiliate items used
+to realize affiliate relationships declared by trait-side expansion.
+(See <a href="../../traits/affiliates/index.html" title="mod instances_macros::traits::affiliates"><code>affiliates</code></a>)</p>
+<p>Affiliate relationships are represented through typenum-backed counter
+tuples and hidden associated types generated into each implementation.</p>
+<h3 id="why-this-exists"><a class="doc-anchor" href="#why-this-exists">§</a>Why this exists</h3>
+<p>Trait-side expansion defines affiliate contracts, but those contracts
+alone do not provide concrete affiliated counter tuples.</p>
+<p>For example:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">trait </span>K&lt;Counters&gt; {
+    <span class="kw">type </span>NextAffiliateCounters;
+    <span class="kw">type </span>NextAffiliateInstance:
+        K&lt;<span class="self">Self</span>::NextAffiliateCounters&gt;;
+}</code></pre></div>
+<p>The trait declares that a next affiliate exists, but it does not define:</p>
+<ul>
+<li>what the successor counters are,</li>
+<li>which implementation instance they refer to,</li>
+<li>how predecessor relationships are recovered,</li>
+<li>or how semantic affiliate topology should be resolved.</li>
+</ul>
+<p>This module supplies those implementation-side projections.</p>
+<h3 id="what-this-module-generates"><a class="doc-anchor" href="#what-this-module-generates">§</a>What this module generates</h3>
+<p>For every implementation instance, this module generates:</p>
+<ul>
+<li>affiliate counter projections,</li>
+<li>affiliate instance projections,</li>
+<li>semantic navigation links,</li>
+<li>structural navigation links,</li>
+<li>and validation helpers.</li>
+</ul>
+<p>Together these items provide concrete implementations of the
+affiliate contracts declared by trait-side expansion.</p>
+<h3 id="structural-affiliates"><a class="doc-anchor" href="#structural-affiliates">§</a>Structural Affiliates</h3>
+<p>Structural affiliates can be derived directly from the current
+counter tuple.</p>
+<p>These projections are deterministic and require no additional
+implementation knowledge.</p>
+<ul>
+<li>
+<p><a href="struct.ImplReverseAffiliateCounter.html" title="struct instances_macros::impls::affiliates::ImplReverseAffiliateCounter"><code>ImplReverseAffiliateCounter</code></a>
+Generates the reverse-affiliate counter tuple.</p>
+</li>
+<li>
+<p><a href="struct.ImplCeilAffiliateCounter.html" title="struct instances_macros::impls::affiliates::ImplCeilAffiliateCounter"><code>ImplCeilAffiliateCounter</code></a>
+Generates the ceil-affiliate counter tuple.</p>
+</li>
+</ul>
+<h3 id="semantic-affiliates"><a class="doc-anchor" href="#semantic-affiliates">§</a>Semantic Affiliates</h3>
+<p>Semantic affiliates describe relationships in the implementation
+topology rather than direct counter transformations.</p>
+<p>These projections are constructed through implementation-side
+navigation rules and may later be refined by additional expansion
+stages.</p>
+<ul>
+<li>
+<p><a href="struct.ImplNextAffiliateCounter.html" title="struct instances_macros::impls::affiliates::ImplNextAffiliateCounter"><code>ImplNextAffiliateCounter</code></a>
+Generates an optimistic semantic successor projection.</p>
+</li>
+<li>
+<p><a href="struct.ImplBackAffiliateCounter.html" title="struct instances_macros::impls::affiliates::ImplBackAffiliateCounter"><code>ImplBackAffiliateCounter</code></a>
+Reconstructs the semantic predecessor projection.</p>
+</li>
+<li>
+<p><a href="struct.ImplFloorAffiliatesCounters.html" title="struct instances_macros::impls::affiliates::ImplFloorAffiliatesCounters"><code>ImplFloorAffiliatesCounters</code></a>
+Resolves canonical lineage representatives (per counter).</p>
+</li>
+</ul>
+<h3 id="affiliate-instance-projections"><a class="doc-anchor" href="#affiliate-instance-projections">§</a>Affiliate Instance Projections</h3>
+<ul>
+<li><a href="struct.ImplAffiliateInstances.html" title="struct instances_macros::impls::affiliates::ImplAffiliateInstances"><code>ImplAffiliateInstances</code></a>
+Supplies concrete definitions for every affiliate-instance
+associated type.</li>
+</ul>
+<p>All affiliate-instance projections resolve to the same implementing
+Rust type (<code>Self</code>).</p>
+<p>Navigation occurs by changing the trait counter tuple rather than the
+implementation type itself.</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">type </span>NextAffiliateInstance = <span class="self">Self</span>;</code></pre></div>
+<p>together with:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">type </span>NextAffiliateCounters = (U0, U0, U6);</code></pre></div>
+<p>allows:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="self">Self </span><span class="kw">as </span>MyTrait&lt;<span class="self">Self</span>::NextAffiliateCounters&gt;</code></pre></div>
+<p>to refer to another trait instantiation while preserving the same
+underlying Rust type.</p>
+<h3 id="affiliate-checker"><a class="doc-anchor" href="#affiliate-checker">§</a>Affiliate Checker</h3>
+<ul>
+<li><a href="struct.ImplAffiliateCountersChecker.html" title="struct instances_macros::impls::affiliates::ImplAffiliateCountersChecker"><code>ImplAffiliateCountersChecker</code></a>
+Verifies affiliate consistency invariants.</li>
+</ul>
+<div class="example-wrap"><pre class="language-text"><code>back(next(current)) == current
+next(back(current)) == current</code></pre></div>
+<p>This helps ensure that semantic affiliates form a single canonical
+implementation-instance chain.</p>
+<h3 id="structural-vs-semantic-navigation"><a class="doc-anchor" href="#structural-vs-semantic-navigation">§</a>Structural vs Semantic Navigation</h3>
+<p>Structural affiliates answer:</p>
+<div class="example-wrap"><pre class="language-text"><code>What counter tuple can be derived mechanically?</code></pre></div>
+<p>Semantic affiliates answer:</p>
+<div class="example-wrap"><pre class="language-text"><code>What neighboring implementation instance should this represent?</code></pre></div>
+<p>Together they form a compile-time navigation graph spanning all
+reachable trait instances.</p>
+<h3 id="generated-items"><a class="doc-anchor" href="#generated-items">§</a>Generated Items</h3>
+<p>All generated items are:</p>
+<ul>
+<li>hidden,</li>
+<li>deterministic,</li>
+<li>proc-macro-readable,</li>
+<li>and compile-time verifiable.</li>
+</ul>
+<p>These items are consumed by later expansion phases to reconstruct
+affiliate topology, validate transitions, and enable recursive access
+to associated items across related trait instances.</p>
+<h3 id="what-this-enables"><a class="doc-anchor" href="#what-this-enables">§</a>What this enables</h3>
+<p>Implementation-side affiliate expansion makes it possible to:</p>
+<ul>
+<li>navigate to successor instances,</li>
+<li>navigate to predecessor instances,</li>
+<li>jump to structural projections,</li>
+<li>recover semantic representatives,</li>
+<li>build compile-time instance graphs,</li>
+<li>and recursively access associated items across affiliated trait
+instantiations.</li>
+</ul>
+<p>All of this works entirely at compile time without runtime state or
+unstable language features.</p>
+</div></details><h2 id="structs" class="section-header">Structs<a href="#structs" class="anchor">§</a></h2><dl class="item-table"><dt><a class="struct" href="struct.ImplAffiliateCountersChecker.html" title="struct instances_macros::impls::affiliates::ImplAffiliateCountersChecker">Impl<wbr>Affiliate<wbr>Counters<wbr>Checker</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Extends an implementation with compile-time affiliate consistency
+assertions.</dd><dt><a class="struct" href="struct.ImplAffiliateInstances.html" title="struct instances_macros::impls::affiliates::ImplAffiliateInstances">Impl<wbr>Affiliate<wbr>Instances</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Extends an instance implementation with definitions for all
+affiliate-instance associated types.</dd><dt><a class="struct" href="struct.ImplBackAffiliateCounter.html" title="struct instances_macros::impls::affiliates::ImplBackAffiliateCounter">Impl<wbr>Back<wbr>Affiliate<wbr>Counter</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Extends an instance implementation with the semantic predecessor
+counter projection.</dd><dt><a class="struct" href="struct.ImplCeilAffiliateCounter.html" title="struct instances_macros::impls::affiliates::ImplCeilAffiliateCounter">Impl<wbr>Ceil<wbr>Affiliate<wbr>Counter</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Extends an instance implementation with the concrete ceil-affiliate
+counter projection.</dd><dt><a class="struct" href="struct.ImplFloorAffiliatesCounters.html" title="struct instances_macros::impls::affiliates::ImplFloorAffiliatesCounters">Impl<wbr>Floor<wbr>Affiliates<wbr>Counters</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Extends an implementation with all per-dimension floor-affiliate
+counter projections.</dd><dt><a class="struct" href="struct.ImplNextAffiliateCounter.html" title="struct instances_macros::impls::affiliates::ImplNextAffiliateCounter">Impl<wbr>Next<wbr>Affiliate<wbr>Counter</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Extends an instance implementation with the semantic successor
+counter projection.</dd><dt><a class="struct" href="struct.ImplReverseAffiliateCounter.html" title="struct instances_macros::impls::affiliates::ImplReverseAffiliateCounter">Impl<wbr>Reverse<wbr>Affiliate<wbr>Counter</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Extends an instance implementation with the concrete reverse-affiliate
+counter projection.</dd><dt><a class="struct" href="struct.InstanceImplAffiliates.html" title="struct instances_macros::impls::affiliates::InstanceImplAffiliates">Instance<wbr>Impl<wbr>Affiliates</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Generates all implementation-side affiliate projections.</dd></dl><h2 id="functions" class="section-header">Functions<a href="#functions" class="anchor">§</a></h2><dl class="item-table"><dt><a class="fn" href="fn.back_counters_typenum_arg.html" title="fn instances_macros::impls::affiliates::back_counters_typenum_arg">back_<wbr>counters_<wbr>typenum_<wbr>arg</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Builds the semantic predecessor back affiliate typenum counter projection.</dd><dt><a class="fn" href="fn.ceil_counters_typenum_arg.html" title="fn instances_macros::impls::affiliates::ceil_counters_typenum_arg">ceil_<wbr>counters_<wbr>typenum_<wbr>arg</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Builds the typenum counter tuple of the ceil affiliate.</dd><dt><a class="fn" href="fn.counters_invariants_checker.html" title="fn instances_macros::impls::affiliates::counters_invariants_checker">counters_<wbr>invariants_<wbr>checker</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Builds compile-time affiliate consistency assertions.</dd><dt><a class="fn" href="fn.floor_counters_typenum_arg.html" title="fn instances_macros::impls::affiliates::floor_counters_typenum_arg">floor_<wbr>counters_<wbr>typenum_<wbr>arg</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Builds the floor-affiliate typenum counter projection.</dd><dt><a class="fn" href="fn.is_first_counter_typenum_bool.html" title="fn instances_macros::impls::affiliates::is_first_counter_typenum_bool">is_<wbr>first_<wbr>counter_<wbr>typenum_<wbr>bool</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Builds a typenum bit/boolean (<code>B1</code> or <code>B0</code>) indicating whether the current counters
+represent the global minimum instance.</dd><dt><a class="fn" href="fn.next_counters_typenum_arg.html" title="fn instances_macros::impls::affiliates::next_counters_typenum_arg">next_<wbr>counters_<wbr>typenum_<wbr>arg</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Builds the optimistic successor typenum counter tuple.</dd><dt><a class="fn" href="fn.reverse_counters_typenum_arg.html" title="fn instances_macros::impls::affiliates::reverse_counters_typenum_arg">reverse_<wbr>counters_<wbr>typenum_<wbr>arg</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Builds the typenum counter tuple of the reverse affiliate.</dd></dl></section></div></main></body></html>

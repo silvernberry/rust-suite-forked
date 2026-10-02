@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Wrapper"],"fn":["append_cfg","impls_to_items","wrap_impl_items"],"struct":["WrapperConst","WrapperFn","WrapperType"]};

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["InstanceGetter","InstanceGetterEntry","InstanceGetterExprCall","InstanceGetterExprPath","InstanceGetterExprRef","InstanceGetterExprRetn","InstanceGetterExprTry","InstanceGetterExprTuple"]};

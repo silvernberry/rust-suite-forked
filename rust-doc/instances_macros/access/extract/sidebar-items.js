@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["AssocIdents","InstanceBound","InstanceNodeBound","SelfAssocVisitor","SelfUsageAssocs","SelfVisitor"],"trait":["ExtractConfirm"]};

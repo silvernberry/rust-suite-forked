@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["provide_bounds"],"struct":["InstanceImplSubscriber","TraitBranchSubscriber","TraitDescendSubscriber","TraitExtendSubscriber","TraitLeafSubscriber","TraitPruneSubscriber","TraitRootSubscriber","TraitSpreadSubscriber","TraitTraverseSubscriber","TraitTrimSubscriber"]};

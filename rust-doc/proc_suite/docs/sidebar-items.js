@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["DocAttr","DocCodeBlock"],"fn":["render_doc_attr","render_inline"],"trait":["InsertDocs"]};

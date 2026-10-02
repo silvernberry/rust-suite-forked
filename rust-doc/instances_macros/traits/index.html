@@ -1,0 +1,242 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Instance-trait expansion."><title>instances_macros::traits - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-0c87338a.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="instances_macros" data-themes="" data-resource-suffix="" data-rustdoc-version="1.99.0 (b940084d7 2026-09-28)" data-channel="1.99.0" data-search-js="search-cf4fc35e.js" data-stringdex-js="stringdex-b5109af9.js" data-settings-js="settings-170eb4bf.js" ><script src="../../static.files/storage-41dd4d93.js"></script><script defer src="../sidebar-items.js"></script><script defer src="../../static.files/main-417ebf0a.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-9f56287d.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc mod"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><rustdoc-topbar><h2><a href="#">Module traits</a></h2></rustdoc-topbar><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../../instances_macros/index.html">instances_<wbr>macros</a><span class="version">0.1.0</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">Module traits</a></h2><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#mental-model" title="Mental Model">Mental Model</a></li><li><a href="#expansion-pipeline" title="Expansion Pipeline">Expansion Pipeline</a></li><li><a href="#counter-extraction" title="Counter Extraction">Counter Extraction</a></li><li><a href="#typenum-counter-replacement" title="TypeNum Counter Replacement">TypeNum Counter Replacement</a></li><li><a href="#affiliate-expansion" title="Affiliate Expansion">Affiliate Expansion</a></li><li><a href="#identifier-expansion" title="Identifier Expansion">Identifier Expansion</a></li><li><a href="#identifier-hashes" title="Identifier Hashes">Identifier Hashes</a></li><li><a href="#collections" title="Collections">Collections</a></li><li><a href="#historical-collections" title="Historical Collections">Historical Collections</a></li><li><a href="#type-level-metadata" title="Type-Level Metadata">Type-Level Metadata</a></li><li><a href="#sum-types" title="Sum Types">Sum Types</a></li><li><a href="#documentation-vs-compilation-targets" title="Documentation vs Compilation Targets">Documentation vs Compilation Targets</a></li><li><a href="#implementation-model" title="Implementation Model">Implementation Model</a></li><li><a href="#result" title="Result">Result</a></li></ul><h3><a href="#modules">Module Items</a></h3><ul class="block"><li><a href="#modules" title="Modules">Modules</a></li><li><a href="#structs" title="Structs">Structs</a></li></ul></section><div id="rustdoc-modnav"><h2 class="in-crate"><a href="../index.html">In crate instances_<wbr>macros</a></h2></div></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><div class="width-limiter"><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><div class="rustdoc-breadcrumbs"><a href="../index.html">instances_macros</a></div><h1>Module <span>traits</span>&nbsp;<button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../../src/instances_macros/traits/mod.rs.html#16-538">Source</a> </span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Instance-trait expansion.</p>
+<p>This module implements the core transformation performed by the
+<code>#[instance]</code> trait macro.</p>
+<p>The expansion converts a user-facing trait containing instance
+counters into a fully reflected compile-time representation capable
+of describing instance identity, hierarchy structure, adjacent
+instances, historical state, and affiliate relationships.</p>
+<h3 id="mental-model"><a class="doc-anchor" href="#mental-model">§</a>Mental Model</h3>
+<p>An instance trait begins as a normal trait containing one or more
+counter parameters:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="attr">#[instance]
+</span><span class="kw">trait </span>Service&lt;
+    <span class="kw">const </span>CATEGORY: u8,
+    <span class="kw">const </span>ALGORITHM: u8,
+&gt; {}</code></pre></div>
+<p>Conceptually, the counters define coordinates within an instance
+hierarchy:</p>
+<div class="example-wrap"><pre class="language-text"><code>(CATEGORY, ALGORITHM)
+
+(&quot;crypto&quot;, &quot;sha-256&quot;) -&gt; (0, 0)
+(&quot;crypto&quot;, &quot;sha-512&quot;) -&gt; (0, 1)
+
+(&quot;image&quot;,  &quot;png&quot;)     -&gt; (1, 0)
+(&quot;image&quot;,  &quot;jpeg&quot;)    -&gt; (1, 1)
+(&quot;image&quot;,  &quot;gif&quot;)     -&gt; (1, 2)</code></pre></div>
+<p>Each coordinate represents a distinct instance.</p>
+<p>The purpose of instance-trait expansion is to transform those raw
+counters into a metadata model capable of describing the entire
+instance space.</p>
+<h3 id="expansion-pipeline"><a class="doc-anchor" href="#expansion-pipeline">§</a>Expansion Pipeline</h3>
+<p>Expansion proceeds through four major stages:</p>
+<div class="example-wrap"><pre class="language-text"><code>Counter Extraction
+        |
+        +-- InstanceTraitMeta
+        |
+        +-- InstanceTraitTypeNumCounters
+        |
+        +-- Affiliates
+        |
+        +-- InstanceTraitIdents</code></pre></div>
+<p>Each stage contributes a different aspect of the final instance
+model.</p>
+<h3 id="counter-extraction"><a class="doc-anchor" href="#counter-extraction">§</a>Counter Extraction</h3>
+<p>Expansion begins by extracting and validating all instance-counter
+parameters declared on the trait.</p>
+<p>The extracted counters become the canonical description of the
+instance coordinate system and drive all subsequent metadata
+generation.</p>
+<h3 id="typenum-counter-replacement"><a class="doc-anchor" href="#typenum-counter-replacement">§</a>TypeNum Counter Replacement</h3>
+<p>Stable Rust cannot yet express many of the required type-level
+relationships through const-generic expressions alone.</p>
+<p>To enable compile-time computation and metadata generation, the
+original const counters are reflected into a hidden typenum-based
+representation used throughout the expansion pipeline.</p>
+<div class="example-wrap"><pre class="language-text"><code>(CATEGORY, ALGORITHM)
+
+becomes
+
+InstanceTraitTypeNumCounters</code></pre></div>
+<p>while preserving access to the original counter information through
+reflected metadata.</p>
+<p>This allows expansion to perform type-level operations such as:</p>
+<ul>
+<li>collection cardinality computation,</li>
+<li>dimension indexing,</li>
+<li>historical layout construction,</li>
+<li>affiliate traversal,</li>
+<li>and compile-time validation.</li>
+</ul>
+<h3 id="affiliate-expansion"><a class="doc-anchor" href="#affiliate-expansion">§</a>Affiliate Expansion</h3>
+<p>Affiliates expose projections of the current instance coordinate onto
+related coordinates within the same hierarchy.</p>
+<p>Conceptually, affiliates provide metadata capable of navigating from
+one instance to adjacent or related instances without requiring
+direct access to the original counter declarations.</p>
+<p>Affiliate metadata therefore forms the basis for:</p>
+<ul>
+<li>hierarchy traversal,</li>
+<li>parent relationships,</li>
+<li>child relationships,</li>
+<li>adjacent instance discovery,</li>
+<li>and historical reconstruction.</li>
+</ul>
+<h3 id="identifier-expansion"><a class="doc-anchor" href="#identifier-expansion">§</a>Identifier Expansion</h3>
+<p>Counter coordinates identify position but do not describe meaning.</p>
+<p>For example:</p>
+<div class="example-wrap"><pre class="language-text"><code>(0, 1)</code></pre></div>
+<p>identifies an instance but does not communicate:</p>
+<div class="example-wrap"><pre class="language-text"><code>(&quot;crypto&quot;, &quot;sha-512&quot;)</code></pre></div>
+<p>To solve this, every counter value may be assigned a user-provided
+ASCII identifier.</p>
+<p>These identifiers become the semantic identity layer of the instance
+system.</p>
+<div class="example-wrap"><pre class="language-text"><code>Counter 0
+
+0 =&gt; &quot;crypto&quot;
+1 =&gt; &quot;image&quot;
+
+Counter 1
+
+0 =&gt; &quot;sha-256&quot;
+1 =&gt; &quot;sha-512&quot;
+0 =&gt; &quot;png&quot;
+1 =&gt; &quot;jpeg&quot;
+2 =&gt; &quot;gif&quot;</code></pre></div>
+<p>Expansion reflects these identifiers into hidden metadata so later
+stages can reason about instances through meaning rather than raw
+counter values.</p>
+<h3 id="identifier-hashes"><a class="doc-anchor" href="#identifier-hashes">§</a>Identifier Hashes</h3>
+<p>Every identifier additionally receives a deterministic <code>u64</code> hash.</p>
+<p>The ASCII identifier remains the canonical semantic representation,
+while the hash provides a compact fixed-size representation suitable
+for:</p>
+<ul>
+<li>uniqueness validation,</li>
+<li>collection comparison,</li>
+<li>affiliate validation,</li>
+<li>historical reconstruction,</li>
+<li>and compile-time consistency checking.</li>
+</ul>
+<h3 id="collections"><a class="doc-anchor" href="#collections">§</a>Collections</h3>
+<p>Identifier metadata is further expanded into collection views.</p>
+<p>Collections provide a complete representation of the identifier space
+visible from a particular instance coordinate.</p>
+<p>For:</p>
+<div class="example-wrap"><pre class="language-text"><code>(&quot;crypto&quot;, &quot;sha-512&quot;)</code></pre></div>
+<p>the current collections become:</p>
+<div class="example-wrap"><pre class="language-text"><code>Counter 0:
+    [&quot;crypto&quot;]
+
+Counter 1:
+    [&quot;sha-256&quot;, &quot;sha-512&quot;]</code></pre></div>
+<p>These collections are not merely identifier lists.</p>
+<p>They are semantic projections of the underlying counter hierarchy and
+therefore also describe the exact counter progression represented by
+those identifiers:</p>
+<div class="example-wrap"><pre class="language-text"><code>[&quot;sha-256&quot;, &quot;sha-512&quot;]
+    |
+    +-- [0, 1]</code></pre></div>
+<p>From a single coordinate, expansion can therefore recover both
+neighboring identifiers and the corresponding counter structure.</p>
+<h3 id="historical-collections"><a class="doc-anchor" href="#historical-collections">§</a>Historical Collections</h3>
+<p>Current collections describe only the identifiers visible from the
+current coordinate.</p>
+<p>Historical collections preserve the complete hierarchy accumulated
+across previously reachable coordinates.</p>
+<div class="example-wrap"><pre class="language-text"><code>Counter 0:
+    [&quot;crypto&quot;, &quot;image&quot;]
+
+Counter 1:
+    [
+        [&quot;sha-256&quot;, &quot;sha-512&quot;, PAD],
+        [&quot;png&quot;, &quot;jpeg&quot;, &quot;gif&quot;]
+    ]</code></pre></div>
+<p>Historical metadata preserves:</p>
+<ul>
+<li>parent history,</li>
+<li>child history,</li>
+<li>adjacent hierarchy state,</li>
+<li>and the current coordinate.</li>
+</ul>
+<p>Padded cardinalities ensure all branches can be represented within a
+common multidimensional layout.</p>
+<h3 id="type-level-metadata"><a class="doc-anchor" href="#type-level-metadata">§</a>Type-Level Metadata</h3>
+<p>Collection cardinalities are reflected both as runtime constants and
+as typenum-associated types.</p>
+<p>These type-level representations enable:</p>
+<ul>
+<li>fixed-size <code>GenericArray</code> collections,</li>
+<li>compile-time dimension checking,</li>
+<li>nested historical layouts,</li>
+<li>and type-level validation contracts.</li>
+</ul>
+<h3 id="sum-types"><a class="doc-anchor" href="#sum-types">§</a>Sum Types</h3>
+<p><code>#[sum]</code> turns an instance-dependent associated type into an enum-like
+boundary through reciprocal <code>From</code>/<code>Into</code> bounds, allowing the same logical
+type to be represented by different instance implementations.</p>
+<p>This provides a canonical terminal anchor through which the type can cross
+generic boundaries and be converted back to the required instance.</p>
+<h3 id="documentation-vs-compilation-targets"><a class="doc-anchor" href="#documentation-vs-compilation-targets">§</a>Documentation vs Compilation Targets</h3>
+<p>Two separate expansion targets exist.</p>
+<p><a href="struct.InstanceTrait.html" title="struct instances_macros::traits::InstanceTrait"><code>InstanceTrait</code></a> is used during normal compilation:</p>
+<div class="example-wrap"><pre class="language-text"><code>cfg(not(doc))</code></pre></div>
+<p>and generates the complete internal metadata representation,
+including:</p>
+<ul>
+<li>typenum counters,</li>
+<li>affiliates,</li>
+<li>metadata reflection,</li>
+<li>identifier metadata,</li>
+<li>collection metadata,</li>
+<li>and validation contracts.</li>
+</ul>
+<p><a href="struct.InstanceTraitDocTarget.html" title="struct instances_macros::traits::InstanceTraitDocTarget"><code>InstanceTraitDocTarget</code></a> is used when documentation is generated:</p>
+<div class="example-wrap"><pre class="language-text"><code>cfg(doc)</code></pre></div>
+<p>and produces a simplified user-facing view focused on:</p>
+<ul>
+<li>expected counter types,</li>
+<li>identifier requirements,</li>
+<li>and implementation guidance.</li>
+</ul>
+<p>This prevents internal expansion details from appearing in generated
+API documentation while still documenting the user-visible contract.</p>
+<h3 id="implementation-model"><a class="doc-anchor" href="#implementation-model">§</a>Implementation Model</h3>
+<p>The instance trait itself defines metadata contracts and reflection
+structures.</p>
+<p>Those contracts are later satisfied by a corresponding instance-impl
+macro which supplies:</p>
+<ul>
+<li>identifier values,</li>
+<li>identifier hashes,</li>
+<li>collection contents,</li>
+<li>historical collections,</li>
+<li>collection cardinalities,</li>
+<li>affiliate metadata,</li>
+<li>and other instance-specific state.</li>
+</ul>
+<p>Validation then ensures the implementation accurately satisfies every
+contract generated by trait-side expansion.</p>
+<h3 id="result"><a class="doc-anchor" href="#result">§</a>Result</h3>
+<p>The expanded instance trait becomes a fully reconstructable
+compile-time model of:</p>
+<ul>
+<li>instance identity,</li>
+<li>semantic naming,</li>
+<li>hierarchy structure,</li>
+<li>adjacent instances,</li>
+<li>affiliate relationships,</li>
+<li>collection state,</li>
+<li>historical state,</li>
+<li>collection cardinalities,</li>
+<li>and type-level dimensions.</li>
+</ul>
+<p>Consequently, later proc-macro stages can reason about instances
+using semantic metadata rather than raw counter coordinates alone.</p>
+</div></details><h2 id="modules" class="section-header">Modules<a href="#modules" class="anchor">§</a></h2><dl class="item-table"><dt><a class="mod" href="affiliates/index.html" title="mod instances_macros::traits::affiliates">affiliates</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>This module provides a way for one trait instance to refer to <em>other</em>
+instantiations of the same trait on the same <code>Self</code> type.</dd><dt><a class="mod" href="counters/index.html" title="mod instances_macros::traits::counters">counters</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>This module extracts and validates trait-side const-generic parameters
+used as instance counters.</dd><dt><a class="mod" href="errors/index.html" title="mod instances_macros::traits::errors">errors</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Diagnostics emitted by the instance-trait proc-macro pipeline.</dd><dt><a class="mod" href="idents/index.html" title="mod instances_macros::traits::idents">idents</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Instance identifier metadata generation and validation.</dd><dt><a class="mod" href="meta/index.html" title="mod instances_macros::traits::meta">meta</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>This module generates hidden trait-side metadata used by the
+instance-trait proc-macro pipeline.</dd><dt><a class="mod" href="sum/index.html" title="mod instances_macros::traits::sum">sum</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Provides sum-type boundaries for instance-dependent associated types.</dd><dt><a class="mod" href="typenum/index.html" title="mod instances_macros::traits::typenum">typenum</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Rewrites extracted instance-counter const generics into the synthesized
+<a href="typenum/struct.InstanceTraitTypeNumCounters.html" title="struct instances_macros::traits::typenum::InstanceTraitTypeNumCounters"><code>InstanceTraitTypeNumCounters</code></a> type parameter.</dd><dt><a class="mod" href="utils/index.html" title="mod instances_macros::traits::utils">utils</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Shared extraction utilities and validation helpers used throughout the
+instance-trait proc-macro pipeline.</dd></dl><h2 id="structs" class="section-header">Structs<a href="#structs" class="anchor">§</a></h2><dl class="item-table"><dt><a class="struct" href="struct.InstanceTrait.html" title="struct instances_macros::traits::InstanceTrait">Instance<wbr>Trait</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Expands the internal instance-trait representation.</dd><dt><a class="struct" href="struct.InstanceTraitDocTarget.html" title="struct instances_macros::traits::InstanceTraitDocTarget">Instance<wbr>Trait<wbr>DocTarget</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Expands the documentation-facing instance-trait representation.</dd></dl></section></div></main></body></html>

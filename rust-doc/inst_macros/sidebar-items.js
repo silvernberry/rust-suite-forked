@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"attr":["delegate_support_crate_internal_only","inst"],"constant":["DELEGATE_MACRO_NAME","INST_DIRECT_MACRO_NAME","INST_GET_MACRO_NAME","INST_MACRO_NAME"],"macro":["inst_direct","inst_get"],"mod":["args","errors","expr","impls","mods","node","traits"],"struct":["Inst"],"trait":["Extension","Extraction","Insertion","Transformation","Utilization"]};

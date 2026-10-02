@@ -1,0 +1,39 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="A vector of `CounterArg` values describing all instance-counter const-generic arguments supplied by an implementation."><title>CounterArgs in instances_macros::impls::counters - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-0c87338a.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="instances_macros" data-themes="" data-resource-suffix="" data-rustdoc-version="1.99.0 (b940084d7 2026-09-28)" data-channel="1.99.0" data-search-js="search-cf4fc35e.js" data-stringdex-js="stringdex-b5109af9.js" data-settings-js="settings-170eb4bf.js" ><script src="../../../static.files/storage-41dd4d93.js"></script><script defer src="sidebar-items.js"></script><script defer src="../../../static.files/main-417ebf0a.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-9f56287d.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc type"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><rustdoc-topbar><h2><a href="#">CounterArgs</a></h2></rustdoc-topbar><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../../../instances_macros/index.html">instances_<wbr>macros</a><span class="version">0.1.0</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">Counter<wbr>Args</a></h2><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#ordering-semantics" title="Ordering semantics">Ordering semantics</a></li><li><a href="#examples" title="Examples">Examples</a></li></ul><h3><a href="#aliased-type">Aliased Type</a></h3></section><div id="rustdoc-modnav"><h2><a href="index.html">In instances_<wbr>macros::<wbr>impls::<wbr>counters</a></h2></div></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><div class="width-limiter"><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><div class="rustdoc-breadcrumbs"><a href="../../index.html">instances_macros</a>::<wbr><a href="../index.html">impls</a>::<wbr><a href="index.html">counters</a></div><h1>Type Alias <span class="type">Counter<wbr>Args</span>&nbsp;<button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../../../src/instances_macros/impls/counters.rs.html#293">Source</a> </span></div><pre class="rust item-decl"><code>pub(crate) type CounterArgs = <a class="struct" href="https://doc.rust-lang.org/1.99.0/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;<a class="struct" href="struct.CounterArg.html" title="struct instances_macros::impls::counters::CounterArg">CounterArg</a>&gt;;</code></pre><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>A vector of <a href="struct.CounterArg.html" title="struct instances_macros::impls::counters::CounterArg"><code>CounterArg</code></a> values describing all <strong>instance-counter</strong>
+const-generic arguments supplied by an implementation.</p>
+<p>Each <a href="struct.CounterArg.html" title="struct instances_macros::impls::counters::CounterArg"><code>CounterArg</code></a> represents a single const-generic argument from the
+implemented trait path and is identified exclusively by its
+zero-based <a href="struct.CounterArg.html#structfield.generic_index" title="field instances_macros::impls::counters::CounterArg::generic_index"><code>CounterArg::generic_index</code></a>.</p>
+<h3 id="ordering-semantics"><a class="doc-anchor" href="#ordering-semantics">§</a>Ordering semantics</h3>
+<p>The order of this vector is <strong>intentional and user-defined</strong>.
+It does <strong>not</strong> need to be ascending by <code>generic_index</code>, nor does it
+necessarily mirror the textual order of the trait arguments appearing
+in the implementation.</p>
+<p>When instance-counter arguments are interleaved with other generic
+arguments, this vector preserves the order in which the user intends
+those counters to participate in instance resolution.</p>
+<p>Expansion logic must therefore rely on <code>generic_index</code> for stable
+trait–impl association and treat the vector order as semantically
+meaningful.</p>
+<h3 id="examples"><a class="doc-anchor" href="#examples">§</a>Examples</h3>
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">trait </span>MyTrait&lt;<span class="kw">const </span>A: u8, T, <span class="kw">const </span>B: u8, <span class="kw">const </span>C: u8&gt; {}
+
+<span class="kw">impl</span>&lt;T&gt; MyTrait&lt;<span class="number">4</span>, T, <span class="number">7</span>, <span class="number">9</span>&gt; <span class="kw">for </span>MyType {}</code></pre></div>
+<p>If the user selects counters in the order <code>B, A</code>, the collected
+arguments will be:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code>CounterArgs [
+  CounterArg { generic_index: <span class="number">2</span>, const_lit: <span class="number">7 </span>},
+  CounterArg { generic_index: <span class="number">0</span>, const_lit: <span class="number">4 </span>},
+]</code></pre></div>
+<p>Likewise, when counters are interleaved with other arguments:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">trait </span>MyTrait&lt;T, <span class="kw">const </span>X: u8, U, <span class="kw">const </span>Y: u8&gt; {}
+
+<span class="kw">impl</span>&lt;T, U&gt; MyTrait&lt;T, <span class="number">3</span>, U, <span class="number">8</span>&gt; <span class="kw">for </span>MyType {}</code></pre></div>
+<p>And the user specifies the instance order <code>Y, X</code>, the resulting vector
+preserves that intent:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code>CounterArgs [
+  CounterArg { generic_index: <span class="number">3</span>, const_lit: <span class="number">8 </span>},
+  CounterArg { generic_index: <span class="number">1</span>, const_lit: <span class="number">3 </span>},
+]</code></pre></div></div></details><h2 id="aliased-type" class="section-header">Aliased Type<a href="#aliased-type" class="anchor">§</a></h2><pre class="rust item-decl"><code>pub(crate) struct CounterArgs { <span class="comment">/* private fields */</span> }</code></pre><script src="../../../type.impl/alloc/vec/struct.Vec.js" data-self-path="instances_macros::impls::counters::CounterArgs" async></script></section></div></main></body></html>

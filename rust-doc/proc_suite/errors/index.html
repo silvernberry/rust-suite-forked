@@ -1,0 +1,141 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Structured error diagnostics for proc-macros."><title>proc_suite::errors - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-0c87338a.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="proc_suite" data-themes="" data-resource-suffix="" data-rustdoc-version="1.99.0 (b940084d7 2026-09-28)" data-channel="1.99.0" data-search-js="search-cf4fc35e.js" data-stringdex-js="stringdex-b5109af9.js" data-settings-js="settings-170eb4bf.js" ><script src="../../static.files/storage-41dd4d93.js"></script><script defer src="../sidebar-items.js"></script><script defer src="../../static.files/main-417ebf0a.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-9f56287d.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc mod"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><rustdoc-topbar><h2><a href="#">Module errors</a></h2></rustdoc-topbar><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../../proc_suite/index.html">proc_<wbr>suite</a><span class="version">0.1.0</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">Module errors</a></h2><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#overview" title="Overview">Overview</a></li><li><a href="#output" title="Output">Output</a></li><li><a href="#defining-diagnostics" title="Defining Diagnostics">Defining Diagnostics</a></li><li><a href="#emitting-diagnostics" title="Emitting Diagnostics">Emitting Diagnostics</a></li><li><a href="#classification" title="Classification">Classification</a></li><li><a href="#dev-mode" title="Dev Mode">Dev Mode</a></li><li><a href="#high-level-utilities" title="High-level Utilities">High-level Utilities</a></li><li><a href="#common-concepts" title="Common Concepts">Common Concepts</a></li><li><a href="#low-level-diagnostic-types" title="Low-level Diagnostic Types">Low-level Diagnostic Types</a></li></ul><h3><a href="#modules">Module Items</a></h3><ul class="block"><li><a href="#modules" title="Modules">Modules</a></li><li><a href="#structs" title="Structs">Structs</a></li><li><a href="#enums" title="Enums">Enums</a></li><li><a href="#traits" title="Traits">Traits</a></li><li><a href="#functions" title="Functions">Functions</a></li></ul></section><div id="rustdoc-modnav"><h2 class="in-crate"><a href="../index.html">In crate proc_<wbr>suite</a></h2></div></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><div class="width-limiter"><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><div class="rustdoc-breadcrumbs"><a href="../index.html">proc_suite</a></div><h1>Module <span>errors</span>&nbsp;<button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../../src/proc_suite/errors.rs.html#16-2249">Source</a> </span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Structured error diagnostics for proc-macros.</p>
+<h3 id="overview"><a class="doc-anchor" href="#overview">§</a>Overview</h3>
+<p>Provides structured, ID-based diagnostics for proc-macros.</p>
+<p>Diagnostics are emitted with stable IDs, spans, and optional
+help/notes instead of ad-hoc string errors.</p>
+<h3 id="output"><a class="doc-anchor" href="#output">§</a>Output</h3><div class="example-wrap"><pre class="language-text"><code>error: [SPACE:ID] &lt;message&gt;
+       help:
+         • &lt;help message&gt;
+         • ...
+       note:
+         • &lt;note message&gt;
+         • ...
+
+ --&gt; &lt;file&gt;:&lt;line&gt;:&lt;col&gt;
+  |
+&lt;line&gt; | &lt;code&gt;
+  |     ^^^^^</code></pre></div>
+<p>Spanned helps are emitted as separate additional diagnostics and referenced
+via <code>[SPACE:ID:i]</code>.</p>
+<h3 id="defining-diagnostics"><a class="doc-anchor" href="#defining-diagnostics">§</a>Defining Diagnostics</h3>
+<ol>
+<li>Define an error space (assigns error IDs):
+<a href="../macro.error_spaces.html" title="macro proc_suite::error_spaces"><code>crate::error_spaces!</code></a> / <a href="../macro.error_space.html" title="macro proc_suite::error_space"><code>crate::error_space!</code></a></li>
+</ol>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="macro">error_spaces!</span> {
+    space: <span class="string">"MY"</span>,
+    maintain: MaintainInfo,
+
+    <span class="kw">pub enum </span>MyErrors {
+        range: <span class="number">100</span>..=<span class="number">149</span>,
+        variants: {
+            InvalidInput,
+            Unsupported,
+        }
+    }
+
+    <span class="kw">pub enum </span>OtherErrors {
+        range: <span class="number">150</span>..=<span class="number">199</span>,
+        variants: {
+            Conflict,
+            Missing,
+        }
+    }
+}</code></pre></div>
+<ol start="2">
+<li>Define diagnostics using the same variants:
+<a href="../macro.diagnostics.html" title="macro proc_suite::diagnostics"><code>crate::diagnostics!</code></a></li>
+</ol>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="macro">diagnostics!</span> {
+    space: MyErrors,
+
+    <span class="kw">pub enum </span>Error {
+        InvalidInput {
+            fields: { field: syn::Field },
+            msg: <span class="string">"invalid input"</span>,
+            tags: [InvalidInput],
+            span: { spanned: field },
+            help: [<span class="string">"try unsigned"</span>],
+        },
+
+        Unsupported {
+            fields: { field: syn::Field },
+            msg: <span class="macro">format!</span>(<span class="string">"unsupported field {}"</span>, field),
+            tags: [Unsupported],
+            span: { spanned: field },
+            note: [<span class="string">"try different name"</span>],
+        }
+    }
+}</code></pre></div>
+<p>Variants in <code>diagnostics!</code> must match those in the error space.</p>
+<h3 id="emitting-diagnostics"><a class="doc-anchor" href="#emitting-diagnostics">§</a>Emitting Diagnostics</h3>
+<p>Diagnostics convert directly into <a href="https://docs.rs/proc-macro2/1.0.103/proc_macro2/struct.TokenStream.html" title="struct proc_macro2::TokenStream"><code>TokenStream</code></a>:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="attr">#[proc_macro_attribute]
+</span><span class="kw">pub fn </span>my_attr(_attr: TokenStream, item: TokenStream) -&gt; TokenStream {
+    <span class="kw">let </span>field = ...;
+
+    <span class="kw">if </span>invalid {
+        <span class="kw">return </span>Error::InvalidInput { field }.into();
+    }
+
+    <span class="macro">quote!</span>(#item)
+}</code></pre></div>
+<p>Produces:</p>
+<div class="example-wrap"><pre class="language-text"><code>error: [MY:101] invalid input
+       help:
+         • try unsigned
+
+ --&gt; src/main.rs:5:1
+  |
+5 | &lt;code&gt;
+  | ^^^^^</code></pre></div><h3 id="classification"><a class="doc-anchor" href="#classification">§</a>Classification</h3>
+<p>Diagnostics can be classified using <a href="enum.ErrorCatalog.html" title="enum proc_suite::errors::ErrorCatalog"><code>ErrorCatalog</code></a> via <a href="enum.ErrorTag.html" title="enum proc_suite::errors::ErrorTag"><code>ErrorTag</code></a>.</p>
+<p>This allows the system to apply specialized behavior for common cases.</p>
+<ul>
+<li><a href="enum.ErrorCatalog.html#variant.Bug" title="variant proc_suite::errors::ErrorCatalog::Bug"><code>ErrorCatalog::Bug</code></a>
+Marks an internal macro error. Diagnostics automatically include
+maintainer contact and issue reporting information.</li>
+</ul>
+<h3 id="dev-mode"><a class="doc-anchor" href="#dev-mode">§</a>Dev Mode</h3>
+<p>When the <code>dev</code> feature is enabled, diagnostics include the
+macro crate’s internal location (<code>file:line:col</code>).</p>
+<div class="example-wrap"><pre class="language-text"><code>// dev
+error: [src/lib.rs:42:5] invalid input
+
+// normal
+error: [INSTANCE:101] invalid input</code></pre></div>
+<p>Intended for macro development; users rely on stable IDs.</p>
+<h3 id="high-level-utilities"><a class="doc-anchor" href="#high-level-utilities">§</a>High-level Utilities</h3>
+<p>Primary entry points for defining, parsing, and emitting diagnostics.</p>
+<p>These are directly used when writing proc-macros.</p>
+<ul>
+<li><a href="../macro.diagnostics.html" title="macro proc_suite::diagnostics"><code>crate::diagnostics!</code></a>: define diagnostic enums</li>
+<li><a href="../macro.error_spaces.html" title="macro proc_suite::error_spaces"><code>crate::error_spaces!</code></a> / <a href="../macro.error_space.html" title="macro proc_suite::error_space"><code>crate::error_space!</code></a>: define error ID spaces</li>
+<li><a href="../macro.token_err.html" title="macro proc_suite::token_err"><code>crate::token_err!</code></a> / <a href="../macro.callsite_err.html" title="macro proc_suite::callsite_err"><code>crate::callsite_err!</code></a>: emit simple errors</li>
+<li><a href="trait.ParseDiagnostic.html" title="trait proc_suite::errors::ParseDiagnostic"><code>ParseDiagnostic</code></a>: convenient parsing diagnostics (implemented for common <code>syn</code> nodes)</li>
+</ul>
+<h3 id="common-concepts"><a class="doc-anchor" href="#common-concepts">§</a>Common Concepts</h3>
+<p>Core concepts used when defining diagnostics.</p>
+<p>These are configured externally and fed into macros,
+rather than constructed as runtime values.</p>
+<ul>
+<li><a href="enum.ErrorCatalog.html" title="enum proc_suite::errors::ErrorCatalog"><code>ErrorCatalog</code></a> / <a href="enum.ErrorTag.html" title="enum proc_suite::errors::ErrorTag"><code>ErrorTag</code></a>: classify diagnostics (e.g. bug, invalid input)</li>
+<li><a href="struct.ErrorMaintainers.html" title="struct proc_suite::errors::ErrorMaintainers"><code>ErrorMaintainers</code></a>: configure reporting (mail / repository)</li>
+<li><a href="enum.GitHost.html" title="enum proc_suite::errors::GitHost"><code>GitHost</code></a> / <a href="struct.GitHostInfo.html" title="struct proc_suite::errors::GitHostInfo"><code>GitHostInfo</code></a>: repository metadata for reporting</li>
+</ul>
+<h3 id="low-level-diagnostic-types"><a class="doc-anchor" href="#low-level-diagnostic-types">§</a>Low-level Diagnostic Types</h3>
+<p>Underlying data structures of the diagnostic system.</p>
+<p>These are usually used implicitly via macros, but are available for
+manual construction and advanced customization when needed.</p>
+<ul>
+<li><a href="struct.Diagnostic.html" title="struct proc_suite::errors::Diagnostic"><code>Diagnostic</code></a>: full diagnostic representation</li>
+<li><a href="struct.ErrorId.html" title="struct proc_suite::errors::ErrorId"><code>ErrorId</code></a> / <a href="struct.ErrorInfo.html" title="struct proc_suite::errors::ErrorInfo"><code>ErrorInfo</code></a>: error identity and metadata</li>
+<li><a href="struct.ErrorDetails.html" title="struct proc_suite::errors::ErrorDetails"><code>ErrorDetails</code></a>: static error description</li>
+<li><a href="enum.DiagSpan.html" title="enum proc_suite::errors::DiagSpan"><code>DiagSpan</code></a>: span abstraction (span / tokens)</li>
+<li><a href="struct.Help.html" title="struct proc_suite::errors::Help"><code>Help</code></a> / <a href="struct.Note.html" title="struct proc_suite::errors::Note"><code>Note</code></a>: additional diagnostic context</li>
+<li><a href="struct.MultiDiagnostic.html" title="struct proc_suite::errors::MultiDiagnostic"><code>MultiDiagnostic</code></a>: aggregation of multiple diagnostics</li>
+</ul>
+</div></details><h2 id="modules" class="section-header">Modules<a href="#modules" class="anchor">§</a></h2><dl class="item-table"><dt><a class="mod" href="syn_diagnostics/index.html" title="mod proc_suite::errors::syn_diagnostics">syn_<wbr>diagnostics</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Diagnostic implementations for <a href="https://docs.rs/syn/2.0.111/syn/index.html" title="mod syn"><code>syn</code></a> structures.</dd></dl><h2 id="structs" class="section-header">Structs<a href="#structs" class="anchor">§</a></h2><dl class="item-table"><dt><a class="struct" href="struct.ActiveDevelopment.html" title="struct proc_suite::errors::ActiveDevelopment">Active<wbr>Development</a></dt><dt><a class="struct" href="struct.Diagnostic.html" title="struct proc_suite::errors::Diagnostic">Diagnostic</a></dt><dd>Structured error-diagnostic emitted by the macro-system.</dd><dt><a class="struct" href="struct.ErrorDetails.html" title="struct proc_suite::errors::ErrorDetails">Error<wbr>Details</a></dt><dd>Static metadata describing a macro-system’s error.</dd><dt><a class="struct" href="struct.ErrorId.html" title="struct proc_suite::errors::ErrorId">ErrorId</a></dt><dd>Unique identifier for a macro-expansion error within an error space.</dd><dt><a class="struct" href="struct.ErrorInfo.html" title="struct proc_suite::errors::ErrorInfo">Error<wbr>Info</a></dt><dd>Complete macro-expansion error information (ID, details, and maintainers).</dd><dt><a class="struct" href="struct.ErrorMaintainers.html" title="struct proc_suite::errors::ErrorMaintainers">Error<wbr>Maintainers</a></dt><dd>Maintainer contact information attached to a macro-system’s error space.</dd><dt><a class="struct" href="struct.GitHostInfo.html" title="struct proc_suite::errors::GitHostInfo">GitHost<wbr>Info</a></dt><dd>Repository information for a Git hosting platform.</dd><dt><a class="struct" href="struct.Help.html" title="struct proc_suite::errors::Help">Help</a></dt><dd>Additional guidance attached to the macro-system’s error diagnostic.</dd><dt><a class="struct" href="struct.MultiDiagnostic.html" title="struct proc_suite::errors::MultiDiagnostic">Multi<wbr>Diagnostic</a></dt><dd>Collection of multiple diagnostics.</dd><dt><a class="struct" href="struct.Note.html" title="struct proc_suite::errors::Note">Note</a></dt><dd>Additional context attached to the macro-system’s error diagnostic.</dd></dl><h2 id="enums" class="section-header">Enums<a href="#enums" class="anchor">§</a></h2><dl class="item-table"><dt><a class="enum" href="enum.DiagSpan.html" title="enum proc_suite::errors::DiagSpan">Diag<wbr>Span</a></dt><dd>Span representation used in the macro-system’s error diagnostics.</dd><dt><a class="enum" href="enum.ErrorCatalog.html" title="enum proc_suite::errors::ErrorCatalog">Error<wbr>Catalog</a></dt><dd>Core semantic classification of errors emitted by the macro system.</dd><dt><a class="enum" href="enum.ErrorTag.html" title="enum proc_suite::errors::ErrorTag">Error<wbr>Tag</a></dt><dd>Tag attached to the macro-system error-diagnostics for classification.</dd><dt><a class="enum" href="enum.GitHost.html" title="enum proc_suite::errors::GitHost">GitHost</a></dt><dd>Supported Git hosting platforms for the macro-system maintainer metadata.</dd></dl><h2 id="traits" class="section-header">Traits<a href="#traits" class="anchor">§</a></h2><dl class="item-table"><dt><a class="trait" href="trait.ParseDiagnostic.html" title="trait proc_suite::errors::ParseDiagnostic">Parse<wbr>Diagnostic</a></dt><dd>Helpers for generating structured parsing diagnostics.</dd></dl><h2 id="functions" class="section-header">Functions<a href="#functions" class="anchor">§</a></h2><dl class="item-table"><dt><a class="fn" href="fn.callsite_err_impl.html" title="fn proc_suite::errors::callsite_err_impl">callsite_<wbr>err_<wbr>impl</a></dt><dd>Emits a macro-expansion compile-time error at the macro call site.</dd><dt><a class="fn" href="fn.format_msg.html" title="fn proc_suite::errors::format_msg">format_<wbr>msg</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Formats a diagnostic message without additional context.</dd><dt><a class="fn" href="fn.token_err_impl.html" title="fn proc_suite::errors::token_err_impl">token_<wbr>err_<wbr>impl</a></dt><dd>Emits a macro-expansion compile-time error at the given span.</dd></dl></section></div></main></body></html>

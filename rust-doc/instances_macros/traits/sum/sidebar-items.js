@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["GlobalTerminalAssoc","GlobalTerminalExact","InstanceSumTypes","SelfTerminalAssoc","SumAttrRemoval","SumTypeExtension"]};

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["ImplInst","ImplInstDoc","ImplInstGenericsHeader","ItemTypeInst","ItemTypeNodeInst","ItemTypeTupleInst"],"type":["AddonSpace"]};

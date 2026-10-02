@@ -1,0 +1,49 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Schema-driven parsing and validation of structured macro key arguments."><title>proc_suite::keys - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-0c87338a.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="proc_suite" data-themes="" data-resource-suffix="" data-rustdoc-version="1.99.0 (b940084d7 2026-09-28)" data-channel="1.99.0" data-search-js="search-cf4fc35e.js" data-stringdex-js="stringdex-b5109af9.js" data-settings-js="settings-170eb4bf.js" ><script src="../../static.files/storage-41dd4d93.js"></script><script defer src="../sidebar-items.js"></script><script defer src="../../static.files/main-417ebf0a.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-9f56287d.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc mod"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><rustdoc-topbar><h2><a href="#">Module keys</a></h2></rustdoc-topbar><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../../proc_suite/index.html">proc_<wbr>suite</a><span class="version">0.1.0</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">Module keys</a></h2><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#conceptual-model" title="Conceptual model">Conceptual model</a></li><li><a href="#defining-schemas" title="Defining schemas">Defining schemas</a></li></ul><h3><a href="#structs">Module Items</a></h3><ul class="block"><li><a href="#structs" title="Structs">Structs</a></li><li><a href="#enums" title="Enums">Enums</a></li><li><a href="#traits" title="Traits">Traits</a></li></ul></section><div id="rustdoc-modnav"><h2 class="in-crate"><a href="../index.html">In crate proc_<wbr>suite</a></h2></div></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><div class="width-limiter"><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><div class="rustdoc-breadcrumbs"><a href="../index.html">proc_suite</a></div><h1>Module <span>keys</span>&nbsp;<button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../../src/proc_suite/keys.rs.html#16-2084">Source</a> </span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Schema-driven parsing and validation of structured macro key arguments.</p>
+<p>This module provides the building blocks for declaring, parsing, validating,
+and semantically decoding key-based macro arguments.</p>
+<p>It separates the problem into four distinct layers:</p>
+<ul>
+<li><strong>Parsing</strong>: <a href="struct.KeyInfo.html" title="struct proc_suite::keys::KeyInfo"><code>KeyInfo</code></a>, <a href="enum.KeyValue.html" title="enum proc_suite::keys::KeyValue"><code>KeyValue</code></a>, and <a href="struct.KeyList.html" title="struct proc_suite::keys::KeyList"><code>KeyList</code></a> parse raw macro
+input into a syntax tree while producing structured diagnostics.</li>
+<li><strong>Schema definition</strong>: <a href="trait.KeySpec.html" title="trait proc_suite::keys::KeySpec"><code>KeySpec</code></a> and <a href="../macro.key_schema.html" title="macro proc_suite::key_schema"><code>crate::key_schema!</code></a> describe the
+complete grammar of a key, including its allowed sub-keys and valid
+combinations, and generate strongly-typed decoding logic.</li>
+<li><strong>Validation</strong>: <a href="struct.KeySet.html" title="struct proc_suite::keys::KeySet"><code>KeySet</code></a> validates nested key groups by rejecting
+unexpected and duplicate sub-keys.</li>
+<li><strong>Value decoding</strong>: <a href="trait.KeyExpect.html" title="trait proc_suite::keys::KeyExpect"><code>KeyExpect</code></a> defines how individual sub-key values
+are extracted and type-checked.</li>
+</ul>
+<p>Together these components allow procedural macros to describe argument
+grammars declaratively while receiving:</p>
+<ul>
+<li>strongly typed semantic representations,</li>
+<li>deterministic validation,</li>
+<li>exact sub-key combination matching, and</li>
+<li>rich, schema-aware compiler diagnostics.</li>
+</ul>
+<h3 id="conceptual-model"><a class="doc-anchor" href="#conceptual-model">§</a>Conceptual model</h3>
+<p>A parsed key has one of the following forms:</p>
+<div class="example-wrap"><pre class="language-text"><code>key
+key(...)
+key { ... }
+key [ ... ]</code></pre></div>
+<p>Nested forms contain a <a href="struct.KeyList.html" title="struct proc_suite::keys::KeyList"><code>KeyList</code></a>, whose elements are validated against a
+schema before being decoded into a strongly typed specification.</p>
+<h3 id="defining-schemas"><a class="doc-anchor" href="#defining-schemas">§</a>Defining schemas</h3>
+<p>Most users interact only with <a href="../macro.key_schema.html" title="macro proc_suite::key_schema"><code>crate::key_schema!</code></a>, which declaratively specifies:</p>
+<ul>
+<li>the literal key name,</li>
+<li>whether the key may appear without a value,</li>
+<li>the allowed sub-keys and their value types,</li>
+<li>the exact combinations of sub-keys that are accepted.</li>
+</ul>
+<p>From this declaration the macro generates:</p>
+<ul>
+<li>a specification enum,</li>
+<li>a complete <a href="trait.KeySpec.html" title="trait proc_suite::keys::KeySpec"><code>KeySpec</code></a> implementation,</li>
+<li>deterministic decoding logic, and</li>
+<li>comprehensive diagnostics.</li>
+</ul>
+<p>The lower-level helper macros (<code>__key_spec!</code>, <code>__emit_*</code>, etc.) are internal
+implementation details and are not intended to be invoked directly.</p>
+</div></details><h2 id="structs" class="section-header">Structs<a href="#structs" class="anchor">§</a></h2><dl class="item-table"><dt><a class="struct" href="struct.KeyInfo.html" title="struct proc_suite::keys::KeyInfo">KeyInfo</a></dt><dd>Represents a parsed key and its associated value.</dd><dt><a class="struct" href="struct.KeyList.html" title="struct proc_suite::keys::KeyList">KeyList</a></dt><dd>Represents a comma-separated list of parsed keys.</dd><dt><a class="struct" href="struct.KeySet.html" title="struct proc_suite::keys::KeySet">KeySet</a></dt><dd>A validated collection of sub-keys <a href="struct.KeyList.html" title="struct proc_suite::keys::KeyList"><code>KeyList</code></a>, belonging to a single parent key.</dd><dt><a class="struct" href="struct.ValueGroup.html" title="struct proc_suite::keys::ValueGroup">Value<wbr>Group</a></dt></dl><h2 id="enums" class="section-header">Enums<a href="#enums" class="anchor">§</a></h2><dl class="item-table"><dt><a class="enum" href="enum.KeyValue.html" title="enum proc_suite::keys::KeyValue">KeyValue</a></dt><dd>Represents the value associated with a parsed delimited key.</dd></dl><h2 id="traits" class="section-header">Traits<a href="#traits" class="anchor">§</a></h2><dl class="item-table"><dt><a class="trait" href="trait.KeyExpect.html" title="trait proc_suite::keys::KeyExpect">KeyExpect</a></dt><dd>Trait for extracting and diagnosing the <em>expected value shape</em> of a key.</dd><dt><a class="trait" href="trait.KeySpec.html" title="trait proc_suite::keys::KeySpec">KeySpec</a></dt><dd>Schema definition trait for a <em>single top-level key</em> with structured sub-keys.</dd></dl></section></div></main></body></html>

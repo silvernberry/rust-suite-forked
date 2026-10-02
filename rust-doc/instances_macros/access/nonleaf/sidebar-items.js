@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Projection"],"fn":["make_type","subscriber_call_expr","subscriber_call_path","validate_subscriber_call_path"],"struct":["BorderInfo","DerivedItems","ExprCallEssentials","InstanceNonLeafExprCallAccess","InstanceNonLeafTerminalPathAccess","NodeNeighbours"],"type":["ExprCallContext"]};

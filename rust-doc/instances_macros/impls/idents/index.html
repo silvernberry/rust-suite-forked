@@ -1,0 +1,104 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Generates implementation-side identifier topology metadata for instance impls."><title>instances_macros::impls::idents - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-0c87338a.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="instances_macros" data-themes="" data-resource-suffix="" data-rustdoc-version="1.99.0 (b940084d7 2026-09-28)" data-channel="1.99.0" data-search-js="search-cf4fc35e.js" data-stringdex-js="stringdex-b5109af9.js" data-settings-js="settings-170eb4bf.js" ><script src="../../../static.files/storage-41dd4d93.js"></script><script defer src="../sidebar-items.js"></script><script defer src="../../../static.files/main-417ebf0a.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-9f56287d.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc mod"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><rustdoc-topbar><h2><a href="#">Module idents</a></h2></rustdoc-topbar><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../../../instances_macros/index.html">instances_<wbr>macros</a><span class="version">0.1.0</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">Module idents</a></h2><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#example" title="Example">Example</a></li><li><a href="#historical-topology" title="Historical Topology">Historical Topology</a></li><li><a href="#parent-consistency" title="Parent Consistency">Parent Consistency</a></li><li><a href="#hash-validation" title="Hash Validation">Hash Validation</a></li><li><a href="#generated-metadata" title="Generated Metadata">Generated Metadata</a></li></ul><h3><a href="#structs">Module Items</a></h3><ul class="block"><li><a href="#structs" title="Structs">Structs</a></li><li><a href="#functions" title="Functions">Functions</a></li></ul></section><div id="rustdoc-modnav"><h2><a href="../index.html">In instances_<wbr>macros::<wbr>impls</a></h2></div></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><div class="width-limiter"><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><div class="rustdoc-breadcrumbs"><a href="../../index.html">instances_macros</a>::<wbr><a href="../index.html">impls</a></div><h1>Module <span>idents</span>&nbsp;<button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../../../src/instances_macros/impls/idents.rs.html#16-1947">Source</a> </span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Generates implementation-side identifier topology metadata for instance impls.</p>
+<p>Trait-side identifier expansion declares identifier contracts, but
+those declarations alone describe only the identifiers attached to
+the current implementation instance.</p>
+<p>For example:</p>
+<div class="example-wrap"><pre class="language-text"><code>crypto -&gt; sha512</code></pre></div>
+<p>does not reveal:</p>
+<ul>
+<li>previously observed identifiers,</li>
+<li>sibling identifier branches,</li>
+<li>identifier lineage,</li>
+<li>parent consistency,</li>
+<li>or identifier uniqueness.</li>
+</ul>
+<p>This module generates the metadata required to reconstruct and
+validate that semantic topology.</p>
+<h3 id="example"><a class="doc-anchor" href="#example">§</a>Example</h3>
+<p>Consider the following instance lineage:</p>
+<div class="example-wrap"><pre class="language-text"><code>(0,0) -&gt; crypto -&gt; sha256
+(0,1) -&gt; crypto -&gt; sha512
+(0,2) -&gt; crypto -&gt; blake3</code></pre></div>
+<p>The current instance:</p>
+<div class="example-wrap"><pre class="language-text"><code>(0,2)</code></pre></div>
+<p>knows only:</p>
+<div class="example-wrap"><pre class="language-text"><code>crypto -&gt; blake3</code></pre></div>
+<p>This module generates collections that preserve:</p>
+<div class="example-wrap"><pre class="language-text"><code>crypto
+sha256
+sha512
+blake3</code></pre></div>
+<p>allowing the entire identifier history of the lineage to be
+recovered at compile time.</p>
+<h3 id="historical-topology"><a class="doc-anchor" href="#historical-topology">§</a>Historical Topology</h3>
+<p>Historical collections accumulate identifier information while
+traversing semantic predecessor relationships.</p>
+<p>Example:</p>
+<div class="example-wrap"><pre class="language-text"><code>(0,0) -&gt; sha256
+(0,1) -&gt; sha512
+(0,2) -&gt; blake3</code></pre></div>
+<p>produces:</p>
+<div class="example-wrap"><pre class="language-text"><code>[
+    Some(sha256),
+    Some(sha512),
+    Some(blake3),
+]</code></pre></div>
+<p>If a larger identifier space later appears:</p>
+<div class="example-wrap"><pre class="language-text"><code>[
+    Some(sha256),
+    Some(sha512),
+    Some(blake3),
+    None,
+]</code></pre></div>
+<p>the collection is expanded and newly introduced coordinates are
+padded with <code>None</code> until an identifier occupies that position.</p>
+<h3 id="parent-consistency"><a class="doc-anchor" href="#parent-consistency">§</a>Parent Consistency</h3>
+<p>Semantic predecessor transitions must preserve parent identifiers.</p>
+<p>Valid:</p>
+<div class="example-wrap"><pre class="language-text"><code>Current:
+    crypto -&gt; sha512
+
+Back:
+    crypto -&gt; sha256</code></pre></div>
+<p>Invalid:</p>
+<div class="example-wrap"><pre class="language-text"><code>Current:
+    crypto -&gt; sha512
+
+Back:
+    image -&gt; sha256</code></pre></div>
+<p>because the parent identifier changed while traversing the same
+semantic lineage.</p>
+<h3 id="hash-validation"><a class="doc-anchor" href="#hash-validation">§</a>Hash Validation</h3>
+<p>Hash collections are generated alongside identifier collections.</p>
+<p>These hashes are used to:</p>
+<ul>
+<li>detect duplicate identifiers,</li>
+<li>validate parent consistency,</li>
+<li>compare identifier lineages,</li>
+<li>and perform compile-time topology verification.</li>
+</ul>
+<h3 id="generated-metadata"><a class="doc-anchor" href="#generated-metadata">§</a>Generated Metadata</h3>
+<p>Collectively the generated items provide:</p>
+<ul>
+<li>identifier collections,</li>
+<li>identifier hash collections,</li>
+<li>historical identifier collections,</li>
+<li>historical identifier hash collections,</li>
+<li>collection cardinalities,</li>
+<li>historical collection cardinalities,</li>
+<li>and lineage validation.</li>
+</ul>
+<p>Together they form the complete implementation-side identifier graph
+used by affiliate traversal, historical reconstruction, uniqueness
+checking, and compile-time semantic validation.</p>
+</div></details><h2 id="structs" class="section-header">Structs<a href="#structs" class="anchor">§</a></h2><dl class="item-table"><dt><a class="struct" href="struct.ImplCounterIdentCollectionGenArray.html" title="struct instances_macros::impls::idents::ImplCounterIdentCollectionGenArray">Impl<wbr>Counter<wbr>Ident<wbr>Collection<wbr>GenArray</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Generates the concrete identifier collection for each counter
+dimension.</dd><dt><a class="struct" href="struct.ImplCounterIdentCollectionLenTypeNum.html" title="struct instances_macros::impls::idents::ImplCounterIdentCollectionLenTypeNum">Impl<wbr>Counter<wbr>Ident<wbr>Collection<wbr>LenType<wbr>Num</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Generates the current identifier-collection length as a typenum.</dd><dt><a class="struct" href="struct.ImplCounterIdentExpectedHashChecker.html" title="struct instances_macros::impls::idents::ImplCounterIdentExpectedHashChecker">Impl<wbr>Counter<wbr>Ident<wbr>Expected<wbr>Hash<wbr>Checker</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Generates a const-assertion to verify that counter-identifier lineage
+remains consistent across semantic predecessor transitions.</dd><dt><a class="struct" href="struct.ImplCounterIdentHashCollectionGenArray.html" title="struct instances_macros::impls::idents::ImplCounterIdentHashCollectionGenArray">Impl<wbr>Counter<wbr>Ident<wbr>Hash<wbr>Collection<wbr>GenArray</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Generates the concrete identifier-hash collection for each counter
+dimension.</dd><dt><a class="struct" href="struct.ImplCounterIdentHashHistoricalCollectionGenArray.html" title="struct instances_macros::impls::idents::ImplCounterIdentHashHistoricalCollectionGenArray">Impl<wbr>Counter<wbr>Ident<wbr>Hash<wbr>Historical<wbr>Collection<wbr>GenArray</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Generates historical identifier-hash collections for every counter
+dimension.</dd><dt><a class="struct" href="struct.ImplCounterIdentHistoricalCollectionGenArray.html" title="struct instances_macros::impls::idents::ImplCounterIdentHistoricalCollectionGenArray">Impl<wbr>Counter<wbr>Ident<wbr>Historical<wbr>Collection<wbr>GenArray</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Generates historical identifier collections for every counter
+dimension.</dd><dt><a class="struct" href="struct.ImplCounterIdentHistoricalCollectionLenTypeNum.html" title="struct instances_macros::impls::idents::ImplCounterIdentHistoricalCollectionLenTypeNum">Impl<wbr>Counter<wbr>Ident<wbr>Historical<wbr>Collection<wbr>LenType<wbr>Num</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Generates the padded historical collection cardinalities for every
+counter dimension.</dd><dt><a class="struct" href="struct.InstanceImplIdents.html" title="struct instances_macros::impls::idents::InstanceImplIdents">Instance<wbr>Impl<wbr>Idents</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Expands all implementation-side identifier metadata.</dd></dl><h2 id="functions" class="section-header">Functions<a href="#functions" class="anchor">§</a></h2><dl class="item-table"><dt><a class="fn" href="fn.counter_expected_ident_hash_checker_expr.html" title="fn instances_macros::impls::idents::counter_expected_ident_hash_checker_expr">counter_<wbr>expected_<wbr>ident_<wbr>hash_<wbr>checker_<wbr>expr</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Generates the compile-time parent-lineage consistency assertion.</dd><dt><a class="fn" href="fn.counter_ident_collection_gen_array_expr.html" title="fn instances_macros::impls::idents::counter_ident_collection_gen_array_expr">counter_<wbr>ident_<wbr>collection_<wbr>gen_<wbr>array_<wbr>expr</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Builds the identifier collection constant expression.</dd><dt><a class="fn" href="fn.counter_ident_collection_gen_array_ty.html" title="fn instances_macros::impls::idents::counter_ident_collection_gen_array_ty">counter_<wbr>ident_<wbr>collection_<wbr>gen_<wbr>array_<wbr>ty</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Generates the fixed-size identifier collection type.</dd><dt><a class="fn" href="fn.counter_ident_collection_len_typenum.html" title="fn instances_macros::impls::idents::counter_ident_collection_len_typenum">counter_<wbr>ident_<wbr>collection_<wbr>len_<wbr>typenum</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Generates the identifier-collection cardinality typenum.</dd><dt><a class="fn" href="fn.counter_ident_hash_collection_gen_array_expr.html" title="fn instances_macros::impls::idents::counter_ident_hash_collection_gen_array_expr">counter_<wbr>ident_<wbr>hash_<wbr>collection_<wbr>gen_<wbr>array_<wbr>expr</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Builds the identifier-hash collection constant expression.</dd><dt><a class="fn" href="fn.counter_ident_hash_collection_gen_array_ty.html" title="fn instances_macros::impls::idents::counter_ident_hash_collection_gen_array_ty">counter_<wbr>ident_<wbr>hash_<wbr>collection_<wbr>gen_<wbr>array_<wbr>ty</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Generates the fixed-size identifier-hash collection type.</dd><dt><a class="fn" href="fn.counter_ident_hash_historical_collection_gen_array_expr.html" title="fn instances_macros::impls::idents::counter_ident_hash_historical_collection_gen_array_expr">counter_<wbr>ident_<wbr>hash_<wbr>historical_<wbr>collection_<wbr>gen_<wbr>array_<wbr>expr</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Builds historical identifier-hash collections.</dd><dt><a class="fn" href="fn.counter_ident_historical_collection_gen_array_expr.html" title="fn instances_macros::impls::idents::counter_ident_historical_collection_gen_array_expr">counter_<wbr>ident_<wbr>historical_<wbr>collection_<wbr>gen_<wbr>array_<wbr>expr</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Builds historical identifier collections.</dd><dt><a class="fn" href="fn.historical_collection_gen_array_nested_ty.html" title="fn instances_macros::impls::idents::historical_collection_gen_array_nested_ty">historical_<wbr>collection_<wbr>gen_<wbr>array_<wbr>nested_<wbr>ty</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Builds the nested historical collection type for each counter.</dd><dt><a class="fn" href="fn.non_zeroth_counter_ident_historical_collection_len_typenum.html" title="fn instances_macros::impls::idents::non_zeroth_counter_ident_historical_collection_len_typenum">non_<wbr>zeroth_<wbr>counter_<wbr>ident_<wbr>historical_<wbr>collection_<wbr>len_<wbr>typenum</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Computes the historical collection cardinality for a non-zeroth
+instance.</dd><dt><a class="fn" href="fn.non_zeroth_instance_historical_collection_expr.html" title="fn instances_macros::impls::idents::non_zeroth_instance_historical_collection_expr">non_<wbr>zeroth_<wbr>instance_<wbr>historical_<wbr>collection_<wbr>expr</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Extends the predecessor historical collection with the current
+identifier.</dd><dt><a class="fn" href="fn.zeroth_counter_ident_historical_collection_len_typenum.html" title="fn instances_macros::impls::idents::zeroth_counter_ident_historical_collection_len_typenum">zeroth_<wbr>counter_<wbr>ident_<wbr>historical_<wbr>collection_<wbr>len_<wbr>typenum</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Generates the historical collection cardinality for the zeroth
+instance.</dd><dt><a class="fn" href="fn.zeroth_instance_historical_collection_expr.html" title="fn instances_macros::impls::idents::zeroth_instance_historical_collection_expr">zeroth_<wbr>instance_<wbr>historical_<wbr>collection_<wbr>expr</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Constructs the initial historical collection for the global minimum
+instance.</dd></dl></section></div></main></body></html>

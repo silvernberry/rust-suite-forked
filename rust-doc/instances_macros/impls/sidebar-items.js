@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"mod":["addon","affiliates","counters","errors","idents","last","meta","post","typenum","utils"],"struct":["InstanceImpl","InstanceImplAddons","InstanceImplDocTarget","LastInstanceImpl","LastInstanceSpace","PostInstanceImpl"]};

@@ -1,0 +1,104 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Common transformation interface for generated implementation instance node segments."><title>ImplNodeSegment in instances_macros::node::state - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-0c87338a.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="instances_macros" data-themes="" data-resource-suffix="" data-rustdoc-version="1.99.0 (b940084d7 2026-09-28)" data-channel="1.99.0" data-search-js="search-cf4fc35e.js" data-stringdex-js="stringdex-b5109af9.js" data-settings-js="settings-170eb4bf.js" ><script src="../../../static.files/storage-41dd4d93.js"></script><script defer src="sidebar-items.js"></script><script defer src="../../../static.files/main-417ebf0a.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-9f56287d.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc trait"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><rustdoc-topbar><h2><a href="#">ImplNodeSegment</a></h2></rustdoc-topbar><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../../../instances_macros/index.html">instances_<wbr>macros</a><span class="version">0.1.0</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">Impl<wbr>Node<wbr>Segment</a></h2><h3><a href="#provided-methods">Provided Methods</a></h3><ul class="block"><li><a href="#method.prepare" title="prepare">prepare</a></li><li><a href="#method.validate" title="validate">validate</a></li></ul><h3><a href="#dyn-compatibility">Dyn Compatibility</a></h3><h3><a href="#implementors">Implementors</a></h3></section><div id="rustdoc-modnav"><h2><a href="index.html">In instances_<wbr>macros::<wbr>node::<wbr>state</a></h2></div></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><div class="width-limiter"><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><div class="rustdoc-breadcrumbs"><a href="../../index.html">instances_macros</a>::<wbr><a href="../index.html">node</a>::<wbr><a href="index.html">state</a></div><h1>Trait <span class="trait">Impl<wbr>Node<wbr>Segment</span>&nbsp;<button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../../../src/instances_macros/node/state.rs.html#1798-2364">Source</a> </span></div><pre class="rust item-decl"><code>pub(crate) trait ImplNodeSegment&lt;'a, 'b, 'c, C&gt;: <a class="trait" href="../../trait.Transformation.html" title="trait instances_macros::Transformation">Transformation</a>&lt;<a class="struct" href="../args/struct.ImplNodeSpace.html" title="struct instances_macros::node::args::ImplNodeSpace">ImplNodeSpace</a>&lt;'a&gt;, C&gt; {
+    // Provided methods
+    fn <a href="#method.prepare" class="fn">prepare</a>&lt;A&gt;(
+        from: &amp;'c mut <a class="struct" href="../args/struct.ImplNodeSpace.html" title="struct instances_macros::node::args::ImplNodeSpace">ImplNodeSpace</a>&lt;'a&gt;,
+        _: <a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.reference.html">&amp;'b C</a>,
+        access: A,
+    ) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.99.0/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.unit.html">()</a>, <a class="struct" href="https://docs.rs/proc-macro2/1.0.103/proc_macro2/struct.TokenStream.html" title="struct proc_macro2::TokenStream">TokenStream</a>&gt;
+       <span class="where">where A: <a class="trait" href="https://doc.rust-lang.org/1.99.0/core/ops/function/trait.FnOnce.html" title="trait core::ops::function::FnOnce">FnOnce</a>(&amp;mut <a class="struct" href="struct.ImplNodeState.html" title="struct instances_macros::node::state::ImplNodeState">ImplNodeState</a>&lt;'a, 'c, Self&gt;) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.99.0/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.unit.html">()</a>, <a class="struct" href="https://docs.rs/proc-macro2/1.0.103/proc_macro2/struct.TokenStream.html" title="struct proc_macro2::TokenStream">TokenStream</a>&gt;</span> { ... }
+<span class="item-spacer"></span>    fn <a href="#method.validate" class="fn">validate</a>&lt;A&gt;(
+        from: &amp;'c <a class="struct" href="../args/struct.ImplNodeSpace.html" title="struct instances_macros::node::args::ImplNodeSpace">ImplNodeSpace</a>&lt;'a&gt;,
+        _: <a class="enum" href="https://doc.rust-lang.org/1.99.0/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.reference.html">&amp;'b C</a>&gt;,
+        access: A,
+    ) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.99.0/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.unit.html">()</a>, <a class="struct" href="https://docs.rs/proc-macro2/1.0.103/proc_macro2/struct.TokenStream.html" title="struct proc_macro2::TokenStream">TokenStream</a>&gt;
+       <span class="where">where A: <a class="trait" href="https://doc.rust-lang.org/1.99.0/core/ops/function/trait.FnOnce.html" title="trait core::ops::function::FnOnce">FnOnce</a>(&amp;<a class="struct" href="struct.ImplNodeState.html" title="struct instances_macros::node::state::ImplNodeState">ImplNodeState</a>&lt;'_, '_, Self&gt;) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.99.0/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.unit.html">()</a>, <a class="struct" href="https://docs.rs/proc-macro2/1.0.103/proc_macro2/struct.TokenStream.html" title="struct proc_macro2::TokenStream">TokenStream</a>&gt;</span> { ... }
+}</code></pre><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Common transformation interface for generated implementation instance node
+segments.</p>
+<p>An implementation instance node segment represents a specialized
+transformation stage within the instance node implementation pipeline.
+Every specialized instance node shares the same preparation and validation
+lifecycle.</p>
+<p>Before a specialized segment executes, the default preparation phase:</p>
+<ul>
+<li>Validates the source implementation associated type.</li>
+<li>Generates the standard companion associated types.</li>
+<li>Generates the terminal companion associated types.</li>
+<li>Resolves generated companion implementations for delegated instances.</li>
+<li>Constructs the mutable <a href="struct.ImplNodeState.html" title="struct instances_macros::node::state::ImplNodeState"><code>ImplNodeState</code></a> passed to the specialized
+transformation.</li>
+</ul>
+<p>Unlike trait node generation, implementation node generation assigns the
+concrete implementations of generated companion nodes rather than their
+declarations, bounds, or default checker expressions.</p>
+<p>During validation, the generated companion nodes are verified to ensure
+they still satisfy the structural invariants expected by the instance node
+system, including generated identifiers, generic parameters, delegated
+instance mappings, terminal companion relationships, and generated
+implementation types.</p>
+<p>This allows specialized instance nodes to focus exclusively on their
+semantic transformations while reusing a common generation, lookup, and
+validation infrastructure.</p>
+</div></details><h2 id="provided-methods" class="section-header">Provided Methods<a href="#provided-methods" class="anchor">§</a></h2><div class="methods"><details class="toggle method-toggle" open><summary><section id="method.prepare" class="method"><a class="src rightside" href="../../../src/instances_macros/node/state.rs.html#1828-2017">Source</a><h4 class="code-header">fn <a href="#method.prepare" class="fn">prepare</a>&lt;A&gt;(
+    from: &amp;'c mut <a class="struct" href="../args/struct.ImplNodeSpace.html" title="struct instances_macros::node::args::ImplNodeSpace">ImplNodeSpace</a>&lt;'a&gt;,
+    _: <a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.reference.html">&amp;'b C</a>,
+    access: A,
+) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.99.0/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.unit.html">()</a>, <a class="struct" href="https://docs.rs/proc-macro2/1.0.103/proc_macro2/struct.TokenStream.html" title="struct proc_macro2::TokenStream">TokenStream</a>&gt;<div class="where">where
+    A: <a class="trait" href="https://doc.rust-lang.org/1.99.0/core/ops/function/trait.FnOnce.html" title="trait core::ops::function::FnOnce">FnOnce</a>(&amp;mut <a class="struct" href="struct.ImplNodeState.html" title="struct instances_macros::node::state::ImplNodeState">ImplNodeState</a>&lt;'a, 'c, Self&gt;) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.99.0/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.unit.html">()</a>, <a class="struct" href="https://docs.rs/proc-macro2/1.0.103/proc_macro2/struct.TokenStream.html" title="struct proc_macro2::TokenStream">TokenStream</a>&gt;,</div></h4></section></summary><div class="docblock"><p>Performs the common preparation phase for an implementation instance node
+transformation.</p>
+<p>Before the specialized instance node executes, this method validates the
+source implementation associated type and synthesizes every standard
+companion node required by the instance node system.</p>
+<p>The preparation phase:</p>
+<ul>
+<li>Validates the structural requirements of the source implementation
+associated type.</li>
+<li>Generates the standard companion nodes:
+<ul>
+<li><a href="constant.GLOBAL_NODE.html" title="constant instances_macros::node::state::GLOBAL_NODE"><code>GLOBAL_NODE</code></a></li>
+<li><a href="constant.TWIN_NODE.html" title="constant instances_macros::node::state::TWIN_NODE"><code>TWIN_NODE</code></a></li>
+<li><a href="constant.INITIAL_NODE.html" title="constant instances_macros::node::state::INITIAL_NODE"><code>INITIAL_NODE</code></a></li>
+<li><a href="constant.FINAL_NODE.html" title="constant instances_macros::node::state::FINAL_NODE"><code>FINAL_NODE</code></a></li>
+</ul>
+</li>
+<li>Generates the terminal companion nodes:
+<ul>
+<li><a href="constant.TERMINAL_GLOBAL_NODE.html" title="constant instances_macros::node::state::TERMINAL_GLOBAL_NODE"><code>TERMINAL_GLOBAL_NODE</code></a></li>
+<li><a href="constant.TERMINAL_TWIN_NODE.html" title="constant instances_macros::node::state::TERMINAL_TWIN_NODE"><code>TERMINAL_TWIN_NODE</code></a></li>
+</ul>
+</li>
+<li>Resolves default implementations for every generated companion node.</li>
+<li>Detects delegated instance implementations and constructs the terminal
+companion relationships accordingly.</li>
+<li>Constructs an <a href="struct.ImplNodeState.html" title="struct instances_macros::node::state::ImplNodeState"><code>ImplNodeState</code></a> exposing the generated companion nodes.</li>
+</ul>
+<p>Once preparation is complete, the supplied callback receives the mutable
+transformation state, allowing the specialized instance node segment to
+inspect, mutate, or extend the generated companion nodes.</p>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.validate" class="method"><a class="src rightside" href="../../../src/instances_macros/node/state.rs.html#2043-2363">Source</a><h4 class="code-header">fn <a href="#method.validate" class="fn">validate</a>&lt;A&gt;(
+    from: &amp;'c <a class="struct" href="../args/struct.ImplNodeSpace.html" title="struct instances_macros::node::args::ImplNodeSpace">ImplNodeSpace</a>&lt;'a&gt;,
+    _: <a class="enum" href="https://doc.rust-lang.org/1.99.0/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.reference.html">&amp;'b C</a>&gt;,
+    access: A,
+) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.99.0/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.unit.html">()</a>, <a class="struct" href="https://docs.rs/proc-macro2/1.0.103/proc_macro2/struct.TokenStream.html" title="struct proc_macro2::TokenStream">TokenStream</a>&gt;<div class="where">where
+    A: <a class="trait" href="https://doc.rust-lang.org/1.99.0/core/ops/function/trait.FnOnce.html" title="trait core::ops::function::FnOnce">FnOnce</a>(&amp;<a class="struct" href="struct.ImplNodeState.html" title="struct instances_macros::node::state::ImplNodeState">ImplNodeState</a>&lt;'_, '_, Self&gt;) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.99.0/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.unit.html">()</a>, <a class="struct" href="https://docs.rs/proc-macro2/1.0.103/proc_macro2/struct.TokenStream.html" title="struct proc_macro2::TokenStream">TokenStream</a>&gt;,</div></h4></section></summary><div class="docblock"><p>Validates the generated companion nodes after an implementation instance
+node transformation has completed.</p>
+<p>Validation reconstructs the expected companion node layout and verifies
+that every generated implementation still satisfies the structural
+invariants required by the instance node system.</p>
+<p>The validation phase verifies:</p>
+<ul>
+<li>The original implementation associated type.</li>
+<li>Generated companion node identifiers.</li>
+<li>Generated generic parameter lists.</li>
+<li>Default and delegated companion implementations.</li>
+<li>Terminal companion relationships.</li>
+<li>Generated implementation types.</li>
+</ul>
+<p>A cloned transformation state is then provided to the supplied callback,
+allowing specialized instance node segments to perform additional
+validation of their generated companion nodes without mutating the
+original implementation.</p>
+<p>Successful validation guarantees that the transformed implementation
+preserves the expected companion node structure established during the
+preparation phase.</p>
+</div></details></div><h2 id="dyn-compatibility" class="section-header">Dyn Compatibility<a href="#dyn-compatibility" class="anchor">§</a></h2><div class="dyn-compatibility-info"><p>This trait is <b>not</b> <a href="https://doc.rust-lang.org/1.99.0/reference/items/traits.html#dyn-compatibility">dyn compatible</a>.</p><p><i>In older versions of Rust, dyn compatibility was called "object safety".</i></p></div><h2 id="implementors" class="section-header">Implementors<a href="#implementors" class="anchor">§</a></h2><div id="implementors-list"><div class="negative-marker"></div><section id="impl-ImplNodeSegment%3C'a,+'b,+'c,+C%3E-for-T" class="impl"><a class="src rightside" href="../../../src/instances_macros/node/state.rs.html#2366-2369">Source</a><a href="#impl-ImplNodeSegment%3C'a,+'b,+'c,+C%3E-for-T" class="anchor">§</a><h3 class="code-header">impl&lt;'a, 'b, 'c, C, T&gt; <a class="trait" href="trait.ImplNodeSegment.html" title="trait instances_macros::node::state::ImplNodeSegment">ImplNodeSegment</a>&lt;'a, 'b, 'c, C&gt; for T<div class="where">where
+    T: <a class="trait" href="../../trait.Transformation.html" title="trait instances_macros::Transformation">Transformation</a>&lt;<a class="struct" href="../args/struct.ImplNodeSpace.html" title="struct instances_macros::node::args::ImplNodeSpace">ImplNodeSpace</a>&lt;'a&gt;, C&gt;,</div></h3></section></div><script src="../../../trait.impl/instances_macros/node/state/trait.ImplNodeSegment.js" async></script></section></div></main></body></html>

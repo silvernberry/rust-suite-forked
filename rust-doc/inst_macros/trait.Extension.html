@@ -1,0 +1,107 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Defines extension of a target (`Towards`) within the proc-macro pipeline."><title>Extension in inst_macros - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../static.files/rustdoc-0c87338a.css"><meta name="rustdoc-vars" data-root-path="../" data-static-root-path="../static.files/" data-current-crate="inst_macros" data-themes="" data-resource-suffix="" data-rustdoc-version="1.99.0 (b940084d7 2026-09-28)" data-channel="1.99.0" data-search-js="search-cf4fc35e.js" data-stringdex-js="stringdex-b5109af9.js" data-settings-js="settings-170eb4bf.js" ><script src="../static.files/storage-41dd4d93.js"></script><script defer src="sidebar-items.js"></script><script defer src="../static.files/main-417ebf0a.js"></script><noscript><link rel="stylesheet" href="../static.files/noscript-9f56287d.css"></noscript><link rel="alternate icon" type="image/png" href="../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../static.files/favicon-044be391.svg"></head><body class="rustdoc trait"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><rustdoc-topbar><h2><a href="#">Extension</a></h2></rustdoc-topbar><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../inst_macros/index.html">inst_<wbr>macros</a><span class="version">0.1.0</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">Extension</a></h2><h3><a href="#required-methods">Required Methods</a></h3><ul class="block"><li><a href="#tymethod.raw_extend" title="raw_extend">raw_extend</a></li><li><a href="#tymethod.validate_extend" title="validate_extend">validate_extend</a></li></ul><h3><a href="#provided-methods">Provided Methods</a></h3><ul class="block"><li><a href="#method.checked_extend" title="checked_extend">checked_extend</a></li><li><a href="#method.unchecked_extend" title="unchecked_extend">unchecked_extend</a></li><li><a href="#method.validate_context" title="validate_context">validate_context</a></li><li><a href="#method.validate_towards" title="validate_towards">validate_towards</a></li></ul><h3><a href="#dyn-compatibility">Dyn Compatibility</a></h3><h3><a href="#implementors">Implementors</a></h3></section><div id="rustdoc-modnav"><h2 class="in-crate"><a href="index.html">In crate inst_<wbr>macros</a></h2></div></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><div class="width-limiter"><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><div class="rustdoc-breadcrumbs"><a href="index.html">inst_macros</a></div><h1>Trait <span class="trait">Extension</span>&nbsp;<button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../src/inst_macros/lib.rs.html#55-66">Source</a> </span></div><pre class="rust item-decl"><code>pub(crate) trait Extension&lt;Type, Towards, Context = <a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.unit.html">()</a>&gt;<div class="where">where
+    Self: <a class="trait" href="https://doc.rust-lang.org/1.99.0/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a> + 'static + <a class="trait" href="https://doc.rust-lang.org/1.99.0/core/clone/trait.Clone.html" title="trait core::clone::Clone">Clone</a> + <a class="trait" href="https://doc.rust-lang.org/1.99.0/core/fmt/trait.Debug.html" title="trait core::fmt::Debug">Debug</a>,
+    Type: <a class="trait" href="trait.Insertion.html" title="trait inst_macros::Insertion">Insertion</a>&lt;Towards, Context&gt; + <a class="trait" href="https://doc.rust-lang.org/1.99.0/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a>,</div>{
+    // Required methods
+    fn <a href="#tymethod.raw_extend" class="fn">raw_extend</a>(
+        &amp;self,
+        towards: <a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.reference.html">&amp;Towards</a>,
+        context: <a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.reference.html">&amp;Context</a>,
+    ) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.99.0/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;Type, <a class="struct" href="https://docs.rs/proc-macro2/1.0.103/proc_macro2/struct.TokenStream.html" title="struct proc_macro2::TokenStream">TokenStream</a>&gt;;
+<span class="item-spacer"></span>    fn <a href="#tymethod.validate_extend" class="fn">validate_extend</a>(
+        &amp;self,
+        item: <a class="enum" href="https://doc.rust-lang.org/1.99.0/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.reference.html">&amp;Type</a>&gt;,
+        towards: <a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.reference.html">&amp;Towards</a>,
+        context: <a class="enum" href="https://doc.rust-lang.org/1.99.0/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.reference.html">&amp;Context</a>&gt;,
+    ) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.99.0/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.unit.html">()</a>, <a class="struct" href="https://docs.rs/proc-macro2/1.0.103/proc_macro2/struct.TokenStream.html" title="struct proc_macro2::TokenStream">TokenStream</a>&gt;;
+
+    // Provided methods
+    fn <a href="#method.checked_extend" class="fn">checked_extend</a>(
+        &amp;self,
+        insert_to: <a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.reference.html">&amp;mut Towards</a>,
+        context: <a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.reference.html">&amp;Context</a>,
+    ) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.99.0/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.unit.html">()</a>, <a class="struct" href="https://docs.rs/proc-macro2/1.0.103/proc_macro2/struct.TokenStream.html" title="struct proc_macro2::TokenStream">TokenStream</a>&gt; { ... }
+<span class="item-spacer"></span>    fn <a href="#method.unchecked_extend" class="fn">unchecked_extend</a>(
+        &amp;self,
+        insert_to: <a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.reference.html">&amp;mut Towards</a>,
+        context: <a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.reference.html">&amp;Context</a>,
+    ) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.99.0/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.unit.html">()</a>, <a class="struct" href="https://docs.rs/proc-macro2/1.0.103/proc_macro2/struct.TokenStream.html" title="struct proc_macro2::TokenStream">TokenStream</a>&gt; { ... }
+<span class="item-spacer"></span>    fn <a href="#method.validate_context" class="fn">validate_context</a>(&amp;self, _context: <a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.reference.html">&amp;Context</a>) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.99.0/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.unit.html">()</a>, <a class="struct" href="https://docs.rs/proc-macro2/1.0.103/proc_macro2/struct.TokenStream.html" title="struct proc_macro2::TokenStream">TokenStream</a>&gt; { ... }
+<span class="item-spacer"></span>    fn <a href="#method.validate_towards" class="fn">validate_towards</a>(
+        &amp;self,
+        _towards: <a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.reference.html">&amp;Towards</a>,
+        _context: <a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.reference.html">&amp;Context</a>,
+    ) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.99.0/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.unit.html">()</a>, <a class="struct" href="https://docs.rs/proc-macro2/1.0.103/proc_macro2/struct.TokenStream.html" title="struct proc_macro2::TokenStream">TokenStream</a>&gt; { ... }
+}</code></pre><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Defines extension of a target (<code>Towards</code>) within the proc-macro pipeline.</p>
+<p>This stage sits between extraction and insertion:</p>
+<ul>
+<li>extraction derives structured data via <a href="trait.Extraction.html" title="trait inst_macros::Extraction"><code>Extraction</code></a>,</li>
+<li>insertion integrates generated data via <a href="trait.Insertion.html" title="trait inst_macros::Insertion"><code>Insertion</code></a>,</li>
+<li>extension uses extracted or contextual data (<code>Self</code>) to derive a new
+<code>Type</code>, which is then inserted into <code>Towards</code>.</li>
+</ul>
+<p><code>Self</code> usually represents validated extracted data or contextual state
+that decides <em>what</em> should be added.</p>
+<p><code>Context</code> provides optional external state, configuration, or borrowed
+supporting data used during extension.</p>
+<p>Since <code>Self</code> is typically owned (<code>'static</code>), <code>Context</code> is commonly used
+to provide temporary borrowed data required during derivation or validation.</p>
+<p>The produced <code>Type</code> must implement
+<a href="trait.Insertion.html" title="trait inst_macros::Insertion"><code>Insertion</code></a>,
+allowing it to be inserted into the target.</p>
+<p>Provides two execution paths:</p>
+<ul>
+<li><a href="trait.Extension.html#method.checked_extend" title="method inst_macros::Extension::checked_extend"><code>Self::checked_extend</code></a> performs validation before derivation and insertion</li>
+<li><a href="trait.Extension.html#method.unchecked_extend" title="method inst_macros::Extension::unchecked_extend"><code>Self::unchecked_extend</code></a> performs extension with minimal checks</li>
+</ul>
+<p>This enables controlled structural growth of syntax nodes and target
+representations during macro expansion.</p>
+</div></details><h2 id="required-methods" class="section-header">Required Methods<a href="#required-methods" class="anchor">§</a></h2><div class="methods"><details class="toggle method-toggle" open><summary><section id="tymethod.raw_extend" class="method"><a class="src rightside" href="../src/inst_macros/lib.rs.html#55-66">Source</a><h4 class="code-header">fn <a href="#tymethod.raw_extend" class="fn">raw_extend</a>(
+    &amp;self,
+    towards: <a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.reference.html">&amp;Towards</a>,
+    context: <a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.reference.html">&amp;Context</a>,
+) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.99.0/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;Type, <a class="struct" href="https://docs.rs/proc-macro2/1.0.103/proc_macro2/struct.TokenStream.html" title="struct proc_macro2::TokenStream">TokenStream</a>&gt;</h4></section></summary><div class="docblock"><p>Produces the item to be inserted into the target.</p>
+<p>Derives a new <code>Type</code> from <code>Self</code> using the current state
+of <code>Towards</code> and the provided context.</p>
+<p>The returned value is later inserted via
+<a href="trait.Insertion.html" title="trait inst_macros::Insertion"><code>Insertion</code></a>.</p>
+</div></details><details class="toggle method-toggle" open><summary><section id="tymethod.validate_extend" class="method"><a class="src rightside" href="../src/inst_macros/lib.rs.html#55-66">Source</a><h4 class="code-header">fn <a href="#tymethod.validate_extend" class="fn">validate_extend</a>(
+    &amp;self,
+    item: <a class="enum" href="https://doc.rust-lang.org/1.99.0/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.reference.html">&amp;Type</a>&gt;,
+    towards: <a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.reference.html">&amp;Towards</a>,
+    context: <a class="enum" href="https://doc.rust-lang.org/1.99.0/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.reference.html">&amp;Context</a>&gt;,
+) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.99.0/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.unit.html">()</a>, <a class="struct" href="https://docs.rs/proc-macro2/1.0.103/proc_macro2/struct.TokenStream.html" title="struct proc_macro2::TokenStream">TokenStream</a>&gt;</h4></section></summary><div class="docblock"><p>Validates the extended result</p>
+<p><code>context</code> and <code>item</code> are optional so this validation hook may be reused
+independently from the checked extraction pipeline, such as:</p>
+<ul>
+<li>standalone tests,</li>
+<li>partial pipeline execution,</li>
+<li>manual validation,</li>
+<li>or external validation utilities.</li>
+</ul>
+</div></details></div><h2 id="provided-methods" class="section-header">Provided Methods<a href="#provided-methods" class="anchor">§</a></h2><div class="methods"><details class="toggle method-toggle" open><summary><section id="method.checked_extend" class="method"><a class="src rightside" href="../src/inst_macros/lib.rs.html#55-66">Source</a><h4 class="code-header">fn <a href="#method.checked_extend" class="fn">checked_extend</a>(
+    &amp;self,
+    insert_to: <a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.reference.html">&amp;mut Towards</a>,
+    context: <a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.reference.html">&amp;Context</a>,
+) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.99.0/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.unit.html">()</a>, <a class="struct" href="https://docs.rs/proc-macro2/1.0.103/proc_macro2/struct.TokenStream.html" title="struct proc_macro2::TokenStream">TokenStream</a>&gt;</h4></section></summary><div class="docblock"><p>Performs extension with full validation.</p>
+<p>Validates the context and target, derives the item,
+validates the derived result, and inserts it using
+<a href="trait.Insertion.html" title="trait inst_macros::Insertion"><code>Insertion</code></a>.</p>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.unchecked_extend" class="method"><a class="src rightside" href="../src/inst_macros/lib.rs.html#55-66">Source</a><h4 class="code-header">fn <a href="#method.unchecked_extend" class="fn">unchecked_extend</a>(
+    &amp;self,
+    insert_to: <a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.reference.html">&amp;mut Towards</a>,
+    context: <a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.reference.html">&amp;Context</a>,
+) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.99.0/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.unit.html">()</a>, <a class="struct" href="https://docs.rs/proc-macro2/1.0.103/proc_macro2/struct.TokenStream.html" title="struct proc_macro2::TokenStream">TokenStream</a>&gt;</h4></section></summary><div class="docblock"><p>Performs extension with minimal validation.</p>
+<p>Validates preconditions, derives the item, and inserts it
+without validating the derived value.</p>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.validate_context" class="method"><a class="src rightside" href="../src/inst_macros/lib.rs.html#55-66">Source</a><h4 class="code-header">fn <a href="#method.validate_context" class="fn">validate_context</a>(&amp;self, _context: <a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.reference.html">&amp;Context</a>) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.99.0/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.unit.html">()</a>, <a class="struct" href="https://docs.rs/proc-macro2/1.0.103/proc_macro2/struct.TokenStream.html" title="struct proc_macro2::TokenStream">TokenStream</a>&gt;</h4></section></summary><div class="docblock"><p>Validates the extension context before extension.</p>
+<p>Override to enforce constraints on the external extension context.</p>
+<p>Default implementation performs no validation.</p>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.validate_towards" class="method"><a class="src rightside" href="../src/inst_macros/lib.rs.html#55-66">Source</a><h4 class="code-header">fn <a href="#method.validate_towards" class="fn">validate_towards</a>(
+    &amp;self,
+    _towards: <a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.reference.html">&amp;Towards</a>,
+    _context: <a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.reference.html">&amp;Context</a>,
+) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.99.0/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.unit.html">()</a>, <a class="struct" href="https://docs.rs/proc-macro2/1.0.103/proc_macro2/struct.TokenStream.html" title="struct proc_macro2::TokenStream">TokenStream</a>&gt;</h4></section></summary><div class="docblock"><p>Validates the target before extension.</p>
+<p>Override to ensure the target is in a valid state to receive
+the derived insertion.</p>
+<p>Default implementation performs no validation.</p>
+</div></details></div><h2 id="dyn-compatibility" class="section-header">Dyn Compatibility<a href="#dyn-compatibility" class="anchor">§</a></h2><div class="dyn-compatibility-info"><p>This trait is <b>not</b> <a href="https://doc.rust-lang.org/1.99.0/reference/items/traits.html#dyn-compatibility">dyn compatible</a>.</p><p><i>In older versions of Rust, dyn compatibility was called "object safety".</i></p></div><h2 id="implementors" class="section-header">Implementors<a href="#implementors" class="anchor">§</a></h2><div id="implementors-list"></div><script src="../trait.impl/inst_macros/trait.Extension.js" async></script></section></div></main></body></html>

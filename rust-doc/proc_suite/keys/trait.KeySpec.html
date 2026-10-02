@@ -1,0 +1,238 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Schema definition trait for a single top-level key with structured sub-keys."><title>KeySpec in proc_suite::keys - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-0c87338a.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="proc_suite" data-themes="" data-resource-suffix="" data-rustdoc-version="1.99.0 (b940084d7 2026-09-28)" data-channel="1.99.0" data-search-js="search-cf4fc35e.js" data-stringdex-js="stringdex-b5109af9.js" data-settings-js="settings-170eb4bf.js" ><script src="../../static.files/storage-41dd4d93.js"></script><script defer src="sidebar-items.js"></script><script defer src="../../static.files/main-417ebf0a.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-9f56287d.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc trait"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><rustdoc-topbar><h2><a href="#">KeySpec</a></h2></rustdoc-topbar><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../../proc_suite/index.html">proc_<wbr>suite</a><span class="version">0.1.0</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">KeySpec</a></h2><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#conceptual-model" title="Conceptual model">Conceptual model</a></li><li><a href="#responsibilities" title="Responsibilities">Responsibilities</a></li></ul><h3><a href="#required-associated-consts">Required Associated Constants</a></h3><ul class="block"><li><a href="#associatedconstant.ALLOW_EMPTY" title="ALLOW_EMPTY">ALLOW_EMPTY</a></li><li><a href="#associatedconstant.KEY" title="KEY">KEY</a></li><li><a href="#associatedconstant.SUB_KEYS" title="SUB_KEYS">SUB_KEYS</a></li><li><a href="#associatedconstant.SUB_KEY_COMBINATIONS" title="SUB_KEY_COMBINATIONS">SUB_KEY_COMBINATIONS</a></li></ul><h3><a href="#required-methods">Required Methods</a></h3><ul class="block"><li><a href="#tymethod.decode_from_set" title="decode_from_set">decode_from_set</a></li><li><a href="#tymethod.empty_variant" title="empty_variant">empty_variant</a></li></ul><h3><a href="#provided-methods">Provided Methods</a></h3><ul class="block"><li><a href="#method.expected_sub_keys" title="expected_sub_keys">expected_sub_keys</a></li><li><a href="#method.help" title="help">help</a></li><li><a href="#method.invalid_key_err" title="invalid_key_err">invalid_key_err</a></li><li><a href="#method.invalid_key_msg" title="invalid_key_msg">invalid_key_msg</a></li><li><a href="#method.invalid_value_err" title="invalid_value_err">invalid_value_err</a></li><li><a href="#method.invalid_value_msg" title="invalid_value_msg">invalid_value_msg</a></li><li><a href="#method.parse" title="parse">parse</a></li></ul><h3><a href="#dyn-compatibility">Dyn Compatibility</a></h3><h3><a href="#implementors">Implementors</a></h3></section><div id="rustdoc-modnav"><h2><a href="index.html">In proc_<wbr>suite::<wbr>keys</a></h2></div></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><div class="width-limiter"><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><div class="rustdoc-breadcrumbs"><a href="../index.html">proc_suite</a>::<wbr><a href="index.html">keys</a></div><h1>Trait <span class="trait">KeySpec</span>&nbsp;<button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../../src/proc_suite/keys.rs.html#1141-1482">Source</a> </span></div><pre class="rust item-decl"><code>pub trait KeySpec: <a class="trait" href="https://doc.rust-lang.org/1.99.0/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a> {
+    const <a href="#associatedconstant.KEY" class="constant">KEY</a>: &amp;'static <a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.str.html">str</a>;
+    const <a href="#associatedconstant.SUB_KEYS" class="constant">SUB_KEYS</a>: &amp;'static [(&amp;'static <a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.str.html">str</a>, <a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.fn.html">fn</a>(&amp;<a class="enum" href="../errors/enum.DiagSpan.html" title="enum proc_suite::errors::DiagSpan">DiagSpan</a>, <a class="enum" href="https://doc.rust-lang.org/1.99.0/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="../errors/struct.ErrorInfo.html" title="struct proc_suite::errors::ErrorInfo">ErrorInfo</a>&gt;) -&gt; <a class="struct" href="../errors/struct.Diagnostic.html" title="struct proc_suite::errors::Diagnostic">Diagnostic</a>)];
+    const <a href="#associatedconstant.SUB_KEY_COMBINATIONS" class="constant">SUB_KEY_COMBINATIONS</a>: &amp;'static [&amp;'static [<a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.usize.html">usize</a>]];
+    const <a href="#associatedconstant.ALLOW_EMPTY" class="constant">ALLOW_EMPTY</a>: <a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.bool.html">bool</a>;
+
+    // Required methods
+    fn <a href="#tymethod.empty_variant" class="fn">empty_variant</a>() -&gt; <a class="enum" href="https://doc.rust-lang.org/1.99.0/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;Self&gt;;
+<span class="item-spacer"></span>    fn <a href="#tymethod.decode_from_set" class="fn">decode_from_set</a>(
+        set: &amp;<a class="struct" href="struct.KeySet.html" title="struct proc_suite::keys::KeySet">KeySet</a>,
+        key_ident: &amp;<a class="struct" href="https://docs.rs/proc-macro2/1.0.103/proc_macro2/struct.Ident.html" title="struct proc_macro2::Ident">Ident</a>,
+    ) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.99.0/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;Self, <a class="struct" href="https://docs.rs/proc-macro2/1.0.103/proc_macro2/struct.TokenStream.html" title="struct proc_macro2::TokenStream">TokenStream</a>&gt;;
+
+    // Provided methods
+    fn <a href="#method.expected_sub_keys" class="fn">expected_sub_keys</a>() -&gt; <a class="struct" href="https://doc.rust-lang.org/1.99.0/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;<a class="struct" href="https://docs.rs/proc-macro2/1.0.103/proc_macro2/struct.Ident.html" title="struct proc_macro2::Ident">Ident</a>&gt; { ... }
+<span class="item-spacer"></span>    fn <a href="#method.invalid_key_err" class="fn">invalid_key_err</a>(found: &amp;<a class="struct" href="https://docs.rs/proc-macro2/1.0.103/proc_macro2/struct.Ident.html" title="struct proc_macro2::Ident">Ident</a>) -&gt; <a class="struct" href="https://docs.rs/proc-macro2/1.0.103/proc_macro2/struct.TokenStream.html" title="struct proc_macro2::TokenStream">TokenStream</a> { ... }
+<span class="item-spacer"></span>    fn <a href="#method.invalid_value_err" class="fn">invalid_value_err</a>(key: &amp;<a class="struct" href="https://docs.rs/proc-macro2/1.0.103/proc_macro2/struct.Ident.html" title="struct proc_macro2::Ident">Ident</a>) -&gt; <a class="struct" href="https://docs.rs/proc-macro2/1.0.103/proc_macro2/struct.TokenStream.html" title="struct proc_macro2::TokenStream">TokenStream</a> { ... }
+<span class="item-spacer"></span>    fn <a href="#method.invalid_key_msg" class="fn">invalid_key_msg</a>(found: &amp;<a class="struct" href="https://docs.rs/proc-macro2/1.0.103/proc_macro2/struct.Ident.html" title="struct proc_macro2::Ident">Ident</a>) -&gt; <a class="struct" href="../errors/struct.Diagnostic.html" title="struct proc_suite::errors::Diagnostic">Diagnostic</a> { ... }
+<span class="item-spacer"></span>    fn <a href="#method.invalid_value_msg" class="fn">invalid_value_msg</a>(key: &amp;<a class="struct" href="https://docs.rs/proc-macro2/1.0.103/proc_macro2/struct.Ident.html" title="struct proc_macro2::Ident">Ident</a>) -&gt; <a class="struct" href="../errors/struct.Diagnostic.html" title="struct proc_suite::errors::Diagnostic">Diagnostic</a> { ... }
+<span class="item-spacer"></span>    fn <a href="#method.parse" class="fn">parse</a>(key: &amp;<a class="struct" href="struct.KeyInfo.html" title="struct proc_suite::keys::KeyInfo">KeyInfo</a>) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.99.0/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;Self, <a class="struct" href="https://docs.rs/proc-macro2/1.0.103/proc_macro2/struct.TokenStream.html" title="struct proc_macro2::TokenStream">TokenStream</a>&gt; { ... }
+<span class="item-spacer"></span>    fn <a href="#method.help" class="fn">help</a>(span: &amp;<a class="struct" href="https://docs.rs/proc-macro2/1.0.103/proc_macro2/struct.Span.html" title="struct proc_macro2::Span">Span</a>) -&gt; <a class="struct" href="../errors/struct.Diagnostic.html" title="struct proc_suite::errors::Diagnostic">Diagnostic</a> { ... }
+}</code></pre><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Schema definition trait for a <em>single top-level key</em> with structured sub-keys.</p>
+<p><code>KeySpec</code> defines the <em>semantic decoding contract</em> for one specific key
+(e.g. <code>"exact"</code>), describing how a parsed <a href="struct.KeyInfo.html" title="struct proc_suite::keys::KeyInfo"><code>KeyInfo</code></a> is transformed into a
+strongly-typed enum-based specification with precise diagnostics.</p>
+<p><code>Self</code> is typically an enum with one variant per combination,
+plus an optional <code>Empty</code> variant.</p>
+<p>This trait is <strong>not implemented manually</strong> if structured enum
+implementations are generated by the <a href="../macro.key_schema.html" title="macro proc_suite::key_schema"><code>crate::key_schema!</code></a> macro,
+which encodes:</p>
+<ul>
+<li>the literal key name</li>
+<li>the complete set of allowed sub-keys</li>
+<li>the exact combinations of sub-keys that are permitted</li>
+<li>the concrete Rust types associated with each combination</li>
+</ul>
+<p>The generated implementation uses this information to enforce both
+<em>structure</em> (which sub-keys may appear) and <em>shape</em> (which combinations
+are valid), producing clear, context-rich error messages on failure.</p>
+<h3 id="conceptual-model"><a class="doc-anchor" href="#conceptual-model">§</a>Conceptual model</h3>
+<p>A key governed by <code>KeySpec</code> has one of the following forms:</p>
+<div class="example-wrap"><pre class="language-text"><code>key
+key { &lt;sub-keys&gt; }</code></pre></div>
+<p>Where <code>&lt;sub-keys&gt;</code> must match <strong>exactly one</strong> of the combinations declared
+in the corresponding <a href="../macro.key_schema.html" title="macro proc_suite::key_schema"><code>crate::key_schema!</code></a> invocation.</p>
+<p>Empty values (<code>key</code>) are accepted only when <code>ALLOW_EMPTY == true</code>.</p>
+<h3 id="responsibilities"><a class="doc-anchor" href="#responsibilities">§</a>Responsibilities</h3>
+<p><code>KeySpec</code> is responsible for:</p>
+<ul>
+<li>validating the top-level key name</li>
+<li>enforcing empty vs nested usage rules</li>
+<li>rejecting unexpected or duplicate sub-keys</li>
+<li>selecting exactly one valid sub-key combination</li>
+<li>decoding sub-key values into a strongly typed enum variant</li>
+<li>producing high-quality, schema-aware diagnostics</li>
+</ul>
+<p>It intentionally does <em>not</em>:</p>
+<ul>
+<li>parse raw tokens</li>
+<li>interpret individual sub-key value syntax</li>
+<li>perform semantic cross-checks between unrelated keys</li>
+</ul>
+<p>Those concerns are handled by <a href="struct.KeyInfo.html" title="struct proc_suite::keys::KeyInfo"><code>KeyInfo</code></a>, <a href="trait.KeyExpect.html" title="trait proc_suite::keys::KeyExpect"><code>KeyExpect</code></a>, <a href="struct.KeySet.html" title="struct proc_suite::keys::KeySet"><code>KeySet</code></a>,
+and higher-level logic built on top of the decoded spec.</p>
+</div></details><h2 id="required-associated-consts" class="section-header">Required Associated Constants<a href="#required-associated-consts" class="anchor">§</a></h2><div class="methods"><details class="toggle" open><summary><section id="associatedconstant.KEY" class="method"><a class="src rightside" href="../../src/proc_suite/keys.rs.html#1147">Source</a><h4 class="code-header">const <a href="#associatedconstant.KEY" class="constant">KEY</a>: &amp;'static <a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.str.html">str</a></h4></section></summary><div class="docblock"><p>The literal name of the key (e.g. <code>"exact"</code>).</p>
+<p>Used for:</p>
+<ul>
+<li>key matching</li>
+<li>diagnostics</li>
+</ul>
+</div></details><details class="toggle" open><summary><section id="associatedconstant.SUB_KEYS" class="method"><a class="src rightside" href="../../src/proc_suite/keys.rs.html#1155">Source</a><h4 class="code-header">const <a href="#associatedconstant.SUB_KEYS" class="constant">SUB_KEYS</a>: &amp;'static [(&amp;'static <a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.str.html">str</a>, <a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.fn.html">fn</a>(&amp;<a class="enum" href="../errors/enum.DiagSpan.html" title="enum proc_suite::errors::DiagSpan">DiagSpan</a>, <a class="enum" href="https://doc.rust-lang.org/1.99.0/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="../errors/struct.ErrorInfo.html" title="struct proc_suite::errors::ErrorInfo">ErrorInfo</a>&gt;) -&gt; <a class="struct" href="../errors/struct.Diagnostic.html" title="struct proc_suite::errors::Diagnostic">Diagnostic</a>)]</h4></section></summary><div class="docblock"><p>All allowed sub-keys for this key.</p>
+<p>Each entry consists of:</p>
+<ul>
+<li>the sub-key name</li>
+<li>a function producing a diagnostic message describing
+the expected value form</li>
+</ul>
+</div></details><details class="toggle" open><summary><section id="associatedconstant.SUB_KEY_COMBINATIONS" class="method"><a class="src rightside" href="../../src/proc_suite/keys.rs.html#1168">Source</a><h4 class="code-header">const <a href="#associatedconstant.SUB_KEY_COMBINATIONS" class="constant">SUB_KEY_COMBINATIONS</a>: &amp;'static [&amp;'static [<a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.usize.html">usize</a>]]</h4></section></summary><div class="docblock"><p>The set of <em>exact</em> sub-key combinations accepted by this key.</p>
+<p>Each combination is represented as a slice of indices into
+<code>SUB_KEYS</code>.</p>
+<p>A combination matches if and only if:</p>
+<ul>
+<li>all indexed sub-keys are present</li>
+<li>no additional sub-keys are present</li>
+</ul>
+<p>The order of combinations is significant and determines
+decoding priority.</p>
+</div></details><details class="toggle" open><summary><section id="associatedconstant.ALLOW_EMPTY" class="method"><a class="src rightside" href="../../src/proc_suite/keys.rs.html#1176">Source</a><h4 class="code-header">const <a href="#associatedconstant.ALLOW_EMPTY" class="constant">ALLOW_EMPTY</a>: <a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.bool.html">bool</a></h4></section></summary><div class="docblock"><p>Whether this key may appear without an associated value.</p>
+<p>If <code>true</code>, a bare key (<code>key</code>) is accepted and decoded
+as <a href="trait.KeySpec.html#tymethod.empty_variant" title="associated function proc_suite::keys::KeySpec::empty_variant"><code>KeySpec::empty_variant()</code></a>.</p>
+<p>If <code>false</code>, the key must always contain a nested sub-key group.</p>
+</div></details></div><h2 id="required-methods" class="section-header">Required Methods<a href="#required-methods" class="anchor">§</a></h2><div class="methods"><details class="toggle method-toggle" open><summary><section id="tymethod.empty_variant" class="method"><a class="src rightside" href="../../src/proc_suite/keys.rs.html#1327">Source</a><h4 class="code-header">fn <a href="#tymethod.empty_variant" class="fn">empty_variant</a>() -&gt; <a class="enum" href="https://doc.rust-lang.org/1.99.0/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;Self&gt;</h4></section></summary><div class="docblock"><p>Construct the semantic value representing an empty key.</p>
+<p>This method produces the specification value corresponding to
+a bare key with no associated value:</p>
+<div class="example-wrap"><pre class="language-text"><code>key</code></pre></div><h6 id="usage"><a class="doc-anchor" href="#usage">§</a>Usage</h6>
+<p>This function is <strong>only called</strong> by <a href="trait.KeySpec.html#method.parse" title="associated function proc_suite::keys::KeySpec::parse"><code>KeySpec::parse</code></a> when:</p>
+<ul>
+<li><a href="trait.KeySpec.html#associatedconstant.ALLOW_EMPTY" title="associated constant proc_suite::keys::KeySpec::ALLOW_EMPTY"><code>KeySpec::ALLOW_EMPTY</code></a> is <code>true</code>, and</li>
+<li>the parsed key has no associated value</li>
+<li>hence safely unwrap the optional value.</li>
+</ul>
+<p>The returned value must represent the semantic meaning of an
+empty key for this schema.</p>
+<h6 id="notes"><a class="doc-anchor" href="#notes">§</a>Notes</h6>
+<ul>
+<li>When <code>ALLOW_EMPTY == false</code>, this method is never invoked
+and if invoked returns a <code>None</code> value, due to guards in <code>parse</code>,
+the empty form is safely rejected during parsing</li>
+</ul>
+</div></details><details class="toggle method-toggle" open><summary><section id="tymethod.decode_from_set" class="method"><a class="src rightside" href="../../src/proc_suite/keys.rs.html#1383">Source</a><h4 class="code-header">fn <a href="#tymethod.decode_from_set" class="fn">decode_from_set</a>(set: &amp;<a class="struct" href="struct.KeySet.html" title="struct proc_suite::keys::KeySet">KeySet</a>, key_ident: &amp;<a class="struct" href="https://docs.rs/proc-macro2/1.0.103/proc_macro2/struct.Ident.html" title="struct proc_macro2::Ident">Ident</a>) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.99.0/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;Self, <a class="struct" href="https://docs.rs/proc-macro2/1.0.103/proc_macro2/struct.TokenStream.html" title="struct proc_macro2::TokenStream">TokenStream</a>&gt;</h4></section></summary><div class="docblock"><p>Decode a validated set of sub-keys into a semantic specification value.</p>
+<p>This method performs the <strong>final decoding step</strong> of a <a href="trait.KeySpec.html#method.parse" title="associated function proc_suite::keys::KeySpec::parse"><code>KeySpec::parse</code></a>
+invocation, transforming a structurally validated <a href="struct.KeySet.html" title="struct proc_suite::keys::KeySet"><code>KeySet</code></a> into the
+strongly-typed specification enum <code>Self</code>.</p>
+<p>At this stage, all <em>structural guarantees</em> have already been enforced:</p>
+<ul>
+<li>the top-level key name has been validated</li>
+<li>the value is known to be a nested key group</li>
+<li>all sub-keys are drawn from the allowed set</li>
+<li>no sub-key appears more than once</li>
+</ul>
+<p>What remains is <strong>semantic decoding</strong>.</p>
+<h6 id="responsibilities-1"><a class="doc-anchor" href="#responsibilities-1">§</a>Responsibilities</h6>
+<p>Implementations must:</p>
+<ul>
+<li>select <strong>exactly one</strong> matching sub-key combination</li>
+<li>reject:
+<ul>
+<li>missing required sub-keys</li>
+<li>extra sub-keys</li>
+<li>partial matches</li>
+</ul>
+</li>
+<li>decode each sub-key’s value into the concrete Rust type
+declared for that combination</li>
+</ul>
+<p>The combination match must be <strong>exact</strong>:</p>
+<div class="example-wrap"><pre class="language-text"><code>required_keys == present_keys</code></pre></div>
+<p>No implicit defaults, fallbacks, or partial decoding is permitted.</p>
+<p>This design keeps schemas declarative and structural, while allowing
+richer value semantics to be opt-in at the type level.</p>
+<h6 id="invariants"><a class="doc-anchor" href="#invariants">§</a>Invariants</h6>
+<p>Implementations can assume:</p>
+<ul>
+<li><code>set</code> contains no duplicate keys</li>
+<li>every key in <code>set</code> is allowed by the schema</li>
+<li><code>set.count()</code> accurately reflects the number of present sub-keys</li>
+</ul>
+<h6 id="errors"><a class="doc-anchor" href="#errors">§</a>Errors</h6>
+<p>Returns a diagnostic error if:</p>
+<ul>
+<li>no declared combination matches exactly</li>
+<li>more than one combination could match</li>
+<li>a sub-key’s value fails to decode</li>
+<li>a permutation is invalid for the decoded value type</li>
+</ul>
+</div></details></div><h2 id="provided-methods" class="section-header">Provided Methods<a href="#provided-methods" class="anchor">§</a></h2><div class="methods"><details class="toggle method-toggle" open><summary><section id="method.expected_sub_keys" class="method"><a class="src rightside" href="../../src/proc_suite/keys.rs.html#1182-1188">Source</a><h4 class="code-header">fn <a href="#method.expected_sub_keys" class="fn">expected_sub_keys</a>() -&gt; <a class="struct" href="https://doc.rust-lang.org/1.99.0/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;<a class="struct" href="https://docs.rs/proc-macro2/1.0.103/proc_macro2/struct.Ident.html" title="struct proc_macro2::Ident">Ident</a>&gt;</h4></section></summary><div class="docblock"><p>Return the list of all allowed sub-key names.</p>
+<p>This is derived mechanically from <code>SUB_KEYS</code> and is primarily
+used when validating nested key groups.</p>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.invalid_key_err" class="method"><a class="src rightside" href="../../src/proc_suite/keys.rs.html#1192-1194">Source</a><h4 class="code-header">fn <a href="#method.invalid_key_err" class="fn">invalid_key_err</a>(found: &amp;<a class="struct" href="https://docs.rs/proc-macro2/1.0.103/proc_macro2/struct.Ident.html" title="struct proc_macro2::Ident">Ident</a>) -&gt; <a class="struct" href="https://docs.rs/proc-macro2/1.0.103/proc_macro2/struct.TokenStream.html" title="struct proc_macro2::TokenStream">TokenStream</a></h4></section></summary><div class="docblock"><p>Construct a diagnostic error for an unexpected key name.</p>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.invalid_value_err" class="method"><a class="src rightside" href="../../src/proc_suite/keys.rs.html#1198-1200">Source</a><h4 class="code-header">fn <a href="#method.invalid_value_err" class="fn">invalid_value_err</a>(key: &amp;<a class="struct" href="https://docs.rs/proc-macro2/1.0.103/proc_macro2/struct.Ident.html" title="struct proc_macro2::Ident">Ident</a>) -&gt; <a class="struct" href="https://docs.rs/proc-macro2/1.0.103/proc_macro2/struct.TokenStream.html" title="struct proc_macro2::TokenStream">TokenStream</a></h4></section></summary><div class="docblock"><p>Construct a diagnostic error for an invalid key value.</p>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.invalid_key_msg" class="method"><a class="src rightside" href="../../src/proc_suite/keys.rs.html#1203-1209">Source</a><h4 class="code-header">fn <a href="#method.invalid_key_msg" class="fn">invalid_key_msg</a>(found: &amp;<a class="struct" href="https://docs.rs/proc-macro2/1.0.103/proc_macro2/struct.Ident.html" title="struct proc_macro2::Ident">Ident</a>) -&gt; <a class="struct" href="../errors/struct.Diagnostic.html" title="struct proc_suite::errors::Diagnostic">Diagnostic</a></h4></section></summary><div class="docblock"><p>Format the diagnostic message for an unexpected key name.</p>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.invalid_value_msg" class="method"><a class="src rightside" href="../../src/proc_suite/keys.rs.html#1213-1215">Source</a><h4 class="code-header">fn <a href="#method.invalid_value_msg" class="fn">invalid_value_msg</a>(key: &amp;<a class="struct" href="https://docs.rs/proc-macro2/1.0.103/proc_macro2/struct.Ident.html" title="struct proc_macro2::Ident">Ident</a>) -&gt; <a class="struct" href="../errors/struct.Diagnostic.html" title="struct proc_suite::errors::Diagnostic">Diagnostic</a></h4></section></summary><div class="docblock"><p>Format the diagnostic message for an invalid key value.</p>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.parse" class="method"><a class="src rightside" href="../../src/proc_suite/keys.rs.html#1276-1300">Source</a><h4 class="code-header">fn <a href="#method.parse" class="fn">parse</a>(key: &amp;<a class="struct" href="struct.KeyInfo.html" title="struct proc_suite::keys::KeyInfo">KeyInfo</a>) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.99.0/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;Self, <a class="struct" href="https://docs.rs/proc-macro2/1.0.103/proc_macro2/struct.TokenStream.html" title="struct proc_macro2::TokenStream">TokenStream</a>&gt;</h4></section></summary><div class="docblock"><p>Parse and decode a key according to this schema.</p>
+<p>This is the <strong>primary entry point</strong> for schema-driven decoding.
+It validates the structure of a parsed <a href="struct.KeyInfo.html" title="struct proc_suite::keys::KeyInfo"><code>KeyInfo</code></a> and produces
+a strongly-typed semantic specification <code>Self</code>.</p>
+<p>The parsing process is <strong>deterministic and total</strong>:
+given a valid key, exactly one semantic result is produced;
+otherwise, a precise diagnostic error is returned.</p>
+<h6 id="validation-pipeline"><a class="doc-anchor" href="#validation-pipeline">§</a>Validation pipeline</h6>
+<p>This function performs the following steps in order:</p>
+<ol>
+<li>
+<p><strong>Key name validation</strong></p>
+<ul>
+<li>Ensures the parsed key name matches <a href="trait.KeySpec.html#associatedconstant.KEY" title="associated constant proc_suite::keys::KeySpec::KEY"><code>KeySpec::KEY</code></a></li>
+</ul>
+</li>
+<li>
+<p><strong>Empty form handling</strong></p>
+<ul>
+<li>
+<p>If <a href="trait.KeySpec.html#associatedconstant.ALLOW_EMPTY" title="associated constant proc_suite::keys::KeySpec::ALLOW_EMPTY"><code>KeySpec::ALLOW_EMPTY</code></a> is <code>true</code>, accepts a bare key:</p>
+<div class="example-wrap"><pre class="language-text"><code>key</code></pre></div></li>
+<li>
+<p>Produces <a href="trait.KeySpec.html#tymethod.empty_variant" title="associated function proc_suite::keys::KeySpec::empty_variant"><code>KeySpec::empty_variant()</code></a> in this case</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Nested form enforcement</strong></p>
+<ul>
+<li>
+<p>If the key is not empty (or empty is disallowed),
+requires a nested sub-key group:</p>
+<div class="example-wrap"><pre class="language-text"><code>key { ... }</code></pre></div></li>
+</ul>
+</li>
+<li>
+<p><strong>Sub-key validation</strong></p>
+<ul>
+<li>Rejects unexpected sub-keys</li>
+<li>Rejects duplicate sub-keys</li>
+<li>Produces a validated <a href="struct.KeySet.html" title="struct proc_suite::keys::KeySet"><code>KeySet</code></a></li>
+</ul>
+</li>
+<li>
+<p><strong>Semantic decoding</strong></p>
+<ul>
+<li>Delegates to <a href="trait.KeySpec.html#tymethod.decode_from_set" title="associated function proc_suite::keys::KeySpec::decode_from_set"><code>KeySpec::decode_from_set</code></a> to:
+<ul>
+<li>select exactly one valid sub-key combination</li>
+<li>decode sub-key values into concrete Rust types</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<p>This function itself does <strong>not</strong> interpret sub-key values.
+All value decoding is performed during step (5) by
+<a href="trait.KeySpec.html#tymethod.decode_from_set" title="associated function proc_suite::keys::KeySpec::decode_from_set"><code>KeySpec::decode_from_set</code></a>.</p>
+<h6 id="errors-1"><a class="doc-anchor" href="#errors-1">§</a>Errors</h6>
+<p>Returns a diagnostic error if:</p>
+<ul>
+<li>the key name does not match <a href="trait.KeySpec.html#associatedconstant.KEY" title="associated constant proc_suite::keys::KeySpec::KEY"><code>KeySpec::KEY</code></a></li>
+<li>the value shape is invalid for the schema</li>
+<li>the key is empty but <code>ALLOW_EMPTY == false</code></li>
+<li>a sub-key is unexpected or duplicated</li>
+<li>no declared combination matches exactly</li>
+<li>a sub-key value fails to decode</li>
+</ul>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.help" class="method"><a class="src rightside" href="../../src/proc_suite/keys.rs.html#1390-1481">Source</a><h4 class="code-header">fn <a href="#method.help" class="fn">help</a>(span: &amp;<a class="struct" href="https://docs.rs/proc-macro2/1.0.103/proc_macro2/struct.Span.html" title="struct proc_macro2::Span">Span</a>) -&gt; <a class="struct" href="../errors/struct.Diagnostic.html" title="struct proc_suite::errors::Diagnostic">Diagnostic</a></h4></section></summary><div class="docblock"><p>Generate a detailed help message describing valid key usage.</p>
+<p>This message includes:</p>
+<ul>
+<li>allowed sub-key combinations</li>
+<li>expected value forms for each sub-key</li>
+</ul>
+</div></details></div><h2 id="dyn-compatibility" class="section-header">Dyn Compatibility<a href="#dyn-compatibility" class="anchor">§</a></h2><div class="dyn-compatibility-info"><p>This trait is <b>not</b> <a href="https://doc.rust-lang.org/1.99.0/reference/items/traits.html#dyn-compatibility">dyn compatible</a>.</p><p><i>In older versions of Rust, dyn compatibility was called "object safety".</i></p></div><h2 id="implementors" class="section-header">Implementors<a href="#implementors" class="anchor">§</a></h2><div id="implementors-list"></div><script src="../../trait.impl/proc_suite/keys/trait.KeySpec.js" async></script></section></div></main></body></html>

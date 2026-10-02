@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["INSTANCE_COUNTER_TY"],"struct":["CountersGenericsChecker","CountersGenericsIndexesMeta","CountersGenericsMeta","CountersLenMeta","CountersParamMetaExtraction","CountersTy","CountersTyMeta","CumulatedConstChecker","InstanceTraitDocs","InstanceTraitMeta","MarkerSuperBound","OriginalCounterConst"]};

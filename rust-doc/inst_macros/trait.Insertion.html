@@ -1,0 +1,102 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Defines insertion of `Self` into a target type (`Into`) using a given context."><title>Insertion in inst_macros - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../static.files/rustdoc-0c87338a.css"><meta name="rustdoc-vars" data-root-path="../" data-static-root-path="../static.files/" data-current-crate="inst_macros" data-themes="" data-resource-suffix="" data-rustdoc-version="1.99.0 (b940084d7 2026-09-28)" data-channel="1.99.0" data-search-js="search-cf4fc35e.js" data-stringdex-js="stringdex-b5109af9.js" data-settings-js="settings-170eb4bf.js" ><script src="../static.files/storage-41dd4d93.js"></script><script defer src="sidebar-items.js"></script><script defer src="../static.files/main-417ebf0a.js"></script><noscript><link rel="stylesheet" href="../static.files/noscript-9f56287d.css"></noscript><link rel="alternate icon" type="image/png" href="../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../static.files/favicon-044be391.svg"></head><body class="rustdoc trait"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><rustdoc-topbar><h2><a href="#">Insertion</a></h2></rustdoc-topbar><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../inst_macros/index.html">inst_<wbr>macros</a><span class="version">0.1.0</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">Insertion</a></h2><h3><a href="#required-methods">Required Methods</a></h3><ul class="block"><li><a href="#tymethod.raw_insert" title="raw_insert">raw_insert</a></li><li><a href="#tymethod.validate_inserted" title="validate_inserted">validate_inserted</a></li></ul><h3><a href="#provided-methods">Provided Methods</a></h3><ul class="block"><li><a href="#method.checked_insert" title="checked_insert">checked_insert</a></li><li><a href="#method.unchecked_insert" title="unchecked_insert">unchecked_insert</a></li><li><a href="#method.validate_context" title="validate_context">validate_context</a></li><li><a href="#method.validate_into" title="validate_into">validate_into</a></li></ul><h3><a href="#dyn-compatibility">Dyn Compatibility</a></h3><h3><a href="#implementors">Implementors</a></h3></section><div id="rustdoc-modnav"><h2 class="in-crate"><a href="index.html">In crate inst_<wbr>macros</a></h2></div></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><div class="width-limiter"><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><div class="rustdoc-breadcrumbs"><a href="index.html">inst_macros</a></div><h1>Trait <span class="trait">Insertion</span>&nbsp;<button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../src/inst_macros/lib.rs.html#55-66">Source</a> </span></div><pre class="rust item-decl"><code>pub(crate) trait Insertion&lt;Into, Context = <a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.unit.html">()</a>&gt;<div class="where">where
+    Self: <a class="trait" href="https://doc.rust-lang.org/1.99.0/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a> + 'static + <a class="trait" href="https://doc.rust-lang.org/1.99.0/core/clone/trait.Clone.html" title="trait core::clone::Clone">Clone</a> + <a class="trait" href="https://doc.rust-lang.org/1.99.0/core/fmt/trait.Debug.html" title="trait core::fmt::Debug">Debug</a>,</div>{
+    // Required methods
+    fn <a href="#tymethod.raw_insert" class="fn">raw_insert</a>(
+        &amp;self,
+        to: <a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.reference.html">&amp;mut Into</a>,
+        context: <a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.reference.html">&amp;Context</a>,
+    ) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.99.0/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.unit.html">()</a>, <a class="struct" href="https://docs.rs/proc-macro2/1.0.103/proc_macro2/struct.TokenStream.html" title="struct proc_macro2::TokenStream">TokenStream</a>&gt;;
+<span class="item-spacer"></span>    fn <a href="#tymethod.validate_inserted" class="fn">validate_inserted</a>(
+        _of: <a class="enum" href="https://doc.rust-lang.org/1.99.0/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;&amp;Self&gt;,
+        _to: <a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.reference.html">&amp;Into</a>,
+        _context: <a class="enum" href="https://doc.rust-lang.org/1.99.0/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.reference.html">&amp;Context</a>&gt;,
+    ) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.99.0/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.unit.html">()</a>, <a class="struct" href="https://docs.rs/proc-macro2/1.0.103/proc_macro2/struct.TokenStream.html" title="struct proc_macro2::TokenStream">TokenStream</a>&gt;;
+
+    // Provided methods
+    fn <a href="#method.checked_insert" class="fn">checked_insert</a>(
+        &amp;self,
+        to: <a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.reference.html">&amp;mut Into</a>,
+        context: <a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.reference.html">&amp;Context</a>,
+    ) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.99.0/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.unit.html">()</a>, <a class="struct" href="https://docs.rs/proc-macro2/1.0.103/proc_macro2/struct.TokenStream.html" title="struct proc_macro2::TokenStream">TokenStream</a>&gt; { ... }
+<span class="item-spacer"></span>    fn <a href="#method.unchecked_insert" class="fn">unchecked_insert</a>(
+        &amp;self,
+        to: <a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.reference.html">&amp;mut Into</a>,
+        context: <a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.reference.html">&amp;Context</a>,
+    ) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.99.0/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.unit.html">()</a>, <a class="struct" href="https://docs.rs/proc-macro2/1.0.103/proc_macro2/struct.TokenStream.html" title="struct proc_macro2::TokenStream">TokenStream</a>&gt; { ... }
+<span class="item-spacer"></span>    fn <a href="#method.validate_context" class="fn">validate_context</a>(&amp;self, _context: <a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.reference.html">&amp;Context</a>) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.99.0/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.unit.html">()</a>, <a class="struct" href="https://docs.rs/proc-macro2/1.0.103/proc_macro2/struct.TokenStream.html" title="struct proc_macro2::TokenStream">TokenStream</a>&gt; { ... }
+<span class="item-spacer"></span>    fn <a href="#method.validate_into" class="fn">validate_into</a>(
+        &amp;self,
+        _to: <a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.reference.html">&amp;Into</a>,
+        _context: <a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.reference.html">&amp;Context</a>,
+    ) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.99.0/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.unit.html">()</a>, <a class="struct" href="https://docs.rs/proc-macro2/1.0.103/proc_macro2/struct.TokenStream.html" title="struct proc_macro2::TokenStream">TokenStream</a>&gt; { ... }
+}</code></pre><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Defines insertion of <code>Self</code> into a target type (<code>Into</code>) using a given context.</p>
+<p>This represents the mutation stage of a structured proc-macro pipeline,
+where <code>Self</code> is integrated into <code>Into</code> as part of its final structure.</p>
+<p><code>Into</code> is typically a syntax node or target representation, while
+<code>Context</code> provides external rules or configuration required during
+insertion (such as naming policy, validation rules, feature flags,
+or expansion constraints).</p>
+<p><code>Context</code> provides optional external state, configuration, or borrowed
+supporting data used during insertion.</p>
+<p>Since <code>Self</code> is typically owned (<code>'static</code>), <code>Context</code> is commonly used
+to provide temporary borrowed data required during derivation or validation.</p>
+<p><code>Self</code> may represent:</p>
+<ul>
+<li>a generated syntax node,</li>
+<li>extracted metadata being re-inserted,</li>
+<li>or contextual data projected into the target representation.</li>
+</ul>
+<p>Provides two execution paths:</p>
+<ul>
+<li><a href="trait.Insertion.html#method.checked_insert" title="method inst_macros::Insertion::checked_insert"><code>Self::checked_insert</code></a> performs full validation before and after insertion</li>
+<li><a href="trait.Insertion.html#method.unchecked_insert" title="method inst_macros::Insertion::unchecked_insert"><code>Self::unchecked_insert</code></a> performs insertion with minimal checks</li>
+</ul>
+<p>This keeps insertion predictable, validated, and composable within the
+larger proc-macro pipeline.</p>
+</div></details><h2 id="required-methods" class="section-header">Required Methods<a href="#required-methods" class="anchor">§</a></h2><div class="methods"><details class="toggle method-toggle" open><summary><section id="tymethod.raw_insert" class="method"><a class="src rightside" href="../src/inst_macros/lib.rs.html#55-66">Source</a><h4 class="code-header">fn <a href="#tymethod.raw_insert" class="fn">raw_insert</a>(
+    &amp;self,
+    to: <a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.reference.html">&amp;mut Into</a>,
+    context: <a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.reference.html">&amp;Context</a>,
+) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.99.0/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.unit.html">()</a>, <a class="struct" href="https://docs.rs/proc-macro2/1.0.103/proc_macro2/struct.TokenStream.html" title="struct proc_macro2::TokenStream">TokenStream</a>&gt;</h4></section></summary><div class="docblock"><p>Performs the core insertion logic.</p>
+<p>Integrates <code>Self</code> into <code>Into</code>, mutating the target representation
+using the provided context.</p>
+</div></details><details class="toggle method-toggle" open><summary><section id="tymethod.validate_inserted" class="method"><a class="src rightside" href="../src/inst_macros/lib.rs.html#55-66">Source</a><h4 class="code-header">fn <a href="#tymethod.validate_inserted" class="fn">validate_inserted</a>(
+    _of: <a class="enum" href="https://doc.rust-lang.org/1.99.0/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;&amp;Self&gt;,
+    _to: <a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.reference.html">&amp;Into</a>,
+    _context: <a class="enum" href="https://doc.rust-lang.org/1.99.0/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.reference.html">&amp;Context</a>&gt;,
+) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.99.0/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.unit.html">()</a>, <a class="struct" href="https://docs.rs/proc-macro2/1.0.103/proc_macro2/struct.TokenStream.html" title="struct proc_macro2::TokenStream">TokenStream</a>&gt;</h4></section></summary><div class="docblock"><p>Validates the target after insertion.
+to ensure the resulting structure remains valid.</p>
+<p><code>context</code> and `inserted`` are optional so this validation hook may be reused
+independently from the checked extraction pipeline, such as:</p>
+<ul>
+<li>standalone tests,</li>
+<li>partial pipeline execution,</li>
+<li>manual validation,</li>
+<li>or external validation utilities.</li>
+</ul>
+</div></details></div><h2 id="provided-methods" class="section-header">Provided Methods<a href="#provided-methods" class="anchor">§</a></h2><div class="methods"><details class="toggle method-toggle" open><summary><section id="method.checked_insert" class="method"><a class="src rightside" href="../src/inst_macros/lib.rs.html#55-66">Source</a><h4 class="code-header">fn <a href="#method.checked_insert" class="fn">checked_insert</a>(
+    &amp;self,
+    to: <a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.reference.html">&amp;mut Into</a>,
+    context: <a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.reference.html">&amp;Context</a>,
+) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.99.0/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.unit.html">()</a>, <a class="struct" href="https://docs.rs/proc-macro2/1.0.103/proc_macro2/struct.TokenStream.html" title="struct proc_macro2::TokenStream">TokenStream</a>&gt;</h4></section></summary><div class="docblock"><p>Performs insertion with full validation.</p>
+<p>Validates the insertion context and target, applies the insertion,
+and verifies the final inserted state.</p>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.unchecked_insert" class="method"><a class="src rightside" href="../src/inst_macros/lib.rs.html#55-66">Source</a><h4 class="code-header">fn <a href="#method.unchecked_insert" class="fn">unchecked_insert</a>(
+    &amp;self,
+    to: <a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.reference.html">&amp;mut Into</a>,
+    context: <a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.reference.html">&amp;Context</a>,
+) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.99.0/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.unit.html">()</a>, <a class="struct" href="https://docs.rs/proc-macro2/1.0.103/proc_macro2/struct.TokenStream.html" title="struct proc_macro2::TokenStream">TokenStream</a>&gt;</h4></section></summary><div class="docblock"><p>Performs insertion with minimal validation.</p>
+<p>Validates preconditions and applies insertion without checking
+the final inserted state.</p>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.validate_context" class="method"><a class="src rightside" href="../src/inst_macros/lib.rs.html#55-66">Source</a><h4 class="code-header">fn <a href="#method.validate_context" class="fn">validate_context</a>(&amp;self, _context: <a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.reference.html">&amp;Context</a>) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.99.0/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.unit.html">()</a>, <a class="struct" href="https://docs.rs/proc-macro2/1.0.103/proc_macro2/struct.TokenStream.html" title="struct proc_macro2::TokenStream">TokenStream</a>&gt;</h4></section></summary><div class="docblock"><p>Validates the insertion context before insertion.</p>
+<p>Override to enforce constraints on the external insertion context.</p>
+<p>Default implementation performs no validation.</p>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.validate_into" class="method"><a class="src rightside" href="../src/inst_macros/lib.rs.html#55-66">Source</a><h4 class="code-header">fn <a href="#method.validate_into" class="fn">validate_into</a>(
+    &amp;self,
+    _to: <a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.reference.html">&amp;Into</a>,
+    _context: <a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.reference.html">&amp;Context</a>,
+) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.99.0/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.unit.html">()</a>, <a class="struct" href="https://docs.rs/proc-macro2/1.0.103/proc_macro2/struct.TokenStream.html" title="struct proc_macro2::TokenStream">TokenStream</a>&gt;</h4></section></summary><div class="docblock"><p>Validates the target before insertion.</p>
+<p>Override to ensure the target is in a valid state to receive
+the insertion.</p>
+<p>Default implementation performs no validation.</p>
+</div></details></div><h2 id="dyn-compatibility" class="section-header">Dyn Compatibility<a href="#dyn-compatibility" class="anchor">§</a></h2><div class="dyn-compatibility-info"><p>This trait is <b>not</b> <a href="https://doc.rust-lang.org/1.99.0/reference/items/traits.html#dyn-compatibility">dyn compatible</a>.</p><p><i>In older versions of Rust, dyn compatibility was called "object safety".</i></p></div><h2 id="implementors" class="section-header">Implementors<a href="#implementors" class="anchor">§</a></h2><div id="implementors-list"></div><script src="../trait.impl/inst_macros/trait.Insertion.js" async></script></section></div></main></body></html>

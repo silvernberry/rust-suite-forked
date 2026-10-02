@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"macro":[["validate_trait_const",1],["validate_trait_consts",1],["validate_trait_type",1],["validate_trait_types",1],["validate_where_predicate",1]],"struct":["AllAffiliateCounterIdents"],"type":["CounterType","RawCounterIdentsJoined"]};

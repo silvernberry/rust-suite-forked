@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["counter_access_impl_ident_hash_args","extract_generic_idents_from_ty"],"struct":["BoundaryAccessAddon","CounterAccessAddon","CountersIdentExprs","IdentHashLenAddon","OnSetAccessAddon","TerminalAccessAddon","TerminalCheckerAddon"]};

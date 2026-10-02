@@ -1,0 +1,347 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Describes the crate-resolution and delegation model used by a proc-macro pipeline."><title>SupportCrate in proc_suite::pipeline - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-0c87338a.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="proc_suite" data-themes="" data-resource-suffix="" data-rustdoc-version="1.99.0 (b940084d7 2026-09-28)" data-channel="1.99.0" data-search-js="search-cf4fc35e.js" data-stringdex-js="stringdex-b5109af9.js" data-settings-js="settings-170eb4bf.js" ><script src="../../static.files/storage-41dd4d93.js"></script><script defer src="sidebar-items.js"></script><script defer src="../../static.files/main-417ebf0a.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-9f56287d.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc trait"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><rustdoc-topbar><h2><a href="#">SupportCrate</a></h2></rustdoc-topbar><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../../proc_suite/index.html">proc_<wbr>suite</a><span class="version">0.1.0</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">Support<wbr>Crate</a></h2><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#why-a-support-crate-is-necessary" title="Why a support crate is necessary">Why a support crate is necessary</a></li><li><a href="#why-delegation-is-necessary" title="Why delegation is necessary">Why delegation is necessary</a></li><li><a href="#why-a-delegate-macro-is-required-for-attributes" title="Why a delegate macro is required for attributes">Why a delegate macro is required for attributes</a></li><li><a href="#direct-delegation" title="Direct delegation">Direct delegation</a></li><li><a href="#attribute-delegation" title="Attribute delegation">Attribute delegation</a></li><li><a href="#using-delegate_inner-from-a-proc-macro-attribute" title="Using `delegate_inner` from a proc-macro attribute">Using <code>delegate_inner</code> from a proc-macro attribute</a></li></ul><h3><a href="#required-methods">Required Methods</a></h3><ul class="block"><li><a href="#tymethod.support_crate" title="support_crate">support_crate</a></li></ul><h3><a href="#provided-methods">Provided Methods</a></h3><ul class="block"><li><a href="#method.delegate_attribute" title="delegate_attribute">delegate_attribute</a></li><li><a href="#method.delegate_crate" title="delegate_crate">delegate_crate</a></li><li><a href="#method.delegate_inner" title="delegate_inner">delegate_inner</a></li><li><a href="#method.delegate_item" title="delegate_item">delegate_item</a></li><li><a href="#method.delegate_macro" title="delegate_macro">delegate_macro</a></li></ul><h3><a href="#dyn-compatibility">Dyn Compatibility</a></h3><h3><a href="#implementors">Implementors</a></h3></section><div id="rustdoc-modnav"><h2><a href="index.html">In proc_<wbr>suite::<wbr>pipeline</a></h2></div></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><div class="width-limiter"><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><div class="rustdoc-breadcrumbs"><a href="../index.html">proc_suite</a>::<wbr><a href="index.html">pipeline</a></div><h1>Trait <span class="trait">Support<wbr>Crate</span>&nbsp;<button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../../src/proc_suite/pipeline.rs.html#1138-1224">Source</a> </span></div><pre class="rust item-decl"><code>pub trait SupportCrate {
+    // Required method
+    fn <a href="#tymethod.support_crate" class="fn">support_crate</a>() -&gt; <a class="struct" href="https://docs.rs/proc-macro2/1.0.103/proc_macro2/struct.Ident.html" title="struct proc_macro2::Ident">Ident</a>;
+
+    // Provided methods
+    fn <a href="#method.delegate_crate" class="fn">delegate_crate</a>() -&gt; <a class="enum" href="https://doc.rust-lang.org/1.99.0/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="https://docs.rs/proc-macro2/1.0.103/proc_macro2/struct.Ident.html" title="struct proc_macro2::Ident">Ident</a>&gt; { ... }
+<span class="item-spacer"></span>    fn <a href="#method.delegate_macro" class="fn">delegate_macro</a>() -&gt; <a class="enum" href="https://doc.rust-lang.org/1.99.0/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="https://docs.rs/proc-macro2/1.0.103/proc_macro2/struct.Ident.html" title="struct proc_macro2::Ident">Ident</a>&gt; { ... }
+<span class="item-spacer"></span>    fn <a href="#method.delegate_inner" class="fn">delegate_inner</a>&lt;T: <a class="trait" href="../syns/trait.PathQualifierReplace.html" title="trait proc_suite::syns::PathQualifierReplace">PathQualifierReplace</a>&gt;(input: <a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.reference.html">&amp;mut T</a>) { ... }
+<span class="item-spacer"></span>    fn <a href="#method.delegate_attribute" class="fn">delegate_attribute</a>&lt;T: <a class="trait" href="../syns/trait.PushAttribute.html" title="trait proc_suite::syns::PushAttribute">PushAttribute</a>&gt;(input: <a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.reference.html">&amp;mut T</a>) { ... }
+<span class="item-spacer"></span>    fn <a href="#method.delegate_item" class="fn">delegate_item</a>&lt;T: <a class="trait" href="../syns/trait.PathQualifierReplace.html" title="trait proc_suite::syns::PathQualifierReplace">PathQualifierReplace</a>&gt;(input: <a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.reference.html">&amp;mut T</a>) { ... }
+}</code></pre><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Describes the crate-resolution and delegation model used by a proc-macro
+pipeline.</p>
+<h2 id="why-a-support-crate-is-necessary"><a class="doc-anchor" href="#why-a-support-crate-is-necessary">§</a>Why a support crate is necessary</h2>
+<p>A procedural macro is implemented in a proc-macro crate, but the code
+produced by that macro is ultimately compiled in the user’s crate. The
+generated code may need to refer to traits, types, helper macros, or other
+items that belong to the library associated with the proc macro.</p>
+<p>Those items should be accessed through a normal library crate rather than
+by making generated code depend directly on the proc-macro implementation
+crate. The normal library crate acts as the public support layer:</p>
+<div class="example-wrap"><pre class="language-text"><code>user crate
+    |
+    |--- depends on -&gt; support crate
+                          |
+                          |--- depends on -&gt; proc-macro crate</code></pre></div>
+<p>For example, suppose a library provides a proc macro and also provides a
+trait required by the code generated by that macro:</p>
+<div class="example-wrap"><pre class="language-text"><code>my_library
+    |--- public support items
+    |     |--- Trait
+    |     |--- Type
+    |
+    |--- re-exports -&gt; my_library_macro</code></pre></div>
+<p>A user then depends on <code>my_library</code>, not directly on
+<code>my_library_macro</code>. If the proc macro generates an implementation of
+<code>Trait</code>, the generated code should therefore refer to the trait through
+the public library:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code>my_library::Trait</code></pre></div>
+<p>rather than directly referring to the implementation crate.</p>
+<p>The support crate can re-export the proc-macro entry points and the items
+required by generated code. This gives the generated code one stable,
+user-visible crate through which it can access everything belonging to the
+macro’s public interface.</p>
+<p>Consequently, generated code commonly needs to construct paths whose first
+segment is the identifier returned by <a href="trait.SupportCrate.html#tymethod.support_crate" title="associated function proc_suite::pipeline::SupportCrate::support_crate"><code>Self::support_crate</code></a>:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code>#support_crate::Trait
+#support_crate::Type
+#support_crate::helper_macro!</code></pre></div>
+<p>For example, if <code>support_crate()</code> returns the identifier <code>my_library</code>, the
+generated paths become conceptually:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code>my_library::Trait
+my_library::Type
+my_library::helper_macro!</code></pre></div>
+<p><a href="trait.SupportCrate.html#tymethod.support_crate" title="associated function proc_suite::pipeline::SupportCrate::support_crate"><code>Self::support_crate</code></a> provides the identifier used as the first path
+segment for these generated paths. Keeping this information in the
+pipeline makes crate resolution explicit and allows every part of the
+pipeline to construct paths consistently.</p>
+<h2 id="why-delegation-is-necessary"><a class="doc-anchor" href="#why-delegation-is-necessary">§</a>Why delegation is necessary</h2>
+<p>A proc macro can itself be used as a building block by another proc macro.
+In that situation, the inner proc macro still has its own support crate,
+but the user may depend only on the outer macro’s support crate.</p>
+<p>The inner support crate can re-export the outer support crate’s public
+items. This means the generated code from the outer macro must sometimes
+refer to its own outer support crate rather than directly to the inner macro’s
+original support crate.</p>
+<p>For example, consider two layers of proc-macro composition:</p>
+<div class="example-wrap"><pre class="language-text"><code>user crate
+    |
+    |--- depends on -&gt; inner support crate
+                          |
+                          |--- re-exports inner support items
+                          |
+                          |--- uses -&gt; inner proc macro</code></pre></div>
+<p>The inner proc macro may generate:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code>inner_support::Trait</code></pre></div>
+<p>but the composed (nested) macro needs that reference to resolve through the outer
+support crate:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code>outer_support::Trait</code></pre></div>
+<p>The inner macro does not necessarily know that it is being used through
+the outer layer. Delegation provides the mechanism by which the inner
+pipeline can communicate that new crate-resolution context to the outer
+generated syntax.</p>
+<p>This creates a simple crate-identifier substitution:</p>
+<div class="example-wrap"><pre class="language-text"><code>delegated support crate
+        |
+        | delegation
+        |
+support crate</code></pre></div>
+<p><a href="trait.SupportCrate.html#method.delegate_crate" title="associated function proc_suite::pipeline::SupportCrate::delegate_crate"><code>Self::delegate_crate</code></a> identifies the crate whose references should be
+replaced by the inner macro’s <a href="trait.SupportCrate.html#tymethod.support_crate" title="associated function proc_suite::pipeline::SupportCrate::support_crate"><code>Self::support_crate</code></a> when such delegation
+is required.</p>
+<p>The replacement is performed by <a href="trait.SupportCrate.html#method.delegate_inner" title="associated function proc_suite::pipeline::SupportCrate::delegate_inner"><code>Self::delegate_inner</code></a>, which operates
+directly on a <a href="https://docs.rs/syn/2.0.111/syn/index.html" title="mod syn"><code>syn</code></a> syntax representation and replaces occurrences of the
+delegated crate identifier with the support-crate identifier.</p>
+<p>For example, conceptually:</p>
+<p>before delegation:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code>outer_support::Trait
+outer_support::Type</code></pre></div>
+<p>after delegation:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code>inner_support::Trait
+inner_support::Type</code></pre></div>
+<p>Delegation is optional. A pipeline that is not being embedded inside
+another proc-macro pipeline does not need to perform any replacement, so
+the default implementation returns <code>None</code>.</p>
+<h2 id="why-a-delegate-macro-is-required-for-attributes"><a class="doc-anchor" href="#why-a-delegate-macro-is-required-for-attributes">§</a>Why a delegate macro is required for attributes</h2>
+<p>Function-like and attribute procedural macros differ in how their input
+and generated output participate in macro expansion.</p>
+<p>With a function-like proc macro, an outer proc macro can construct another
+macro invocation around its input. The inner macro invocation can
+therefore be represented explicitly in the tokens being passed through
+the expansion process. This makes it possible for the outer pipeline to
+arrange for the inner expansion and subsequently rewrite the resulting
+syntax.</p>
+<p>For example, an outer macro can conceptually produce:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="comment">// here, we describe outer and inner as structures not
+// dependencies
+
+</span><span class="macro">outer_macro!</span> {
+    { <span class="string">"a user given literal expr example" </span>}
+}
+
+<span class="macro">outer_macro_of_inner!</span> {
+    <span class="macro">inner_macro!</span> {
+        { <span class="string">"a user given literal expr example" </span>}
+    }
+}
+
+<span class="macro">outer_macro_of_inner_input!</span>{
+     { <span class="string">"a inner macro transformed literal" </span>}
+}</code></pre></div>
+<p>The inner macro expansion can then become part of the syntax that the
+outer pipeline can work with.</p>
+<p>Attribute macros have a different expansion relationship. An outer
+attribute macro cannot inspect syntax that will only be generated later
+by an inner attribute macro. In particular, an outer transformation cannot
+retroactively modify the output of an inner attribute expansion merely by
+rewriting the syntax it originally received.</p>
+<p>For example, consider:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="attr">#[outer]
+#[inner]
+</span><span class="kw">impl </span>Sum <span class="kw">for </span>Marker { ... };</code></pre></div>
+<p>The outer attribute receives the item as it exists at that point in the
+expansion process. It cannot simply rewrite the syntax that <code>inner</code> will
+produce later, because that generated syntax does not yet exist from the
+outer macro’s point of view.</p>
+<p>Therefore, attribute delegation requires a second mechanism: a delegate
+attribute that is attached to the input (pushed to the bottom)
+which invokes after the inner attribute macro expands.</p>
+<p>Conceptually, the expansion proceeds as:</p>
+<div class="example-wrap"><pre class="language-text"><code>original item
+            |
+      outer macro expands - adds delegate attribute
+            |
+      inner macro expands
+            |
+      delegate attribute runs
+            |
+      support-crate references are rewritten</code></pre></div>
+<p>For example, the pipeline can arrange the attributes conceptually as:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="attr">#[inner_support::outer_macro] </span><span class="comment">// since outer macros are re-expoted to inner support crate
+</span><span class="attr">#[inner_support::delegate_macro]
+</span><span class="kw">impl </span>Sum <span class="kw">for </span>Marker { ... };</code></pre></div>
+<p>The inner macro expands first and may produce:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code>outer_support::Trait
+outer_support::Type</code></pre></div>
+<p>The delegate attribute then receives that resulting syntax and rewrites
+those references to:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code>inner_support::Trait
+inner_support::Type</code></pre></div>
+<p>The important point is that the delegate attribute does not perform the
+inner transformation itself. Its purpose is to run at the correct point
+in the expansion process so that the syntax produced by the re-exported
+outer macro is available for path rewriting.</p>
+<p><a href="trait.SupportCrate.html#method.delegate_macro" title="associated function proc_suite::pipeline::SupportCrate::delegate_macro"><code>Self::delegate_macro</code></a> provides the identifier of this delegate
+attribute. The delegate macro is expected to perform the support-crate
+replacement after the outer macro has produced its syntax.</p>
+<p><a href="trait.SupportCrate.html#method.delegate_attribute" title="associated function proc_suite::pipeline::SupportCrate::delegate_attribute"><code>Self::delegate_attribute</code></a> attaches this delegate attribute to a syntax
+item. The attribute is placed at the end of the existing attribute list so
+that it can operate after the relevant outer macro expansion.</p>
+<p>Both the delegate crate and delegate macro are optional. If either is not
+configured, no delegate attribute is added.</p>
+<h2 id="direct-delegation"><a class="doc-anchor" href="#direct-delegation">§</a>Direct delegation</h2>
+<p><a href="trait.SupportCrate.html#method.delegate_item" title="associated function proc_suite::pipeline::SupportCrate::delegate_item"><code>Self::delegate_item</code></a> is the direct form of delegation. It is used when
+the current macro has access to the inner syntax (of outer macro) that needs
+to be rewritten directly instead of passing an delegate attribute.</p>
+<p>Especially in scenarios where attributes are not available to be passed for
+macro expansion.</p>
+<p>The operation is:</p>
+<div class="example-wrap"><pre class="language-text"><code>delegated-crate identifier
+        |
+        | replacement
+support-crate identifier</code></pre></div>
+<p>For example:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="comment">// input syntax:
+</span>outer_support::Trait
+outer_support::Type
+
+<span class="comment">// replacement:
+// outer_support -&gt; inner_support
+
+// resulting syntax:
+</span>inner_support::Trait
+inner_support::Type</code></pre></div>
+<p>The implementation is expressed in terms of <a href="../syns/trait.PathQualifierReplace.html" title="trait proc_suite::syns::PathQualifierReplace"><code>PathQualifierReplace</code></a> so that the
+mechanism is independent of the particular <code>syn</code> syntax node being
+processed.</p>
+<p>This allows the same operation to be applied to different syntax
+representations without making <code>SupportCrate</code> responsible for knowing
+their concrete structure.</p>
+<h2 id="attribute-delegation"><a class="doc-anchor" href="#attribute-delegation">§</a>Attribute delegation</h2>
+<p><a href="trait.SupportCrate.html#method.delegate_attribute" title="associated function proc_suite::pipeline::SupportCrate::delegate_attribute"><code>Self::delegate_attribute</code></a> is the deferred form of delegation. Instead
+of immediately rewriting syntax, it places a delegate attribute onto the
+syntax so that another macro expansion can occur first.</p>
+<p>For example, if the syntax currently contains:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="attr">#[inner_support::outer_macro]
+</span><span class="kw">struct </span>Marker;</code></pre></div>
+<p>delegation can append:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="attr">#[inner_support::outer_macro]
+#[inner_support::delegate_macro]
+</span><span class="kw">struct </span>Marker;</code></pre></div>
+<p>After the inner macro has expanded, the delegate macro receives the
+resulting syntax and can perform the equivalent of:</p>
+<div class="example-wrap"><pre class="language-text"><code>outer_support -&gt; inner_support</code></pre></div>
+<p>This distinction is important because the two mechanisms solve different
+expansion-order problems:</p>
+<ul>
+<li>direct delegation rewrites syntax that is already available;</li>
+<li>attribute delegation schedules the rewrite for syntax that will become
+available only after an outer attribute macro expands.</li>
+</ul>
+<h2 id="using-delegate_inner-from-a-proc-macro-attribute"><a class="doc-anchor" href="#using-delegate_inner-from-a-proc-macro-attribute">§</a>Using <code>delegate_inner</code> from a proc-macro attribute</h2>
+<p><a href="trait.SupportCrate.html#method.delegate_inner" title="associated function proc_suite::pipeline::SupportCrate::delegate_inner"><code>Self::delegate_inner</code></a> is intended to be called by the delegate attribute macro
+provided by the proc-macro crate itself.</p>
+<p>The delegate attribute is the bridge between the proc-macro expansion
+mechanism and <a href="trait.SupportCrate.html" title="trait proc_suite::pipeline::SupportCrate"><code>SupportCrate</code></a>. The attribute receives the syntax produced
+by the inner macro, parses that syntax into a <code>syn</code> representation, and
+then asks the pipeline to perform the support-crate substitution.</p>
+<p>For example, a proc-macro crate may expose a delegate attribute:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="attr">#[proc_macro_attribute]
+</span><span class="kw">pub fn </span>delegate(attr: TokenStream, item: TokenStream) -&gt; TokenStream {
+    <span class="kw">let </span><span class="kw-2">mut </span>item: syn::Item = <span class="macro">syn::parse_macro_input!</span>(item);
+
+    Pipeline::delegate_inner(<span class="kw-2">&amp;mut </span>item);
+
+    <span class="macro">quote::quote!</span>(#item).into()
+}</code></pre></div>
+<p>The important operation here is:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code>Pipeline::delegate_inner(<span class="kw-2">&amp;mut </span>item);</code></pre></div>
+<p>The delegate attribute does not need to know how delegate-crate identifiers
+are represented or how they should be replaced towards support-crate.
+That responsibility belongs to <a href="trait.SupportCrate.html" title="trait proc_suite::pipeline::SupportCrate"><code>SupportCrate</code></a>.</p>
+<p>For example, suppose the pipeline is configured with:</p>
+<div class="example-wrap"><pre class="language-text"><code>support crate  = inner_support
+delegate crate = outer_support</code></pre></div>
+<p>and the outer proc macro produces:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">impl </span>outer_support::Trait <span class="kw">for </span>Value {
+    <span class="kw">fn </span>method(<span class="kw-2">&amp;</span><span class="self">self</span>) {}
+}</code></pre></div>
+<p>When the delegate attribute receives this generated item, it invokes:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code>Pipeline::delegate_inner(<span class="kw-2">&amp;mut </span>item);</code></pre></div>
+<p>which performs the configured identifier replacement:</p>
+<div class="example-wrap"><pre class="language-text"><code>outer_support
+      │
+      │ delegate_inner
+      │
+inner_support</code></pre></div>
+<p>resulting in:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">impl </span>inner_support::Trait <span class="kw">for </span>Value {
+    <span class="kw">fn </span>method(<span class="kw-2">&amp;</span><span class="self">self</span>) {}
+}</code></pre></div>
+<p>This means the delegate attribute itself remains generic. It does not need
+to contain a hard-coded replacement such as <code>outer_support -&gt; inner_support</code>.
+The pipeline supplies both identifiers through <a href="trait.SupportCrate.html#tymethod.support_crate" title="associated function proc_suite::pipeline::SupportCrate::support_crate"><code>Self::support_crate</code></a> and
+<a href="trait.SupportCrate.html#method.delegate_crate" title="associated function proc_suite::pipeline::SupportCrate::delegate_crate"><code>Self::delegate_crate</code></a>.</p>
+<p>The same mechanism can be used for any syntax representation implementing
+<a href="../syns/trait.PathQualifierReplace.html" title="trait proc_suite::syns::PathQualifierReplace"><code>PathQualifierReplace</code></a>. For example, the delegate attribute may receive a
+<a href="https://docs.rs/syn/2.0.111/syn/item/enum.Item.html" title="enum syn::item::Item"><code>syn::Item</code></a>, <a href="https://docs.rs/syn/2.0.111/syn/derive/struct.DeriveInput.html" title="struct syn::derive::DeriveInput"><code>syn::DeriveInput</code></a>, or another supported syntax node and
+pass it directly to <a href="trait.SupportCrate.html#method.delegate_inner" title="associated function proc_suite::pipeline::SupportCrate::delegate_inner"><code>Self::delegate_inner</code></a>.</p>
+<p>The complete responsibility is therefore divided into three parts:</p>
+<div class="example-wrap"><pre class="language-text"><code>proc-macro attribute
+       │
+       │ parses generated syntax
+delegate_inner
+       │
+       │ obtains support_crate + delegate_crate
+PathQualifierReplace
+       │
+rewritten syntax</code></pre></div>
+<p>This is the direct delegation path: the delegate attribute runs after the
+inner macro has produced its syntax, and <code>delegate_inner</code> immediately
+rewrites that already-available syntax.</p>
+</div></details><h2 id="required-methods" class="section-header">Required Methods<a href="#required-methods" class="anchor">§</a></h2><div class="methods"><details class="toggle method-toggle" open><summary><section id="tymethod.support_crate" class="method"><a class="src rightside" href="../../src/proc_suite/pipeline.rs.html#1145">Source</a><h4 class="code-header">fn <a href="#tymethod.support_crate" class="fn">support_crate</a>() -&gt; <a class="struct" href="https://docs.rs/proc-macro2/1.0.103/proc_macro2/struct.Ident.html" title="struct proc_macro2::Ident">Ident</a></h4></section></summary><div class="docblock"><p>Returns the identifier of the normal support crate.</p>
+<p>Generated paths use this identifier to access the public support layer
+associated with the proc-macro pipeline.</p>
+<p>See <a href="trait.SupportCrate.html" title="trait proc_suite::pipeline::SupportCrate"><code>SupportCrate</code></a> documentation to understand the semantics.</p>
+</div></details></div><h2 id="provided-methods" class="section-header">Provided Methods<a href="#provided-methods" class="anchor">§</a></h2><div class="methods"><details class="toggle method-toggle" open><summary><section id="method.delegate_crate" class="method"><a class="src rightside" href="../../src/proc_suite/pipeline.rs.html#1154-1156">Source</a><h4 class="code-header">fn <a href="#method.delegate_crate" class="fn">delegate_crate</a>() -&gt; <a class="enum" href="https://doc.rust-lang.org/1.99.0/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="https://docs.rs/proc-macro2/1.0.103/proc_macro2/struct.Ident.html" title="struct proc_macro2::Ident">Ident</a>&gt;</h4></section></summary><div class="docblock"><p>Returns the crate identifier whose references should be replaced by the
+normal support crate when this pipeline is being delegated through another
+proc macro.</p>
+<p><code>None</code> means that no crate substitution is required.</p>
+<p>See <a href="trait.SupportCrate.html" title="trait proc_suite::pipeline::SupportCrate"><code>SupportCrate</code></a> documentation to understand the semantics.</p>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.delegate_macro" class="method"><a class="src rightside" href="../../src/proc_suite/pipeline.rs.html#1167-1169">Source</a><h4 class="code-header">fn <a href="#method.delegate_macro" class="fn">delegate_macro</a>() -&gt; <a class="enum" href="https://doc.rust-lang.org/1.99.0/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="https://docs.rs/proc-macro2/1.0.103/proc_macro2/struct.Ident.html" title="struct proc_macro2::Ident">Ident</a>&gt;</h4></section></summary><div class="docblock"><p>Returns the identifier of the attribute macro used to perform deferred
+support-crate delegation.</p>
+<p>This is used when an outer attribute macro generates syntax that cannot
+be rewritten by the inner macro directly.</p>
+<p><code>None</code> means that no delegate attribute is available.</p>
+<p>See <a href="trait.SupportCrate.html" title="trait proc_suite::pipeline::SupportCrate"><code>SupportCrate</code></a> documentation to understand the semantics.</p>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.delegate_inner" class="method"><a class="src rightside" href="../../src/proc_suite/pipeline.rs.html#1184-1192">Source</a><h4 class="code-header">fn <a href="#method.delegate_inner" class="fn">delegate_inner</a>&lt;T: <a class="trait" href="../syns/trait.PathQualifierReplace.html" title="trait proc_suite::syns::PathQualifierReplace">PathQualifierReplace</a>&gt;(input: <a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.reference.html">&amp;mut T</a>)</h4></section></summary><div class="docblock"><p>Replaces references to the delegated support crate with the normal
+support crate in an already available syntax representation.</p>
+<p>If no delegated crate is configured, the syntax is left unchanged.</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code>replace_idents(
+    from: delegate_crate
+    to: support_crate
+)</code></pre></div>
+<p>See <a href="trait.SupportCrate.html" title="trait proc_suite::pipeline::SupportCrate"><code>SupportCrate</code></a> documentation to understand the semantics.</p>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.delegate_attribute" class="method"><a class="src rightside" href="../../src/proc_suite/pipeline.rs.html#1204-1214">Source</a><h4 class="code-header">fn <a href="#method.delegate_attribute" class="fn">delegate_attribute</a>&lt;T: <a class="trait" href="../syns/trait.PushAttribute.html" title="trait proc_suite::syns::PushAttribute">PushAttribute</a>&gt;(input: <a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.reference.html">&amp;mut T</a>)</h4></section></summary><div class="docblock"><p>Appends the configured delegate attribute to a syntax representation.</p>
+<p>The delegate attribute is intentionally added rather than performing
+the replacement immediately. This allows an outer attribute macro to
+expand first, after which the delegate attribute can rewrite the
+delegate-crate references present in the generated syntax.</p>
+<p>If delegation has not been configured, this operation does nothing.</p>
+<p>See <a href="trait.SupportCrate.html" title="trait proc_suite::pipeline::SupportCrate"><code>SupportCrate</code></a> documentation to understand the semantics.</p>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.delegate_item" class="method"><a class="src rightside" href="../../src/proc_suite/pipeline.rs.html#1221-1223">Source</a><h4 class="code-header">fn <a href="#method.delegate_item" class="fn">delegate_item</a>&lt;T: <a class="trait" href="../syns/trait.PathQualifierReplace.html" title="trait proc_suite::syns::PathQualifierReplace">PathQualifierReplace</a>&gt;(input: <a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.reference.html">&amp;mut T</a>)</h4></section></summary><div class="docblock"><p>Performs direct delegation for an item.</p>
+<p>Item delegation uses the same identifier-replacement mechanism as
+<a href="trait.SupportCrate.html#method.delegate_inner" title="associated function proc_suite::pipeline::SupportCrate::delegate_inner"><code>Self::delegate_inner</code></a>, because the item’s syntax is available for
+direct inspection at the point where delegation is performed.</p>
+</div></details></div><h2 id="dyn-compatibility" class="section-header">Dyn Compatibility<a href="#dyn-compatibility" class="anchor">§</a></h2><div class="dyn-compatibility-info"><p>This trait is <b>not</b> <a href="https://doc.rust-lang.org/1.99.0/reference/items/traits.html#dyn-compatibility">dyn compatible</a>.</p><p><i>In older versions of Rust, dyn compatibility was called "object safety".</i></p></div><h2 id="implementors" class="section-header">Implementors<a href="#implementors" class="anchor">§</a></h2><div id="implementors-list"></div><script src="../../trait.impl/proc_suite/pipeline/trait.SupportCrate.js" async></script></section></div></main></body></html>

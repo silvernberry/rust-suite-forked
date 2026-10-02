@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"mod":["affiliates","counters","errors","idents","meta","sum","typenum","utils"],"struct":["InstanceTrait","InstanceTraitDocTarget"]};

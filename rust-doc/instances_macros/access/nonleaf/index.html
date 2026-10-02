@@ -1,0 +1,95 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Resolves non-leaf instance access whose dynamic arguments are supplied at runtime as additional byte-string function arguments."><title>instances_macros::access::nonleaf - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-0c87338a.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="instances_macros" data-themes="" data-resource-suffix="" data-rustdoc-version="1.99.0 (b940084d7 2026-09-28)" data-channel="1.99.0" data-search-js="search-cf4fc35e.js" data-stringdex-js="stringdex-b5109af9.js" data-settings-js="settings-170eb4bf.js" ><script src="../../../static.files/storage-41dd4d93.js"></script><script defer src="../sidebar-items.js"></script><script defer src="../../../static.files/main-417ebf0a.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-9f56287d.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc mod"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><rustdoc-topbar><h2><a href="#">Module nonleaf</a></h2></rustdoc-topbar><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../../../instances_macros/index.html">instances_<wbr>macros</a><span class="version">0.1.0</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">Module nonleaf</a></h2><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#expression-calls" title="Expression calls">Expression calls</a></li><li><a href="#dynamic-instance-resolution" title="Dynamic instance resolution">Dynamic instance resolution</a></li><li><a href="#derived-hierarchy-state" title="Derived hierarchy state">Derived hierarchy state</a></li></ul><h3><a href="#structs">Module Items</a></h3><ul class="block"><li><a href="#structs" title="Structs">Structs</a></li><li><a href="#enums" title="Enums">Enums</a></li><li><a href="#functions" title="Functions">Functions</a></li><li><a href="#types" title="Type Aliases">Type Aliases</a></li></ul></section><div id="rustdoc-modnav"><h2><a href="../index.html">In instances_<wbr>macros::<wbr>access</a></h2></div></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><div class="width-limiter"><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><div class="rustdoc-breadcrumbs"><a href="../../index.html">instances_macros</a>::<wbr><a href="../index.html">access</a></div><h1>Module <span>nonleaf</span>&nbsp;<button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../../../src/instances_macros/access/nonleaf.rs.html#16-1482">Source</a> </span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Resolves non-leaf instance access whose dynamic arguments are supplied at
+runtime as additional byte-string function arguments.</p>
+<p>Non-leaf access differs from leaf access (<a href="../leaf/index.html" title="mod instances_macros::access::leaf"><code>crate::access::leaf</code></a>) because
+the requested instance is not known as a fixed type replacement. The dynamic
+identifiers supplied to the access determine which instance position is selected
+at runtime, so non-leaf access introduces additional byte-string arguments to the
+generated function.</p>
+<p>For an <a href="https://docs.rs/syn/2.0.111/syn/expr/struct.ExprPath.html" title="struct syn::expr::ExprPath"><code>ExprPath</code></a>, however, the dynamic identifiers are not part of the
+expression itself. The path is transformed into the terminal type
+representation (<a href="../../node/access/struct.TerminalAccess.html" title="struct instances_macros::node::access::TerminalAccess"><code>crate::node::access::TerminalAccess</code></a>) of the non-leaf instance,
+in the same general manner that leaf access performs its fixed type replacement:</p>
+<div class="example-wrap"><pre class="language-text"><code>Self::Assoc
+
+&lt;InitialInstance as InstanceBound&gt;::Assoc
+
+&lt;TerminalInstance as InstanceBound&lt;TerminalAccess&gt;&gt;::Assoc</code></pre></div>
+<p>The difference is that non-leaf access replaces the instance with its
+terminal representation rather than directly selecting one fixed instance.
+The runtime dynamic identifiers are resolved when an associated function is
+invoked.</p>
+<h3 id="expression-calls"><a class="doc-anchor" href="#expression-calls">§</a>Expression calls</h3>
+<p>Non-leaf function access is supported only through an <a href="https://docs.rs/syn/2.0.111/syn/expr/struct.ExprCall.html" title="struct syn::expr::ExprCall"><code>ExprCall</code></a>. A bare
+function path such as:</p>
+<div class="example-wrap"><pre class="language-text"><code>Self::get</code></pre></div>
+<p>is not a valid non-leaf access form. The function must be invoked:</p>
+<div class="example-wrap"><pre class="language-text"><code>Self::get()
+Self::get(x, id1)
+Self::get(x, id1, id2)</code></pre></div>
+<p>This distinction is important because the call provides the additional
+runtime arguments through which the dynamic instance positions are
+resolved. Once <code>Self::get(...)</code> is taken as an <a href="https://docs.rs/syn/2.0.111/syn/expr/struct.ExprCall.html" title="struct syn::expr::ExprCall"><code>ExprCall</code></a>, the
+transformation is no longer limited to replacing the type represented by
+the path. The call becomes the entry point for resolving the generated
+instance hierarchy.</p>
+<h3 id="dynamic-instance-resolution"><a class="doc-anchor" href="#dynamic-instance-resolution">§</a>Dynamic instance resolution</h3>
+<p>Resolution begins from the <a href="../../node/state/constant.INITIAL_NODE.html" title="constant instances_macros::node::state::INITIAL_NODE"><code>crate::node::state::INITIAL_NODE</code></a> and derives
+the instance states that can be reached for the supplied dynamic identifiers. The
+resolver derives the corresponding counters, borders, affiliate instances,
+and accessor expressions required at each reachable depth (<a href="struct.DerivedItems.html" title="struct instances_macros::access::nonleaf::DerivedItems"><code>DerivedItems</code></a>).</p>
+<p>The dynamic identifiers are converted into checker expressions which search
+the appropriate final counter collections. A successful lookup produces the
+numeric position of the identifier:</p>
+<div class="example-wrap"><pre class="language-text"><code>Some(index)</code></pre></div>
+<p>An identifier that does not exist produces:</p>
+<div class="example-wrap"><pre class="language-text"><code>None</code></pre></div>
+<p>These results are combined with the generated accessors through nested
+<code>match</code> expressions. Each successful match selects the accessor belonging
+to the resolved position and, when another dynamic dimension remains,
+continues resolution at the next level.</p>
+<p>Conceptually, for two dynamic identifiers, the generated expression has the
+following form:</p>
+<div class="example-wrap"><pre class="language-text"><code>match check(id1) {
+    Some(i1) =&gt; match check_next(i1, id2) {
+        Some(i2) =&gt; accessor(i1, i2),
+        None =&gt; Error::OutOfRange,
+    },
+    None =&gt; Error::OutOfRange,
+}</code></pre></div>
+<p><code>Error::OutOfRange</code> represents a dynamic identifier that cannot be found in
+the corresponding counter collection. <code>Error::Exhausted</code> represents a
+numeric position for which no generated accessor exists but its evident that
+the dynamic identifier is available.</p>
+<p>The transformation therefore derives the runtime selection expression for
+every reachable depth rather than attempting to resolve the dynamic
+identifiers statically. The generated match clauses encode the possible
+counter positions, while the generated accessor expressions represent the
+instance state associated with each position.</p>
+<h3 id="derived-hierarchy-state"><a class="doc-anchor" href="#derived-hierarchy-state">§</a>Derived hierarchy state</h3>
+<p><a href="struct.ExprCallEssentials.html" title="struct instances_macros::access::nonleaf::ExprCallEssentials"><code>ExprCallEssentials</code></a> collects the information required to construct this
+resolution, including the generated node representations, initial and final
+instances, counter indexes, dynamic identifiers, prefixes, instance trait,
+surrounding generics, and hierarchy depths.</p>
+<p><a href="struct.BorderInfo.html" title="struct instances_macros::access::nonleaf::BorderInfo"><code>BorderInfo</code></a> represents the state at an individual counter boundary.
+Resolution of a border determines the affiliate instance and counter needed
+to continue toward the next depth. <a href="struct.DerivedItems.html" title="struct instances_macros::access::nonleaf::DerivedItems"><code>DerivedItems</code></a> collects the identifier
+checkers, generated aliases, accessor expressions, and border information
+produced while deriving the complete hierarchy.</p>
+<p>Intermediate types are materialized as generated aliases so that the
+derived instance states can be referenced by the generated expressions.
+<a href="enum.Projection.html" title="enum instances_macros::access::nonleaf::Projection"><code>Projection</code></a> then describes the operation performed on each resolved
+instance, such as projecting an associated item or invoking an associated
+function.</p>
+<p>The final result of the transformation is therefore a complete expression
+whose runtime arguments select the appropriate positions in the generated
+instance hierarchy, whose match clauses perform that selection, whose
+accessors represent the corresponding instance states, and whose error
+branches handle positions that cannot be resolved.</p>
+</div></details><h2 id="structs" class="section-header">Structs<a href="#structs" class="anchor">§</a></h2><dl class="item-table"><dt><a class="struct" href="struct.BorderInfo.html" title="struct instances_macros::access::nonleaf::BorderInfo">Border<wbr>Info</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Holds the intermediate state produced while deriving a single counter
+border.</dd><dt><a class="struct" href="struct.DerivedItems.html" title="struct instances_macros::access::nonleaf::DerivedItems">Derived<wbr>Items</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Collects all intermediate artifacts needed to assemble the final
+dynamic-counter expression.</dd><dt><a class="struct" href="struct.ExprCallEssentials.html" title="struct instances_macros::access::nonleaf::ExprCallEssentials">Expr<wbr>Call<wbr>Essentials</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Collects the derived components required to transform an
+instance associated function call.</dd><dt><a class="struct" href="struct.InstanceNonLeafExprCallAccess.html" title="struct instances_macros::access::nonleaf::InstanceNonLeafExprCallAccess">Instance<wbr>NonLeaf<wbr>Expr<wbr>Call<wbr>Access</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Resolves non-leaf instance-associated function calls through the generated
+instance hierarchy.</dd><dt><a class="struct" href="struct.InstanceNonLeafTerminalPathAccess.html" title="struct instances_macros::access::nonleaf::InstanceNonLeafTerminalPathAccess">Instance<wbr>NonLeaf<wbr>Terminal<wbr>Path<wbr>Access</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Resolves a non-leaf instance path to its terminal instance node.</dd><dt><a class="struct" href="struct.NodeNeighbours.html" title="struct instances_macros::access::nonleaf::NodeNeighbours">Node<wbr>Neighbours</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Describes the generated type representations associated with an instance
+node and its position within the instance hierarchy (see <a href="../../node/index.html" title="mod instances_macros::node"><code>crate::node</code></a>).</dd></dl><h2 id="enums" class="section-header">Enums<a href="#enums" class="anchor">§</a></h2><dl class="item-table"><dt><a class="enum" href="enum.Projection.html" title="enum instances_macros::access::nonleaf::Projection">Projection</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Describes a projection from a tokenized base path to a path segment,
+associated-function call, or trait-associated function call.</dd></dl><h2 id="functions" class="section-header">Functions<a href="#functions" class="anchor">§</a></h2><dl class="item-table"><dt><a class="fn" href="fn.make_type.html" title="fn instances_macros::access::nonleaf::make_type">make_<wbr>type</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Materializes types as generated aliases and returns paths to those aliases.</dd><dt><a class="fn" href="fn.subscriber_call_expr.html" title="fn instances_macros::access::nonleaf::subscriber_call_expr">subscriber_<wbr>call_<wbr>expr</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Builds the complete subscriber call expression from the supplied instance
+type and access arguments.</dd><dt><a class="fn" href="fn.subscriber_call_path.html" title="fn instances_macros::access::nonleaf::subscriber_call_path">subscriber_<wbr>call_<wbr>path</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Resolves the terminal subscriber access for an associated type.</dd><dt><a class="fn" href="fn.validate_subscriber_call_path.html" title="fn instances_macros::access::nonleaf::validate_subscriber_call_path">validate_<wbr>subscriber_<wbr>call_<wbr>path</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Validates the terminal subscriber access for an associated type.</dd></dl><h2 id="types" class="section-header">Type Aliases<a href="#types" class="anchor">§</a></h2><dl class="item-table"><dt><a class="type" href="type.ExprCallContext.html" title="type instances_macros::access::nonleaf::ExprCallContext">Expr<wbr>Call<wbr>Context</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt></dl></section></div></main></body></html>

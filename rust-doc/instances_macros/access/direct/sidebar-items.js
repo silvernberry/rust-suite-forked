@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["publisher_call","subscriber_call","validate_publisher_call","validate_subscriber_call"],"struct":["InstanceDirectAccess","InstanceDirectAccessEntry","InstanceDirectAccessExprCall","InstanceDirectAccessExprPath","InstanceDirectAccessExprRef","InstanceDirectAccessExprRetn","InstanceDirectAccessExprTry","InstanceDirectAccessExprTuple"]};

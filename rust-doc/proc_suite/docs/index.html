@@ -1,0 +1,84 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Utilities for generating and attaching structured Rustdoc attributes to `syn` syntax nodes."><title>proc_suite::docs - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-0c87338a.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="proc_suite" data-themes="" data-resource-suffix="" data-rustdoc-version="1.99.0 (b940084d7 2026-09-28)" data-channel="1.99.0" data-search-js="search-cf4fc35e.js" data-stringdex-js="stringdex-b5109af9.js" data-settings-js="settings-170eb4bf.js" ><script src="../../static.files/storage-41dd4d93.js"></script><script defer src="../sidebar-items.js"></script><script defer src="../../static.files/main-417ebf0a.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-9f56287d.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc mod"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><rustdoc-topbar><h2><a href="#">Module docs</a></h2></rustdoc-topbar><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../../proc_suite/index.html">proc_<wbr>suite</a><span class="version">0.1.0</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">Module docs</a></h2><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#documentation-support-for-syn-nodes" title="Documentation support for `syn` nodes">Documentation support for <code>syn</code> nodes</a></li><li><a href="#documentation-representation" title="Documentation representation">Documentation representation</a></li><li><a href="#rendering" title="Rendering">Rendering</a></li></ul><h3><a href="#enums">Module Items</a></h3><ul class="block"><li><a href="#enums" title="Enums">Enums</a></li><li><a href="#traits" title="Traits">Traits</a></li><li><a href="#functions" title="Functions">Functions</a></li></ul></section><div id="rustdoc-modnav"><h2 class="in-crate"><a href="../index.html">In crate proc_<wbr>suite</a></h2></div></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><div class="width-limiter"><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><div class="rustdoc-breadcrumbs"><a href="../index.html">proc_suite</a></div><h1>Module <span>docs</span>&nbsp;<button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../../src/proc_suite/docs.rs.html#16-677">Source</a> </span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Utilities for generating and attaching structured Rustdoc attributes to
+<a href="https://docs.rs/syn/2.0.111/syn/index.html" title="mod syn"><code>syn</code></a> syntax nodes.</p>
+<p>This module provides <a href="trait.InsertDocs.html" title="trait proc_suite::docs::InsertDocs"><code>InsertDocs</code></a>, <a href="enum.DocAttr.html" title="enum proc_suite::docs::DocAttr"><code>DocAttr</code></a>, and <a href="enum.DocCodeBlock.html" title="enum proc_suite::docs::DocCodeBlock"><code>DocCodeBlock</code></a> for
+constructing documentation programmatically during proc-macro
+transformations. Instead of manually constructing <code>#[doc = "..."]</code>
+attributes, documentation can be expressed as structured values and then
+attached directly to the relevant syntax node.</p>
+<p>The primary entry point is <a href="trait.InsertDocs.html" title="trait proc_suite::docs::InsertDocs"><code>InsertDocs</code></a>. It provides a common interface
+for inserting, replacing, appending, prepending, and clearing documentation
+on supported <a href="https://docs.rs/syn/2.0.111/syn/index.html" title="mod syn"><code>syn</code></a> nodes.</p>
+<p><a href="trait.InsertDocs.html" title="trait proc_suite::docs::InsertDocs"><code>InsertDocs</code></a> is built on the lower-level attribute operation traits.
+A syntax-tree type becomes documentation-capable by providing the required
+attribute operations, while <a href="trait.InsertDocs.html" title="trait proc_suite::docs::InsertDocs"><code>InsertDocs</code></a> supplies the higher-level
+documentation behavior through their default implementations.</p>
+<p>For example, documentation can be attached to a trait item using:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code>item.insert_docs(<span class="macro">vec!</span>[
+    DocAttr::Raw(<span class="string">"Associated instance counter type for instance trait "</span>.into()),
+    DocAttr::Ref(<span class="string">"InstanceTrait"</span>.into()),
+    DocAttr::LineBreak,
+    DocAttr::Bullet {
+        level: <span class="number">1</span>,
+        content: <span class="macro">vec!</span>[
+            DocAttr::Raw(<span class="string">"Must be the same unsigned type used by all instance counters: "</span>.into()),
+            DocAttr::Inline(<span class="string">"Counter"</span>.into()),
+        ],
+    },
+    DocAttr::Bullet {
+        level: <span class="number">1</span>,
+        content: <span class="macro">vec!</span>[
+            DocAttr::Raw(<span class="string">"Expected type: "</span>.into()),
+            DocAttr::Inline(<span class="string">"usize"</span>.into()),
+        ],
+    },
+]);</code></pre></div>
+<p>The structured values are rendered into ordinary Rustdoc attributes such
+as:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="attr">#[doc = <span class="string">"Associated instance counter type for instance trait [`InstanceTrait`]"</span>]
+#[doc = <span class="string">""</span>]
+#[doc = <span class="string">"  - Must be the same unsigned type used by all instance counters: `Counter`"</span>]
+#[doc = <span class="string">"  - Expected type: `usize`"</span>]</span></code></pre></div><h3 id="documentation-support-for-syn-nodes"><a class="doc-anchor" href="#documentation-support-for-syn-nodes">§</a>Documentation support for <code>syn</code> nodes</h3>
+<p><a href="trait.InsertDocs.html" title="trait proc_suite::docs::InsertDocs"><code>InsertDocs</code></a> is available for syntax-tree types that provide the
+attribute operations required by the trait. These operations provide the
+primitive mechanisms for manipulating a node’s <code>Vec&lt;Attribute&gt;</code>:</p>
+<ul>
+<li>inserting and pushing attributes</li>
+<li>prepending attributes</li>
+<li>locating documentation attributes</li>
+<li>removing documentation attributes</li>
+</ul>
+<p><a href="trait.InsertDocs.html" title="trait proc_suite::docs::InsertDocs"><code>InsertDocs</code></a> builds the higher-level documentation API from these
+operations. Its default methods are therefore shared by every supported
+syntax-tree type, keeping documentation rendering and document-management
+semantics consistent across nodes.</p>
+<h3 id="documentation-representation"><a class="doc-anchor" href="#documentation-representation">§</a>Documentation representation</h3>
+<p><a href="enum.DocAttr.html" title="enum proc_suite::docs::DocAttr"><code>DocAttr</code></a> provides the structured documentation primitives used by the
+transformation code. It supports raw Markdown, line breaks, headings,
+bullet lists, numbered lists, code blocks, external links, Rustdoc
+references, inline code, and blockquotes.</p>
+<p><a href="enum.DocCodeBlock.html" title="enum proc_suite::docs::DocCodeBlock"><code>DocCodeBlock</code></a> provides the supported code-block representations,
+including Rust syntax trees, ignored Rust examples, manually specified
+fenced blocks, and plain-text blocks.</p>
+<p>Nested <a href="enum.DocAttr.html" title="enum proc_suite::docs::DocAttr"><code>DocAttr</code></a> values can be used to compose a single documentation
+element. For example:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code>DocAttr::Bullet {
+    level: <span class="number">1</span>,
+    content: <span class="macro">vec!</span>[
+        DocAttr::Raw(<span class="string">"Expected type: "</span>.into()),
+        DocAttr::Inline(expected_ty.into()),
+    ],
+}</code></pre></div><h3 id="rendering"><a class="doc-anchor" href="#rendering">§</a>Rendering</h3>
+<p><a href="enum.DocAttr.html" title="enum proc_suite::docs::DocAttr"><code>DocAttr</code></a> values are converted into one or more Rustdoc lines before they
+are attached to the syntax node. Each rendered line becomes an individual
+<code>#[doc = "..."]</code> attribute.</p>
+<p>Structured block elements such as headings and lists are rendered as
+Markdown, while inline elements can be combined recursively to construct
+a single documentation line.</p>
+<p>This separation between documentation construction, rendering, and
+attribute manipulation allows proc-macro transformations to generate
+consistent Rustdoc while keeping the syntax-tree operations independent
+from the specific documentation content.</p>
+</div></details><h2 id="enums" class="section-header">Enums<a href="#enums" class="anchor">§</a></h2><dl class="item-table"><dt><a class="enum" href="enum.DocAttr.html" title="enum proc_suite::docs::DocAttr">DocAttr</a></dt><dd>Represents a structured documentation element used to generate Rustdoc.</dd><dt><a class="enum" href="enum.DocCodeBlock.html" title="enum proc_suite::docs::DocCodeBlock">DocCode<wbr>Block</a></dt><dd>Represents the supported fenced code-block forms used by <a href="enum.DocAttr.html" title="enum proc_suite::docs::DocAttr"><code>DocAttr</code></a>.</dd></dl><h2 id="traits" class="section-header">Traits<a href="#traits" class="anchor">§</a></h2><dl class="item-table"><dt><a class="trait" href="trait.InsertDocs.html" title="trait proc_suite::docs::InsertDocs">Insert<wbr>Docs</a></dt><dd>Inserts structured rustdoc attributes onto a syntax node.</dd></dl><h2 id="functions" class="section-header">Functions<a href="#functions" class="anchor">§</a></h2><dl class="item-table"><dt><a class="fn" href="fn.render_doc_attr.html" title="fn proc_suite::docs::render_doc_attr">render_<wbr>doc_<wbr>attr</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Converts structured DocAttr into one or more rustdoc lines.</dd><dt><a class="fn" href="fn.render_inline.html" title="fn proc_suite::docs::render_inline">render_<wbr>inline</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Renders inline recursive content into a single line.</dd></dl></section></div></main></body></html>

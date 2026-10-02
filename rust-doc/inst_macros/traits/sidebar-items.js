@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["append_placeholder_args","append_placeholder_args_to_trait","cfg_feature_disclaimer","path_to_string","type_param_bound_to_string"],"struct":["ConstParamVisitor","ItemTypeInst","ItemTypeNodeInst","ItemTypeTupleInst","TraitGenericsInst","TraitInst","TraitInstDoc"],"type":["AddonSpace"]};

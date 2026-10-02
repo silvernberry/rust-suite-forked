@@ -1,0 +1,242 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Transforms an instance-bound `impl` into standalone Rust items that expose the associated types, constants, and functions through the instance hierarchy."><title>instances_macros::access - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-0c87338a.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="instances_macros" data-themes="" data-resource-suffix="" data-rustdoc-version="1.99.0 (b940084d7 2026-09-28)" data-channel="1.99.0" data-search-js="search-cf4fc35e.js" data-stringdex-js="stringdex-b5109af9.js" data-settings-js="settings-170eb4bf.js" ><script src="../../static.files/storage-41dd4d93.js"></script><script defer src="../sidebar-items.js"></script><script defer src="../../static.files/main-417ebf0a.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-9f56287d.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc mod"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><rustdoc-topbar><h2><a href="#">Module access</a></h2></rustdoc-topbar><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../../instances_macros/index.html">instances_<wbr>macros</a><span class="version">0.1.0</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">Module access</a></h2><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#validation" title="Validation">Validation</a></li><li><a href="#extraction" title="Extraction">Extraction</a></li><li><a href="#generic-propagation" title="Generic propagation">Generic propagation</a></li><li><a href="#leaf-access" title="Leaf access">Leaf access</a></li><li><a href="#non-leaf-access" title="Non-leaf access">Non-leaf access</a></li><li><a href="#standalone-self-references" title="Standalone `Self` references">Standalone <code>Self</code> references</a></li><li><a href="#documentation-representation" title="Documentation representation">Documentation representation</a></li><li><a href="#final-result" title="Final result">Final result</a></li></ul><h3><a href="#modules">Module Items</a></h3><ul class="block"><li><a href="#modules" title="Modules">Modules</a></li><li><a href="#structs" title="Structs">Structs</a></li><li><a href="#types" title="Type Aliases">Type Aliases</a></li></ul></section><div id="rustdoc-modnav"><h2 class="in-crate"><a href="../index.html">In crate instances_<wbr>macros</a></h2></div></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><div class="width-limiter"><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><div class="rustdoc-breadcrumbs"><a href="../index.html">instances_macros</a></div><h1>Module <span>access</span>&nbsp;<button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../../src/instances_macros/access/mod.rs.html#16-1144">Source</a> </span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Transforms an instance-bound <code>impl</code> into standalone Rust items that expose
+the associated types, constants, and functions through the instance
+hierarchy.</p>
+<p>The transformation begins with an <code>impl</code> whose <code>Self</code> type represents an
+instance node. The associated items inside that <code>impl</code> can use <code>Self</code> to
+refer to the instance-bound types and functions.</p>
+<p>For example, an instance-node associated type’s inherent
+implementation may contain:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">impl</span>&lt;T: NodeBound&gt; <span class="kw">for </span>T::Node
+<span class="kw">where
+    </span><span class="self">Self</span>: InstanceBound,
+{
+    <span class="kw">type </span>Value = <span class="self">Self</span>::Data;
+
+    <span class="kw">fn </span>get() -&gt; <span class="self">Self</span>::Value {
+        <span class="self">Self</span>::value()
+    }
+}</code></pre></div>
+<p>The access transformation does not leave these items inside the <code>impl</code>.
+It validates the restricted instance-access syntax, extracts the instance
+information, propagates the required generics, and replaces the <code>Self</code>
+references with explicit instance-bound representations.</p>
+<p>A simple associated-type access such as:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="self">Self</span>::Value</code></pre></div>
+<p>is transformed into an explicit instance-bound access:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code>&lt;&lt;T <span class="kw">as </span>NodeBound&gt;::Node <span class="kw">as </span>InstanceBound&gt;::Value</code></pre></div>
+<p>For a leaf instance, where the instance is already known, the access is
+specialized to the fixed instance representation:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="self">Self</span>::Value</code></pre></div>
+<p>becomes conceptually:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code>&lt;&lt;T <span class="kw">as </span>NodeBound&gt;::Node <span class="kw">as </span>InstanceBound&gt;::Value</code></pre></div>
+<p>The same transformation applies to associated-function calls. For example:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="self">Self</span>::get()</code></pre></div>
+<p>becomes an explicit access to the instance-bound function:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code>&lt;&lt;T <span class="kw">as </span>NodeBound&gt;::Node <span class="kw">as </span>InstanceBound&gt;::get()</code></pre></div>
+<p>The original associated items are then emitted as standalone items rather
+than remaining inside the implementation:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">impl</span>&lt;T: NodeBound&gt; <span class="kw">for </span>T::Node
+<span class="kw">where
+    </span><span class="self">Self</span>: InstanceBound,
+{
+    <span class="kw">type </span>Value = <span class="self">Self</span>::Data;
+
+    <span class="kw">fn </span>get() -&gt; <span class="self">Self</span>::Value {
+        <span class="self">Self</span>::value()
+    }
+}</code></pre></div>
+<p>becomes conceptually:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">type </span>Value&lt;T&gt; = &lt;&lt;T <span class="kw">as </span>NodeBound&gt;::Node <span class="kw">as </span>InstanceBound&gt;::Data;
+
+<span class="kw">fn </span>get&lt;T&gt;() -&gt; Value&lt;T&gt; {
+    &lt;&lt;T <span class="kw">as </span>NodeBound&gt;::Node <span class="kw">as </span>InstanceBound&gt;::value()
+}</code></pre></div>
+<p>The exact generated representation depends on whether the access is a leaf
+or non-leaf access (<a href="args/enum.AccessArgs.html" title="enum instances_macros::access::args::AccessArgs"><code>AccessArgs</code></a>), but the important property is that the
+generated items no longer depend on the surrounding <code>impl</code> for their instance context.</p>
+<h3 id="validation"><a class="doc-anchor" href="#validation">§</a>Validation</h3>
+<p>Before transformation, the input is checked against the syntax supported by
+instance access. This includes the form of the impl self type, the supported
+forms of <code>Self</code>, associated-item qualification, associated-type
+dependencies, function receivers, constants, and predicates.</p>
+<p>For example, the following <code>Self</code> forms are supported:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="self">Self
+</span><span class="self">Self</span>::Item
+<span class="self">Self</span>::Item&lt;T&gt;
+&lt;<span class="self">Self </span><span class="kw">as </span>Trait&gt;::Item
+&lt;<span class="self">Self</span>::Item <span class="kw">as </span>Trait&gt;::Item</code></pre></div>
+<p>Unsupported forms are rejected before replacement is attempted:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="self">Self</span>&lt;T&gt;
+&lt;T <span class="kw">as </span><span class="self">Self</span>&gt;::Item
+&lt;T <span class="kw">as </span>Trait&gt;::<span class="self">Self</span></code></pre></div>
+<p>This keeps the later transformation passes working on syntax whose meaning
+is already unambiguous within the instance-access model.</p>
+<h3 id="extraction"><a class="doc-anchor" href="#extraction">§</a>Extraction</h3>
+<p>Once the input has been validated, the instance node (<a href="extract/struct.InstanceNodeBound.html" title="struct instances_macros::access::extract::InstanceNodeBound"><code>InstanceNodeBound</code></a>)
+and its instance bound (<a href="extract/struct.InstanceBound.html" title="struct instances_macros::access::extract::InstanceBound"><code>InstanceBound</code></a>) are extracted from the implementation.</p>
+<p>For example, an implementation rooted at an instance type provides the
+information required to interpret:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="self">Self</span>::Item</code></pre></div>
+<p>as an access to an associated item belonging to that instance rather than
+as an ordinary Rust associated-item lookup.</p>
+<p>The extracted information is then used by the subsequent replacement
+passes, so those passes do not need to rediscover the instance hierarchy
+from the original syntax.</p>
+<h3 id="generic-propagation"><a class="doc-anchor" href="#generic-propagation">§</a>Generic propagation</h3>
+<p>Because associated items are eventually emitted as standalone items, generic
+parameters that originally belonged to the <code>impl</code> must be made available to
+those generated items.</p>
+<h3 id="leaf-access"><a class="doc-anchor" href="#leaf-access">§</a>Leaf access</h3>
+<p>Leaf access is used when the requested instance is already known.
+Consequently, the transformation can directly specialize the instance
+representation.</p>
+<p>For example:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="self">Self</span>::Value</code></pre></div>
+<p>can become:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code>&lt;T::Node <span class="kw">as </span>InstanceBound&lt;Concrete&gt;&gt;::Value</code></pre></div>
+<p>and:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="self">Self</span>::get()</code></pre></div>
+<p>can become:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code>&lt;T::Node <span class="kw">as </span>InstanceBound&lt;Concrete&gt;&gt;::get()</code></pre></div>
+<p>No runtime instance-position lookup is required because the instance is
+fixed by the generated type representation.</p>
+<h3 id="non-leaf-access"><a class="doc-anchor" href="#non-leaf-access">§</a>Non-leaf access</h3>
+<p>Non-leaf access is different because the requested instance is selected at
+runtime. Rust does not provide dynamic selection of a trait instance in the
+form required by this transformation, so non-leaf access provides this
+ability by generating a statically known instance hierarchy and performing
+the selection over that hierarchy at runtime.</p>
+<p>The generated function therefore receives additional byte-string arguments
+containing the dynamic identifiers used to select the instance.</p>
+<p>An access such as:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="self">Self</span>::get(id)</code></pre></div>
+<p>represents a runtime instance selection. The transformation starts from a
+known initial instance and optimistically derives the reachable trait
+instances as a range of statically generated positions. The runtime
+identifier is then used to select the corresponding position within that
+generated range.</p>
+<p>The hierarchy and all possible positions are generated statically. Runtime
+execution only determines which of those already-generated positions is
+selected.</p>
+<p>Conceptually, a single dynamic identifier is resolved as:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">match </span>check(id) {
+    <span class="prelude-val">Some</span>(index) =&gt; accessor(index),
+    <span class="prelude-val">None </span>=&gt; Error::OutOfRange,
+}</code></pre></div>
+<p>When multiple dynamic identifiers are involved, each identifier selects a
+position at its corresponding level of the generated hierarchy:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">match </span>check(id1) {
+    <span class="prelude-val">Some</span>(index1) =&gt; <span class="kw">match </span>check_next(index1, id2) {
+        <span class="prelude-val">Some</span>(index2) =&gt; accessor(index1, index2),
+        <span class="prelude-val">None </span>=&gt; Error::OutOfRange,
+    },
+    <span class="prelude-val">None </span>=&gt; Error::OutOfRange,
+}</code></pre></div>
+<p>The additional runtime cost is therefore minimized to the generated
+selection matches. Each dynamic identifier incurs one such selection,
+which the compiler can optimize into a jump table where appropriate.
+There is no runtime traversal of the trait hierarchy itself; the hierarchy
+has already been derived and materialized during code generation.</p>
+<p>The runtime cost is additionally O(D), where D is the number of dynamic identifiers.
+Each dynamic identifier contributes one generated selection, typically
+compiled as a jump table, so the runtime performs one positional dispatch
+per dynamic identifier.</p>
+<p><code>Error::OutOfRange</code> represents an identifier that cannot be resolved at the
+required position. <code>Error::Exhausted</code> represents a resolved numeric position
+for which no generated accessor exists, even though the identifier itself
+exists.</p>
+<p>Associated-type paths in non-leaf access do not themselves contain these
+runtime identifiers. For example:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="self">Self</span>::Assoc</code></pre></div>
+<p>is transformed into the terminal representation:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code>&lt;T::Node <span class="kw">as </span>InstanceBound&lt;TerminalAccess&gt;&gt;::Assoc</code></pre></div>
+<p>The dynamic identifiers are introduced when the enclosing function call is
+transformed.</p>
+<h3 id="standalone-self-references"><a class="doc-anchor" href="#standalone-self-references">§</a>Standalone <code>Self</code> references</h3>
+<p><code>Self</code> references that refer to the implementation itself are also replaced
+because the generated items no longer have an enclosing <code>impl</code> providing
+<code>Self</code>.</p>
+<p>For example:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">fn </span>make() -&gt; <span class="self">Self </span>{
+    ...
+}</code></pre></div>
+<p>must become a standalone function whose return type explicitly identifies
+the original implementation self type.</p>
+<h3 id="documentation-representation"><a class="doc-anchor" href="#documentation-representation">§</a>Documentation representation</h3>
+<p>The transformation also produces a documentation representation of the
+generated items. The implementation is transformed separately for
+<code>cfg(doc)</code> and <code>cfg(not(doc))</code> so that documentation can expose the
+instance-access structure without requiring the runtime machinery used by
+non-leaf access.</p>
+<p>The executable representation therefore contains the runtime resolution
+required for dynamic instance access, while the documentation
+representation preserves the corresponding generated API structure.</p>
+<h3 id="final-result"><a class="doc-anchor" href="#final-result">§</a>Final result</h3>
+<p>The complete transformation can therefore be viewed from the user’s
+perspective as taking an instance-bound implementation such as:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">impl</span>&lt;T: NodeBound&gt; T::Node {
+    <span class="kw">type </span>Value = <span class="self">Self</span>::Data;
+
+    <span class="kw">fn </span>get(id: <span class="kw-2">&amp;</span>[u8]) -&gt; <span class="self">Self</span>::Value {
+        <span class="self">Self</span>::value()
+    }
+}</code></pre></div>
+<p>and producing standalone generated items whose instance accesses are
+explicit:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">type </span>Value&lt;T&gt; =
+    &lt;&lt;T <span class="kw">as </span>NodeBound&gt;::Node <span class="kw">as </span>InstanceBound&lt;...&gt;&gt;::Data;
+
+<span class="kw">fn </span>get&lt;T&gt;(id: <span class="kw-2">&amp;</span>[u8]) -&gt; Value&lt;T&gt; {
+    <span class="comment">/* generated instance resolution */
+</span>}</code></pre></div>
+<p>The implementation is no longer required after lowering. Validation
+establishes that the source can be represented by the instance-access
+model, extraction identifies the instance information, replacement lowers
+the <code>Self</code>-based representation into explicit generated syntax, and final
+confirmation verifies that the resulting standalone items satisfy the
+invariants of the generated representation.</p>
+</div></details><h2 id="modules" class="section-header">Modules<a href="#modules" class="anchor">§</a></h2><dl class="item-table"><dt><a class="mod" href="args/index.html" title="mod instances_macros::access::args">args</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Defines the syntax representations and extraction helpers for instance
+access arguments, including supported access forms, their key-specific
+arguments, and normalized components such as indexes, identifiers, prefixes,
+and hierarchy depths.</dd><dt><a class="mod" href="direct/index.html" title="mod instances_macros::access::direct">direct</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Direct access to instance-trait associated items through a resolved instance.</dd><dt><a class="mod" href="errors/index.html" title="mod instances_macros::access::errors">errors</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Diagnostics emitted by the instance-access proc-macro pipeline.</dd><dt><a class="mod" href="extract/index.html" title="mod instances_macros::access::extract">extract</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Provides extraction and confirmation logic for instance-access
+transformation.</dd><dt><a class="mod" href="getter/index.html" title="mod instances_macros::access::getter">getter</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Provides instance-getter transformation for expressions containing
+instance-trait associated item’s inherent associated items access (assoc’s assoc).</dd><dt><a class="mod" href="leaf/index.html" title="mod instances_macros::access::leaf">leaf</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Recursive rewriting of instance-trait leaf-config access expressions.</dd><dt><a class="mod" href="nonleaf/index.html" title="mod instances_macros::access::nonleaf">nonleaf</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Resolves non-leaf instance access whose dynamic arguments are supplied at
+runtime as additional byte-string function arguments.</dd><dt><a class="mod" href="replace/index.html" title="mod instances_macros::access::replace">replace</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Defines the replacement passes that lower validated instance-access syntax
+into explicit Rust syntax that can exist independently of the original
+implementation context.</dd><dt><a class="mod" href="valid/index.html" title="mod instances_macros::access::valid">valid</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Defines the validation rules that establish the restricted syntax accepted
+by the instance-access transformation.</dd><dt><a class="mod" href="wrappers/index.html" title="mod instances_macros::access::wrappers">wrappers</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Defines wrappers that convert supported implementation items <a href="https://docs.rs/syn/2.0.111/syn/item/enum.ImplItem.html" title="enum syn::item::ImplItem"><code>ImplItem</code></a>
+into standalone Rust items <a href="https://docs.rs/syn/2.0.111/syn/item/enum.Item.html" title="enum syn::item::Item"><code>Item</code></a> and apply the configuration attributes
+required by the generated documentation and non-documentation representations.</dd></dl><h2 id="structs" class="section-header">Structs<a href="#structs" class="anchor">§</a></h2><dl class="item-table"><dt><a class="struct" href="struct.InstanceAccess.html" title="struct instances_macros::access::InstanceAccess">Instance<wbr>Access</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Performs the complete instance-access transformation on a Rust file.</dd><dt><a class="struct" href="struct.InstanceAccessDocReplacement.html" title="struct instances_macros::access::InstanceAccessDocReplacement">Instance<wbr>Access<wbr>DocReplacement</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Performs instance-access replacement for the documentation representation.</dd><dt><a class="struct" href="struct.InstanceAccessFinalize.html" title="struct instances_macros::access::InstanceAccessFinalize">Instance<wbr>Access<wbr>Finalize</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Finalizes the transformed implementation by removing transformation-only
+attributes that are no longer required in the generated representation.</dd><dt><a class="struct" href="struct.InstanceAccessImpl.html" title="struct instances_macros::access::InstanceAccessImpl">Instance<wbr>Access<wbr>Impl</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Performs the complete executable instance-access transformation for an
+implementation.</dd><dt><a class="struct" href="struct.InstanceAccessImplDoc.html" title="struct instances_macros::access::InstanceAccessImplDoc">Instance<wbr>Access<wbr>Impl<wbr>Doc</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Performs the complete documentation instance-access transformation for an
+implementation.</dd><dt><a class="struct" href="struct.InstanceAccessPostReplacement.html" title="struct instances_macros::access::InstanceAccessPostReplacement">Instance<wbr>Access<wbr>Post<wbr>Replacement</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Performs the final instance-access replacement after the implementation has
+been validated, extracted, and prepared for lowering into standalone items.</dd><dt><a class="struct" href="struct.InstanceAccessPostValidation.html" title="struct instances_macros::access::InstanceAccessPostValidation">Instance<wbr>Access<wbr>Post<wbr>Validation</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Performs the validation that depends on the instance-bound information
+extracted from the implementation.</dd><dt><a class="struct" href="struct.InstanceAccessPreReplacement.html" title="struct instances_macros::access::InstanceAccessPreReplacement">Instance<wbr>Access<wbr>PreReplacement</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Prepares the instance-bound implementation for the final instance-access
+replacement.</dd><dt><a class="struct" href="struct.InstanceAccessPreValidation.html" title="struct instances_macros::access::InstanceAccessPreValidation">Instance<wbr>Access<wbr>PreValidation</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Performs the initial validation of the implementation before any
+instance-specific information is extracted.</dd><dt><a class="struct" href="struct.InstanceNodeExtraction.html" title="struct instances_macros::access::InstanceNodeExtraction">Instance<wbr>Node<wbr>Extraction</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Extracts the instance node and bound from the implementation and validates
+the structural information required by the subsequent instance-access
+transformations.</dd></dl><h2 id="types" class="section-header">Type Aliases<a href="#types" class="anchor">§</a></h2><dl class="item-table"><dt><a class="type" href="type.NewMutateSpace.html" title="type instances_macros::access::NewMutateSpace">NewMutate<wbr>Space</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt></dl></section></div></main></body></html>

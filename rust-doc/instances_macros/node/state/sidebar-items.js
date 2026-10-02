@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["CHECKER_NODE","FINAL_NODE","GLOBAL_NODE","INITIAL_NODE","TERMINAL_CHECKER_NODE","TERMINAL_GLOBAL_NODE","TERMINAL_TWIN_NODE","TWIN_NODE"],"struct":["ImplNodeState","InstanceNode","InstanceTerminalNode","TraitNodeState"],"trait":["ImplNodeSegment","TraitNodeSegment"]};

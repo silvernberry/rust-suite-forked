@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["DiagSpan","ErrorCatalog","ErrorTag","GitHost"],"fn":["callsite_err_impl","format_msg","token_err_impl"],"mod":["syn_diagnostics"],"struct":["ActiveDevelopment","Diagnostic","ErrorDetails","ErrorId","ErrorInfo","ErrorMaintainers","GitHostInfo","Help","MultiDiagnostic","Note"],"trait":["ParseDiagnostic"]};

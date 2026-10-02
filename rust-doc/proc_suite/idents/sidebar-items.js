@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Case"],"fn":["append_lower","append_lower_str","append_separator","append_upper","append_upper_str","apply_case","bare_type_name","gen_ident_from_ident","gen_ident_from_marker","gen_ident_from_tokens","push_pascal_bytes","push_pascal_str","trim_separator"],"trait":["MarkerIdent"]};

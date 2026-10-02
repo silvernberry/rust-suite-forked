@@ -1,0 +1,80 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Inserts structured rustdoc attributes onto a syntax node."><title>InsertDocs in proc_suite::docs - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-0c87338a.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="proc_suite" data-themes="" data-resource-suffix="" data-rustdoc-version="1.99.0 (b940084d7 2026-09-28)" data-channel="1.99.0" data-search-js="search-cf4fc35e.js" data-stringdex-js="stringdex-b5109af9.js" data-settings-js="settings-170eb4bf.js" ><script src="../../static.files/storage-41dd4d93.js"></script><script defer src="sidebar-items.js"></script><script defer src="../../static.files/main-417ebf0a.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-9f56287d.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc trait"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><rustdoc-topbar><h2><a href="#">InsertDocs</a></h2></rustdoc-topbar><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../../proc_suite/index.html">proc_<wbr>suite</a><span class="version">0.1.0</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">Insert<wbr>Docs</a></h2><h3><a href="#provided-methods">Provided Methods</a></h3><ul class="block"><li><a href="#method.append_docs" title="append_docs">append_docs</a></li><li><a href="#method.clear_docs" title="clear_docs">clear_docs</a></li><li><a href="#method.has_docs" title="has_docs">has_docs</a></li><li><a href="#method.insert_docs" title="insert_docs">insert_docs</a></li><li><a href="#method.prepend_docs" title="prepend_docs">prepend_docs</a></li><li><a href="#method.replace_docs" title="replace_docs">replace_docs</a></li></ul><h3><a href="#dyn-compatibility">Dyn Compatibility</a></h3><h3><a href="#implementors">Implementors</a></h3></section><div id="rustdoc-modnav"><h2><a href="index.html">In proc_<wbr>suite::<wbr>docs</a></h2></div></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><div class="width-limiter"><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><div class="rustdoc-breadcrumbs"><a href="../index.html">proc_suite</a>::<wbr><a href="index.html">docs</a></div><h1>Trait <span class="trait">Insert<wbr>Docs</span>&nbsp;<button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../../src/proc_suite/docs.rs.html#421-548">Source</a> </span></div><pre class="rust item-decl"><code>pub trait InsertDocs:
+    <a class="trait" href="../syns/trait.PushAttribute.html" title="trait proc_suite::syns::PushAttribute">PushAttribute</a>
+    + <a class="trait" href="../syns/trait.PrependAttributes.html" title="trait proc_suite::syns::PrependAttributes">PrependAttributes</a>
+    + <a class="trait" href="../syns/trait.FirstDocAttribute.html" title="trait proc_suite::syns::FirstDocAttribute">FirstDocAttribute</a>
+    + <a class="trait" href="../syns/trait.ClearDocAttributes.html" title="trait proc_suite::syns::ClearDocAttributes">ClearDocAttributes</a> {
+    // Provided methods
+    fn <a href="#method.has_docs" class="fn">has_docs</a>(&amp;mut self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.bool.html">bool</a> { ... }
+<span class="item-spacer"></span>    fn <a href="#method.insert_docs" class="fn">insert_docs</a>&lt;I&gt;(&amp;mut self, docs: I)
+       <span class="where">where I: <a class="trait" href="https://doc.rust-lang.org/1.99.0/core/iter/traits/collect/trait.IntoIterator.html" title="trait core::iter::traits::collect::IntoIterator">IntoIterator</a>&lt;Item = <a class="enum" href="enum.DocAttr.html" title="enum proc_suite::docs::DocAttr">DocAttr</a>&gt;</span> { ... }
+<span class="item-spacer"></span>    fn <a href="#method.clear_docs" class="fn">clear_docs</a>(&amp;mut self) { ... }
+<span class="item-spacer"></span>    fn <a href="#method.replace_docs" class="fn">replace_docs</a>&lt;I&gt;(&amp;mut self, docs: I)
+       <span class="where">where I: <a class="trait" href="https://doc.rust-lang.org/1.99.0/core/iter/traits/collect/trait.IntoIterator.html" title="trait core::iter::traits::collect::IntoIterator">IntoIterator</a>&lt;Item = <a class="enum" href="enum.DocAttr.html" title="enum proc_suite::docs::DocAttr">DocAttr</a>&gt;</span> { ... }
+<span class="item-spacer"></span>    fn <a href="#method.append_docs" class="fn">append_docs</a>&lt;I&gt;(&amp;mut self, docs: I)
+       <span class="where">where I: <a class="trait" href="https://doc.rust-lang.org/1.99.0/core/iter/traits/collect/trait.IntoIterator.html" title="trait core::iter::traits::collect::IntoIterator">IntoIterator</a>&lt;Item = <a class="enum" href="enum.DocAttr.html" title="enum proc_suite::docs::DocAttr">DocAttr</a>&gt;</span> { ... }
+<span class="item-spacer"></span>    fn <a href="#method.prepend_docs" class="fn">prepend_docs</a>&lt;I&gt;(&amp;mut self, docs: I)
+       <span class="where">where I: <a class="trait" href="https://doc.rust-lang.org/1.99.0/core/iter/traits/collect/trait.IntoIterator.html" title="trait core::iter::traits::collect::IntoIterator">IntoIterator</a>&lt;Item = <a class="enum" href="enum.DocAttr.html" title="enum proc_suite::docs::DocAttr">DocAttr</a>&gt;</span> { ... }
+}</code></pre><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Inserts structured rustdoc attributes onto a syntax node.</p>
+<p>This trait is intended to be implemented for <code>syn</code> item types.</p>
+<p>It provides a unified API for attaching generated documentation
+without manually constructing:</p>
+<p><code>#[doc = "..."]</code></p>
+<p>attributes by hand.</p>
+<p>The implementation should:</p>
+<ol>
+<li>Convert <a href="enum.DocAttr.html" title="enum proc_suite::docs::DocAttr"><code>DocAttr</code></a> into one or more <code>#[doc = "..."]</code> attributes</li>
+<li>Preserve existing attributes where appropriate</li>
+<li>Insert generated docs in rustdoc-correct order</li>
+</ol>
+<p>Example:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code>item.insert_docs([
+    DocAttr::Heading {
+        level: <span class="number">1</span>,
+        content: <span class="macro">vec!</span>[DocAttr::Line(<span class="macro">vec!</span>[
+            DocAttr::Raw(<span class="string">"Overview"</span>.into())
+        ])],
+    },
+    DocAttr::Line(<span class="macro">vec!</span>[
+        DocAttr::Raw(<span class="string">"Provides structured diagnostics."</span>.into())
+    ]),
+]);</code></pre></div></div></details><h2 id="provided-methods" class="section-header">Provided Methods<a href="#provided-methods" class="anchor">§</a></h2><div class="methods"><details class="toggle method-toggle" open><summary><section id="method.has_docs" class="method"><a class="src rightside" href="../../src/proc_suite/docs.rs.html#427-433">Source</a><h4 class="code-header">fn <a href="#method.has_docs" class="fn">has_docs</a>(&amp;mut self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/1.99.0/std/primitive.bool.html">bool</a></h4></section></summary><div class="docblock"><p>Returns whether rustdoc attributes already exist.</p>
+<p>Used internally for append behavior.</p>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.insert_docs" class="method"><a class="src rightside" href="../../src/proc_suite/docs.rs.html#448-463">Source</a><h4 class="code-header">fn <a href="#method.insert_docs" class="fn">insert_docs</a>&lt;I&gt;(&amp;mut self, docs: I)<div class="where">where
+    I: <a class="trait" href="https://doc.rust-lang.org/1.99.0/core/iter/traits/collect/trait.IntoIterator.html" title="trait core::iter::traits::collect::IntoIterator">IntoIterator</a>&lt;Item = <a class="enum" href="enum.DocAttr.html" title="enum proc_suite::docs::DocAttr">DocAttr</a>&gt;,</div></h4></section></summary><div class="docblock"><p>Inserts documentation attributes onto <code>self</code>.
+Accepts any iterator of <a href="enum.DocAttr.html" title="enum proc_suite::docs::DocAttr"><code>DocAttr</code></a> so callers can pass:</p>
+<ul>
+<li>arrays</li>
+<li><code>Vec&lt;DocAttr&gt;</code></li>
+<li>iterators</li>
+<li>macro-generated pipelines</li>
+</ul>
+<p>without friction.</p>
+<p>Implementors are responsible for converting the structured
+syntax tree into emitted rustdoc attributes.</p>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.clear_docs" class="method"><a class="src rightside" href="../../src/proc_suite/docs.rs.html#475-479">Source</a><h4 class="code-header">fn <a href="#method.clear_docs" class="fn">clear_docs</a>(&amp;mut self)</h4></section></summary><div class="docblock"><p>Removes previously attached rustdoc attributes.</p>
+<p>This should typically remove:</p>
+<p><code>#[doc = "..."]</code></p>
+<p>while preserving unrelated attributes.</p>
+<p>Useful for regeneration workflows where docs are rebuilt
+from scratch.</p>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.replace_docs" class="method"><a class="src rightside" href="../../src/proc_suite/docs.rs.html#487-493">Source</a><h4 class="code-header">fn <a href="#method.replace_docs" class="fn">replace_docs</a>&lt;I&gt;(&amp;mut self, docs: I)<div class="where">where
+    I: <a class="trait" href="https://doc.rust-lang.org/1.99.0/core/iter/traits/collect/trait.IntoIterator.html" title="trait core::iter::traits::collect::IntoIterator">IntoIterator</a>&lt;Item = <a class="enum" href="enum.DocAttr.html" title="enum proc_suite::docs::DocAttr">DocAttr</a>&gt;,</div></h4></section></summary><div class="docblock"><p>Replaces all existing documentation with new generated docs.</p>
+<p>Default behavior:</p>
+<ol>
+<li>clear existing docs</li>
+<li>insert new docs</li>
+</ol>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.append_docs" class="method"><a class="src rightside" href="../../src/proc_suite/docs.rs.html#499-508">Source</a><h4 class="code-header">fn <a href="#method.append_docs" class="fn">append_docs</a>&lt;I&gt;(&amp;mut self, docs: I)<div class="where">where
+    I: <a class="trait" href="https://doc.rust-lang.org/1.99.0/core/iter/traits/collect/trait.IntoIterator.html" title="trait core::iter::traits::collect::IntoIterator">IntoIterator</a>&lt;Item = <a class="enum" href="enum.DocAttr.html" title="enum proc_suite::docs::DocAttr">DocAttr</a>&gt;,</div></h4></section></summary><div class="docblock"><p>Appends documentation after existing rustdoc attributes.</p>
+<p>Generated docs are placed below existing docs while preserving
+unrelated attributes and relative ordering.</p>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.prepend_docs" class="method"><a class="src rightside" href="../../src/proc_suite/docs.rs.html#514-547">Source</a><h4 class="code-header">fn <a href="#method.prepend_docs" class="fn">prepend_docs</a>&lt;I&gt;(&amp;mut self, docs: I)<div class="where">where
+    I: <a class="trait" href="https://doc.rust-lang.org/1.99.0/core/iter/traits/collect/trait.IntoIterator.html" title="trait core::iter::traits::collect::IntoIterator">IntoIterator</a>&lt;Item = <a class="enum" href="enum.DocAttr.html" title="enum proc_suite::docs::DocAttr">DocAttr</a>&gt;,</div></h4></section></summary><div class="docblock"><p>Prepends documentation attributes before existing rustdoc attributes.</p>
+<p>Generated docs are placed above existing docs while preserving
+unrelated attributes and relative ordering.</p>
+</div></details></div><h2 id="dyn-compatibility" class="section-header">Dyn Compatibility<a href="#dyn-compatibility" class="anchor">§</a></h2><div class="dyn-compatibility-info"><p>This trait is <b>not</b> <a href="https://doc.rust-lang.org/1.99.0/reference/items/traits.html#dyn-compatibility">dyn compatible</a>.</p><p><i>In older versions of Rust, dyn compatibility was called "object safety".</i></p></div><h2 id="implementors" class="section-header">Implementors<a href="#implementors" class="anchor">§</a></h2><div id="implementors-list"><div class="negative-marker"></div><section id="impl-InsertDocs-for-T" class="impl"><a class="src rightside" href="../../src/proc_suite/docs.rs.html#553-556">Source</a><a href="#impl-InsertDocs-for-T" class="anchor">§</a><h3 class="code-header">impl&lt;T&gt; <a class="trait" href="trait.InsertDocs.html" title="trait proc_suite::docs::InsertDocs">InsertDocs</a> for T<div class="where">where
+    T: <a class="trait" href="../syns/trait.PushAttribute.html" title="trait proc_suite::syns::PushAttribute">PushAttribute</a> + <a class="trait" href="../syns/trait.PrependAttributes.html" title="trait proc_suite::syns::PrependAttributes">PrependAttributes</a> + <a class="trait" href="../syns/trait.FirstDocAttribute.html" title="trait proc_suite::syns::FirstDocAttribute">FirstDocAttribute</a> + <a class="trait" href="../syns/trait.ClearDocAttributes.html" title="trait proc_suite::syns::ClearDocAttributes">ClearDocAttributes</a>,</div></h3><div class="docblock"><p>Blanket implementation providing the complete structured-rustdoc API
+for every syntax node supporting the required primitive attribute
+operations.</p>
+</div></section></div><script src="../../trait.impl/proc_suite/docs/trait.InsertDocs.js" async></script></section></div></main></body></html>

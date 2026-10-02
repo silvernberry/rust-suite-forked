@@ -1,0 +1,136 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Define a schema for a single structured key and generate its decoding logic."><title>key_schema in proc_suite - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../static.files/rustdoc-0c87338a.css"><meta name="rustdoc-vars" data-root-path="../" data-static-root-path="../static.files/" data-current-crate="proc_suite" data-themes="" data-resource-suffix="" data-rustdoc-version="1.99.0 (b940084d7 2026-09-28)" data-channel="1.99.0" data-search-js="search-cf4fc35e.js" data-stringdex-js="stringdex-b5109af9.js" data-settings-js="settings-170eb4bf.js" ><script src="../static.files/storage-41dd4d93.js"></script><script defer src="sidebar-items.js"></script><script defer src="../static.files/main-417ebf0a.js"></script><noscript><link rel="stylesheet" href="../static.files/noscript-9f56287d.css"></noscript><link rel="alternate icon" type="image/png" href="../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../static.files/favicon-044be391.svg"></head><body class="rustdoc macro"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><rustdoc-topbar><h2><a href="#">key_schema</a></h2></rustdoc-topbar><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../proc_suite/index.html">proc_<wbr>suite</a><span class="version">0.1.0</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">key_<wbr>schema</a></h2><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#syntax" title="Syntax">Syntax</a></li><li><a href="#sections" title="Sections">Sections</a><ul><li><a href="#key" title="`key`"><code>key</code></a></li><li><a href="#allow_empty" title="`allow_empty`"><code>allow_empty</code></a></li><li><a href="#sub_keys" title="`sub_keys`"><code>sub_keys</code></a></li><li><a href="#combinations" title="`combinations`"><code>combinations</code></a></li></ul></li><li><a href="#expansion-overview" title="Expansion overview">Expansion overview</a></li><li><a href="#notes" title="Notes">Notes</a></li></ul></section><div id="rustdoc-modnav"><h2 class="in-crate"><a href="index.html">In crate proc_<wbr>suite</a></h2></div></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><div class="width-limiter"><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><div class="rustdoc-breadcrumbs"><a href="index.html">proc_suite</a></div><h1>Macro <span class="macro">key_<wbr>schema</span>&nbsp;<button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../src/proc_suite/keys.rs.html#1008-1082">Source</a> </span></div><pre class="rust item-decl"><code>macro_rules! key_schema {
+    (
+        // Spec type documentation
+        $(#[$key_meta:meta])*
+        $vis:vis $key_ty:ident {
+            key: $key:literal,
+            allow_empty: $allow_empty:tt,
+
+            sub_keys: {
+                $($sub:ident : $sub_ty:tt),+ $(,)?
+            },
+
+            combinations: {
+                $(
+                    // Variant documentation
+                    $(#[$variant_meta:meta])*
+                    $variant:ident ( $($field:ident),+ )
+                ),+ $(,)?
+            }
+        }
+    ) =&gt; { ... };
+}</code></pre><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Define a schema for a single structured key and generate its decoding logic.</p>
+<p><code>key_schema!</code> is the <strong>user-invokable macro</strong> for declaring how a specific
+top-level key (e.g. <code>"exact"</code>) is parsed from a <a href="keys/struct.KeyInfo.html" title="struct proc_suite::keys::KeyInfo"><code>KeyInfo</code></a> and decoded into
+a strongly-typed enum via <a href="keys/trait.KeySpec.html#method.parse" title="associated function proc_suite::keys::KeySpec::parse"><code>KeySpec::parse</code></a>.</p>
+<p><strong>Note</strong>: Every <code>key_schema!</code> invocation must be unique per module to avoid
+macro generated hygeine conflicts.</p>
+<p>This macro provides a <em>declarative schema language</em> for:</p>
+<ul>
+<li>naming a key</li>
+<li>declaring its allowed sub-keys and their value types</li>
+<li>specifying the exact combinations of sub-keys that are valid</li>
+</ul>
+<p>From this declaration, the macro generates:</p>
+<ol>
+<li>A specification enum (the semantic result)</li>
+<li>A complete <a href="keys/trait.KeySpec.html" title="trait proc_suite::keys::KeySpec"><code>KeySpec</code></a> implementation enforcing:
+<ul>
+<li>exact sub-key combinations</li>
+<li>correct value types</li>
+<li>high-quality diagnostics</li>
+</ul>
+</li>
+</ol>
+<h3 id="syntax"><a class="doc-anchor" href="#syntax">§</a>Syntax</h3><div class="example-wrap"><pre class="language-text"><code>key_schema! {
+    pub SpecType {
+        key: &quot;literal-key-name&quot;,
+        allow_empty: &lt;bool&gt;,
+
+        sub_keys: {
+            sub_key1 : ValueType1,
+            sub_key2 : ValueType2,
+            ...
+        },
+
+        combinations: {
+            Variant1(sub_key1),
+            Variant2(sub_key1, sub_key2),
+            ...
+        }
+    }
+}</code></pre></div><h3 id="sections"><a class="doc-anchor" href="#sections">§</a>Sections</h3><h4 id="key"><a class="doc-anchor" href="#key">§</a><code>key</code></h4>
+<p>The literal string name of the key as it appears in source code.</p>
+<h4 id="allow_empty"><a class="doc-anchor" href="#allow_empty">§</a><code>allow_empty</code></h4>
+<p>Controls whether the key may appear without a value:</p>
+<div class="example-wrap"><pre class="language-text"><code>key</code></pre></div>
+<p>If <code>true</code>, this form is accepted and decoded as the <code>Empty</code> variant
+of the generated specification enum.</p>
+<p><strong>When <code>false</code>, the specification enum does not contain an <code>Empty</code> variant.</strong></p>
+<h4 id="sub_keys"><a class="doc-anchor" href="#sub_keys">§</a><code>sub_keys</code></h4>
+<p>Declares the allowed sub-keys and their value types.</p>
+<p>Any Rust type may be used. A single nested group can be declared
+with <code>[ ]</code>, which is implicitly decoded as:</p>
+<div class="example-wrap"><pre class="language-text"><code>T   -&gt; T
+[T] -&gt; Punctuated&lt;T, Comma&gt;</code></pre></div>
+<p>Only one level of nested grouping is supported.</p>
+<h4 id="combinations"><a class="doc-anchor" href="#combinations">§</a><code>combinations</code></h4>
+<p>Declares the <strong>exact</strong> sub-key combinations that are valid.</p>
+<p>Each entry:</p>
+<ul>
+<li>defines one enum variant</li>
+<li>lists the required sub-keys by name</li>
+<li>determines the order and types of fields carried by the variant</li>
+</ul>
+<p>Sub-key combinations are matched <strong>exactly</strong>:</p>
+<ul>
+<li>all listed sub-keys must be present</li>
+<li>no additional sub-keys are permitted</li>
+</ul>
+<h3 id="expansion-overview"><a class="doc-anchor" href="#expansion-overview">§</a>Expansion overview</h3>
+<p>For a declaration:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="macro">key_schema!</span> {
+    ExactKeySpec {
+        key: <span class="string">"exact"</span>,
+        allow_empty: <span class="bool-val">true</span>,
+        sub_keys: {
+            index : IntList,
+            marker : IdentList,
+            counter : [IntList],
+            instance : BStringList,
+        },
+        combinations: {
+            Indexed(index),
+            MarkerInstance(marker, instance),
+            MarkerCounter(marker, counter),
+        }
+    }
+}</code></pre></div>
+<p>the macro expands (conceptually) to:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">pub enum </span>ExactKeySpec {
+    Empty,
+    Indexed(IntList),
+    MarkerInstance(IdentList, BStringList),
+    MarkerCounter(IdentList, Punctuated&lt;IntList, Comma&gt;),
+}</code></pre></div>
+<p>plus a <a href="keys/trait.KeySpec.html" title="trait proc_suite::keys::KeySpec"><code>KeySpec</code></a> implementation such that:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code>ExactKeySpec::parse(<span class="kw-2">&amp;</span>KeyInfo) -&gt; <span class="prelude-ty">Result</span>&lt;ExactKeySpec, TokenStream&gt;</code></pre></div>
+<p>performs:</p>
+<ul>
+<li>key name validation</li>
+<li>empty vs nested enforcement</li>
+<li>sub-key validation and de-duplication</li>
+<li>exact combination matching</li>
+<li>typed value decoding</li>
+</ul>
+<h3 id="notes"><a class="doc-anchor" href="#notes">§</a>Notes</h3>
+<ul>
+<li>This macro is the <strong>only supported entry point</strong> for defining key schemas.</li>
+<li>All lower-level macros (<code>__emit_*</code>, <code>key_spec!</code>) are internal details.</li>
+<li>The generated enum is the authoritative semantic representation
+of the key’s contents.</li>
+</ul>
+</div></details></section></div></main></body></html>

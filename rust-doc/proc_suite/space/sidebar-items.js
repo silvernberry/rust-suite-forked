@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["NAMESPACE"],"enum":["DupError","KeyParseError","KeyValueErrors","ParseError","ProcParseErr"]};

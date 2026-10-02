@@ -1,0 +1,87 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Instance node transformations."><title>instances_macros::node - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-0c87338a.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="instances_macros" data-themes="" data-resource-suffix="" data-rustdoc-version="1.99.0 (b940084d7 2026-09-28)" data-channel="1.99.0" data-search-js="search-cf4fc35e.js" data-stringdex-js="stringdex-b5109af9.js" data-settings-js="settings-170eb4bf.js" ><script src="../../static.files/storage-41dd4d93.js"></script><script defer src="../sidebar-items.js"></script><script defer src="../../static.files/main-417ebf0a.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-9f56287d.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc mod"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><rustdoc-topbar><h2><a href="#">Module node</a></h2></rustdoc-topbar><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../../instances_macros/index.html">instances_<wbr>macros</a><span class="version">0.1.0</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">Module node</a></h2><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#subscriber-nodes" title="Subscriber nodes">Subscriber nodes</a></li><li><a href="#publisher-nodes" title="Publisher nodes">Publisher nodes</a></li><li><a href="#deferred-publication" title="Deferred publication">Deferred publication</a></li><li><a href="#generated-bindings" title="Generated bindings">Generated bindings</a></li></ul><h3><a href="#modules">Module Items</a></h3><ul class="block"><li><a href="#modules" title="Modules">Modules</a></li><li><a href="#structs" title="Structs">Structs</a></li><li><a href="#types" title="Type Aliases">Type Aliases</a></li></ul></section><div id="rustdoc-modnav"><h2 class="in-crate"><a href="../index.html">In crate instances_<wbr>macros</a></h2></div></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><div class="width-limiter"><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><div class="rustdoc-breadcrumbs"><a href="../index.html">instances_macros</a></div><h1>Module <span>node</span>&nbsp;<button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../../src/instances_macros/node/mod.rs.html#16-804">Source</a> </span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Instance node transformations.</p>
+<p>An <strong>instance node</strong> is an associated type participating in the instance
+system. Instance nodes define the relationship between an associated type
+and an instance hierarchy by either declaring the portion of the hierarchy
+to be consumed or by providing the concrete hierarchy that satisfies such a
+declaration.</p>
+<p>Instance nodes are expressed differently depending on where they appear.</p>
+<ul>
+<li>Within an <strong>instance trait</strong>, an associated type becomes a
+<strong>subscriber node</strong>, declaring the instance selection associated with that
+type.</li>
+<li>Within an <strong>instance implementation</strong>, an associated type becomes a
+<strong>publisher node</strong>, binding that associated type to a concrete instance
+implementation.</li>
+</ul>
+<h3 id="subscriber-nodes"><a class="doc-anchor" href="#subscriber-nodes">§</a>Subscriber nodes</h3>
+<p>Subscriber nodes express <strong>intent</strong> rather than implementation. Their node
+selector determines which portion of an instance hierarchy is associated
+with the corresponding associated type.</p>
+<p>Depending on the selector, a subscriber may represent:</p>
+<ul>
+<li>an exact leaf (<code>leaf</code>);</li>
+<li>a branch (<code>branch</code>);</li>
+<li>the entire hierarchy (<code>root</code>);</li>
+<li>a root-to-leaf range (<code>prune</code>);</li>
+<li>a root-to-branch range (<code>trim</code>);</li>
+<li>a leaf-to-end range (<code>extend</code>);</li>
+<li>a branch-to-end range (<code>spread</code>);</li>
+<li>a leaf-to-branch range (<code>traverse</code>); or</li>
+<li>a branch-to-leaf range (<code>descend</code>).</li>
+</ul>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="attr">#[instance]
+</span><span class="kw">trait </span>Logger {
+    <span class="attr">#[instance_sub(leaf(...))]
+    </span><span class="kw">type </span>Events;
+
+    <span class="attr">#[instance_sub(branch(...))]
+    </span><span class="kw">type </span>Metrics;
+}</code></pre></div>
+<p>Here, <code>Events</code> and <code>Metrics</code> describe the portions of an instance hierarchy
+required by the trait without specifying how those selections are
+implemented.</p>
+<h3 id="publisher-nodes"><a class="doc-anchor" href="#publisher-nodes">§</a>Publisher nodes</h3>
+<p>Publisher nodes satisfy subscriber declarations by binding an associated
+type to a concrete instance implementation.</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="attr">#[instance]
+</span><span class="kw">impl </span>Logger <span class="kw">for </span>AppLogger {
+    <span class="attr">#[instance_pub(leaf(...))]
+    </span><span class="kw">type </span>Events = AppEvents;
+
+    <span class="attr">#[instance_pub(branch(...))]
+    </span><span class="kw">type </span>Metrics = AppMetrics;
+}</code></pre></div>
+<p>The publisher determines the concrete instance corresponding to the
+subscriber declared by the trait.</p>
+<h3 id="deferred-publication"><a class="doc-anchor" href="#deferred-publication">§</a>Deferred publication</h3>
+<p>Implementations are not required to publish every associated type
+immediately. When publication must be deferred, an implementation may
+instead declare a subscriber node, allowing the implementation to subscribe
+to another instance whose publisher will satisfy the declaration.</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="attr">#[instance]
+</span><span class="kw">impl </span>Logger <span class="kw">for </span>ProxyLogger {
+    <span class="attr">#[instance_sub(leaf(...))]
+    </span><span class="kw">type </span>Events = &lt;Defer <span class="kw">as </span>DeferTrait&gt;::SimilarEvents;
+}</code></pre></div><h3 id="generated-bindings"><a class="doc-anchor" href="#generated-bindings">§</a>Generated bindings</h3>
+<p>Every instance node is transformed into a collection of hidden generated
+types that encode the node selector and its arguments into the type system.
+These generated types establish the binding between an associated type and
+the exact region of an instance hierarchy described by the node.</p>
+<p>Collectively, the generated bindings provide the infrastructure required to
+resolve and access a specific instance within the hierarchy. Rather than
+referring to instance identifier paths directly, users interact through the
+associated types declared by the instance trait, while the node generated types
+carry the information necessary to locate the corresponding instance.</p>
+<p>Subscriber nodes generate the hidden bindings describing the requested
+instance selection, while publisher nodes generate the bindings that
+associate those selections with concrete instance implementations. Together,
+these generated types enable a trait’s associated types to act as strongly
+typed handles for querying and accessing specific instances.</p>
+</div></details><h2 id="modules" class="section-header">Modules<a href="#modules" class="anchor">§</a></h2><dl class="item-table"><dt><a class="mod" href="access/index.html" title="mod instances_macros::node::access">access</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Utilities for constructing and consuming generated instance access
+traits (addons).</dd><dt><a class="mod" href="args/index.html" title="mod instances_macros::node::args">args</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Parsing and validation of instance node attributes.</dd><dt><a class="mod" href="errors/index.html" title="mod instances_macros::node::errors">errors</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Diagnostics emitted by the instance-node proc-macro pipeline.</dd><dt><a class="mod" href="post/index.html" title="mod instances_macros::node::post">post</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Post-transformation cleanup for instance node attributes.</dd><dt><a class="mod" href="publisher/index.html" title="mod instances_macros::node::publisher">publisher</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Implementation-side publisher transformations.</dd><dt><a class="mod" href="state/index.html" title="mod instances_macros::node::state">state</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Shared declarative infrastructure for generated instance node
+transformations.</dd><dt><a class="mod" href="subscriber/index.html" title="mod instances_macros::node::subscriber">subscriber</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Subscriber instance node transformations.</dd></dl><h2 id="structs" class="section-header">Structs<a href="#structs" class="anchor">§</a></h2><dl class="item-table"><dt><a class="struct" href="struct.InstanceNodeImpl.html" title="struct instances_macros::node::InstanceNodeImpl">Instance<wbr>Node<wbr>Impl</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Transformation pass for instance implementation nodes.</dd><dt><a class="struct" href="struct.InstanceNodeImplDocTarget.html" title="struct instances_macros::node::InstanceNodeImplDocTarget">Instance<wbr>Node<wbr>Impl<wbr>DocTarget</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Documentation-target transformation for instance implementation nodes.</dd><dt><a class="struct" href="struct.InstanceNodeTrait.html" title="struct instances_macros::node::InstanceNodeTrait">Instance<wbr>Node<wbr>Trait</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Transformation pass for instance trait nodes.</dd><dt><a class="struct" href="struct.InstanceNodeTraitDocTarget.html" title="struct instances_macros::node::InstanceNodeTraitDocTarget">Instance<wbr>Node<wbr>Trait<wbr>DocTarget</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Documentation-target transformation for instance trait nodes.</dd><dt><a class="struct" href="struct.PostInstanceNodeImpl.html" title="struct instances_macros::node::PostInstanceNodeImpl">Post<wbr>Instance<wbr>Node<wbr>Impl</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Post-transformation pass for instance implementation nodes.</dd><dt><a class="struct" href="struct.PostInstanceNodeTrait.html" title="struct instances_macros::node::PostInstanceNodeTrait">Post<wbr>Instance<wbr>Node<wbr>Trait</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Post-transformation pass for instance trait nodes.</dd></dl><h2 id="types" class="section-header">Type Aliases<a href="#types" class="anchor">§</a></h2><dl class="item-table"><dt><a class="type" href="type.InstanceImplNode.html" title="type instances_macros::node::InstanceImplNode">Instance<wbr>Impl<wbr>Node</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Instance Impl Node target consisting of the impl being processed and the
+auxiliary file used to collect generated addon items.</dd><dt><a class="type" href="type.InstanceTraitNode.html" title="type instances_macros::node::InstanceTraitNode">Instance<wbr>Trait<wbr>Node</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Instance Trait Node target consisting of the trait being processed and the
+auxiliary file used to collect generated addon items.</dd></dl></section></div></main></body></html>

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["InstanceArgs","InstanceNodeArgs"],"struct":["InstanceAccessArgs","InstanceDirectAccessArgs","InstanceGetterArgs","InstanceImplArgs","InstanceTraitArgs"]};

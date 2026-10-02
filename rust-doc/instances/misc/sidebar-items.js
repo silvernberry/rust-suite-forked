@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["Global"],"trait":["BoolTypeNum","Exact","Marker","UnsignedTypeNum"]};

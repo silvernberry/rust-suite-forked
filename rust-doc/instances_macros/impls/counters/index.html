@@ -1,0 +1,86 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="This module extracts and validates impl-side const-generic arguments used as instance counters."><title>instances_macros::impls::counters - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-0c87338a.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="instances_macros" data-themes="" data-resource-suffix="" data-rustdoc-version="1.99.0 (b940084d7 2026-09-28)" data-channel="1.99.0" data-search-js="search-cf4fc35e.js" data-stringdex-js="stringdex-b5109af9.js" data-settings-js="settings-170eb4bf.js" ><script src="../../../static.files/storage-41dd4d93.js"></script><script defer src="../sidebar-items.js"></script><script defer src="../../../static.files/main-417ebf0a.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-9f56287d.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc mod"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><rustdoc-topbar><h2><a href="#">Module counters</a></h2></rustdoc-topbar><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../../../instances_macros/index.html">instances_<wbr>macros</a><span class="version">0.1.0</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">Module counters</a></h2><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#why-this-exists" title="Why this exists">Why this exists</a></li><li><a href="#what-this-module-provides" title="What this module provides">What this module provides</a></li><li><a href="#extraction-modes" title="Extraction Modes">Extraction Modes</a><ul><li><a href="#index-based-extraction" title="Index-based extraction">Index-based extraction</a></li><li><a href="#default-extraction" title="Default extraction">Default extraction</a></li></ul></li><li><a href="#ordering-semantics" title="Ordering Semantics">Ordering Semantics</a></li><li><a href="#supported-counter-arguments" title="Supported Counter Arguments">Supported Counter Arguments</a></li></ul><h3><a href="#structs">Module Items</a></h3><ul class="block"><li><a href="#structs" title="Structs">Structs</a></li><li><a href="#types" title="Type Aliases">Type Aliases</a></li></ul></section><div id="rustdoc-modnav"><h2><a href="../index.html">In instances_<wbr>macros::<wbr>impls</a></h2></div></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><div class="width-limiter"><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><div class="rustdoc-breadcrumbs"><a href="../../index.html">instances_macros</a>::<wbr><a href="../index.html">impls</a></div><h1>Module <span>counters</span>&nbsp;<button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../../../src/instances_macros/impls/counters.rs.html#16-525">Source</a> </span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>This module extracts and validates impl-side const-generic arguments
+used as instance counters.</p>
+<p>Instance-counter arguments provide the concrete counter values supplied
+by an implementation for the counter parameters declared on the
+corresponding instance trait.</p>
+<h3 id="why-this-exists"><a class="doc-anchor" href="#why-this-exists">§</a>Why this exists</h3>
+<p>Trait-side instance counters are identified exclusively by their
+position within the trait generic parameter list.</p>
+<p>For example:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">trait </span>Example&lt;<span class="kw">const </span>A: u8, <span class="kw">const </span>B: u8&gt; {}
+
+<span class="kw">impl </span>Example&lt;<span class="number">4</span>, <span class="number">7</span>&gt; <span class="kw">for </span>MyType {}</code></pre></div>
+<p>Although the trait names its counters <code>A</code> and <code>B</code>, the implementation
+does not reference those identifiers.</p>
+<p>Instead, the implementation supplies values purely by position:</p>
+<div class="example-wrap"><pre class="language-text"><code>index 0 -&gt; 4
+index 1 -&gt; 7</code></pre></div>
+<p>Because of this, impl-side counter extraction must resolve concrete
+const-generic arguments into positional metadata that can be matched
+against trait-side counter definitions.</p>
+<h3 id="what-this-module-provides"><a class="doc-anchor" href="#what-this-module-provides">§</a>What this module provides</h3>
+<p>This module:</p>
+<ul>
+<li>extracts impl-side instance-counter arguments,</li>
+<li>validates supported literal const arguments,</li>
+<li>normalizes arguments into positional metadata,</li>
+<li>and preserves user-defined counter ordering.</li>
+</ul>
+<p>Extracted arguments are represented as <a href="struct.CounterArg.html" title="struct instances_macros::impls::counters::CounterArg"><code>CounterArg</code></a> values collected
+into <a href="type.CounterArgs.html" title="type instances_macros::impls::counters::CounterArgs"><code>CounterArgs</code></a>.</p>
+<h3 id="extraction-modes"><a class="doc-anchor" href="#extraction-modes">§</a>Extraction Modes</h3>
+<p>Counter arguments can be selected in two ways:</p>
+<h4 id="index-based-extraction"><a class="doc-anchor" href="#index-based-extraction">§</a>Index-based extraction</h4>
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="attr">#[instance(<span class="number">0</span>, <span class="number">2</span>)]</span></code></pre></div>
+<p>Resolves counter arguments by generic argument position within the
+implemented trait path.</p>
+<p>Example:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">impl </span>Example&lt;<span class="number">4</span>, T, <span class="number">7</span>&gt; <span class="kw">for </span>MyType {}</code></pre></div>
+<p>extracts:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="number">4</span>, <span class="number">7</span></code></pre></div>
+<p>from positions <code>0</code> and <code>2</code>.</p>
+<h4 id="default-extraction"><a class="doc-anchor" href="#default-extraction">§</a>Default extraction</h4>
+<p>When no explicit selection is provided, leading contiguous integer
+const-generic arguments are used automatically.</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">impl </span>Example&lt;<span class="number">4</span>, <span class="number">7</span>, T&gt; <span class="kw">for </span>MyType {}</code></pre></div>
+<p>extracts:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="number">4</span>, <span class="number">7</span></code></pre></div>
+<p>Extraction stops at the first non-integer const argument or non-const
+generic argument.</p>
+<h3 id="ordering-semantics"><a class="doc-anchor" href="#ordering-semantics">§</a>Ordering Semantics</h3>
+<p>Counter ordering is semantic and user-controlled.</p>
+<p>The extracted order does not need to match the textual order of the
+implemented trait arguments.</p>
+<p>Example:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">impl </span>Example&lt;<span class="number">4</span>, T, <span class="number">7</span>&gt; <span class="kw">for </span>MyType {}
+
+<span class="attr">#[instance(<span class="number">2</span>, <span class="number">0</span>)]</span></code></pre></div>
+<p>produces:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code>[<span class="number">7</span>, <span class="number">4</span>]</code></pre></div>
+<p>even though <code>4</code> appears first in the impl.</p>
+<p>Ordering is preserved exactly as requested by the user because later
+instance-resolution stages may assign semantic meaning to counter order.</p>
+<h3 id="supported-counter-arguments"><a class="doc-anchor" href="#supported-counter-arguments">§</a>Supported Counter Arguments</h3>
+<p>Only literal integer const-generic arguments are supported:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">impl </span>Example&lt;<span class="number">4</span>, <span class="number">7</span>&gt; <span class="kw">for </span>MyType {}</code></pre></div>
+<p>Supported:</p>
+<ul>
+<li>integer literals (<code>4</code>, <code>7</code>, <code>42</code>)</li>
+</ul>
+<p>Rejected:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">impl</span>&lt;<span class="kw">const </span>N: usize&gt; Example&lt;N&gt; <span class="kw">for </span>MyType {}
+<span class="kw">impl </span>Example&lt;{<span class="number">1 </span>+ <span class="number">2</span>}&gt; <span class="kw">for </span>MyType {}
+<span class="kw">impl </span>Example&lt;OTHER_CONST&gt; <span class="kw">for </span>MyType {}</code></pre></div>
+<p>because instance counters must resolve to concrete integer values during
+extraction.</p>
+</div></details><h2 id="structs" class="section-header">Structs<a href="#structs" class="anchor">§</a></h2><dl class="item-table"><dt><a class="struct" href="struct.CounterArg.html" title="struct instances_macros::impls::counters::CounterArg">Counter<wbr>Arg</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Describes an <strong>impl-side</strong> const-generic argument used for instance counters.</dd></dl><h2 id="types" class="section-header">Type Aliases<a href="#types" class="anchor">§</a></h2><dl class="item-table"><dt><a class="type" href="type.CounterArgs.html" title="type instances_macros::impls::counters::CounterArgs">Counter<wbr>Args</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>A vector of <a href="struct.CounterArg.html" title="struct instances_macros::impls::counters::CounterArg"><code>CounterArg</code></a> values describing all <strong>instance-counter</strong>
+const-generic arguments supplied by an implementation.</dd><dt><a class="type" href="type.CounterArgsSlice.html" title="type instances_macros::impls::counters::CounterArgsSlice">Counter<wbr>Args<wbr>Slice</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Borrowed slice view of extracted impl-side instance-counter arguments.</dd></dl></section></div></main></body></html>

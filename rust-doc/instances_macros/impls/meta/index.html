@@ -1,0 +1,148 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Generates implementation-side metadata and validation checkpoints used by the instance-trait proc-macro pipeline."><title>instances_macros::impls::meta - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-0c87338a.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="instances_macros" data-themes="" data-resource-suffix="" data-rustdoc-version="1.99.0 (b940084d7 2026-09-28)" data-channel="1.99.0" data-search-js="search-cf4fc35e.js" data-stringdex-js="stringdex-b5109af9.js" data-settings-js="settings-170eb4bf.js" ><script src="../../../static.files/storage-41dd4d93.js"></script><script defer src="../sidebar-items.js"></script><script defer src="../../../static.files/main-417ebf0a.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-9f56287d.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc mod"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><rustdoc-topbar><h2><a href="#">Module meta</a></h2></rustdoc-topbar><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../../../instances_macros/index.html">instances_<wbr>macros</a><span class="version">0.1.0</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">Module meta</a></h2><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#example" title="Example">Example</a></li></ul><h3><a href="#structs">Module Items</a></h3><ul class="block"><li><a href="#structs" title="Structs">Structs</a></li><li><a href="#functions" title="Functions">Functions</a></li></ul></section><div id="rustdoc-modnav"><h2><a href="../index.html">In instances_<wbr>macros::<wbr>impls</a></h2></div></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><div class="width-limiter"><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><div class="rustdoc-breadcrumbs"><a href="../../index.html">instances_macros</a>::<wbr><a href="../index.html">impls</a></div><h1>Module <span>meta</span>&nbsp;<button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../../../src/instances_macros/impls/meta.rs.html#16-1285">Source</a> </span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Generates implementation-side metadata and validation checkpoints
+used by the instance-trait proc-macro pipeline.</p>
+<p>This module is the implementation-side counterpart of
+<a href="../../traits/meta/index.html" title="mod instances_macros::traits::meta"><code>crate::traits::meta</code></a>.</p>
+<p>While trait-side expansion reflects instance-counter metadata into
+hidden associated items, implementation-side expansion reconstructs
+corresponding metadata and validates that both sides remain
+synchronized.</p>
+<h3 id="example"><a class="doc-anchor" href="#example">§</a>Example</h3>
+<p>Given:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="attr">#[trait_instance(A, C)]
+</span><span class="kw">trait </span>Example&lt;
+    <span class="kw">const </span>A: u8,
+    <span class="kw">const </span>B: usize,
+    <span class="kw">const </span>C: u8,
+&gt; {
+    <span class="kw">type </span>InstanceCounter;
+}
+
+<span class="attr">#[instance_impl(<span class="number">0</span>, <span class="number">2</span>)]
+</span><span class="kw">impl </span>Example&lt;<span class="number">1</span>, <span class="number">10</span>, <span class="number">3</span>&gt; <span class="kw">for </span>MyType {
+    <span class="kw">type </span>InstanceCounter = u8;
+}</code></pre></div>
+<p>After typenum transformation performed by
+<a href="../../traits/typenum/struct.InstanceTraitTypeNumCounters.html" title="struct instances_macros::traits::typenum::InstanceTraitTypeNumCounters"><code>InstanceTraitTypeNumCounters</code></a>
+and
+<a href="../typenum/struct.InstanceImplTypeNumCounters.html" title="struct instances_macros::impls::typenum::InstanceImplTypeNumCounters"><code>InstanceImplTypeNumCounters</code></a>:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">trait </span>Example&lt;__TypeNumCounters, <span class="kw">const </span>B: usize&gt; {
+    <span class="kw">type </span>InstanceCounter;
+}
+
+<span class="kw">impl </span>Example&lt;(U1, U3), <span class="number">10</span>&gt; <span class="kw">for </span>MyType {
+    <span class="kw">type </span>InstanceCounter = u8;
+}</code></pre></div>
+<p>Trait-side metadata expansion generates:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">trait </span>Example&lt;__TypeNumCounters, <span class="kw">const </span>B: usize&gt; {
+    <span class="attr">#[doc(hidden)]
+    </span><span class="kw">const </span>__COUNTERS_GENERICS_META:
+        [(usize, <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str); <span class="number">2</span>] = [
+            (<span class="number">0</span>, <span class="string">"A"</span>),
+            (<span class="number">2</span>, <span class="string">"C"</span>),
+        ];
+
+    <span class="attr">#[doc(hidden)]
+    </span><span class="kw">const </span>__COUNTERS_GENERIC_INDEXES_META:
+        <span class="kw-2">&amp;</span><span class="lifetime">'static </span>[usize] = <span class="kw-2">&amp;</span>[<span class="number">0</span>, <span class="number">2</span>];
+
+    <span class="attr">#[doc(hidden)]
+    </span><span class="kw">const </span>__COUNTERS_LEN_META: usize = <span class="number">2</span>;
+
+    <span class="attr">#[doc(hidden)]
+    </span><span class="kw">const </span>__COUNTER_INDEX_0: u8;
+
+    <span class="attr">#[doc(hidden)]
+    </span><span class="kw">const </span>__COUNTER_INDEX_2: u8;
+
+    <span class="attr">#[doc(hidden)]
+    </span><span class="kw">type </span>GlobalTerminalAssoc: TerminalAccess&lt;<span class="self">Self</span>&gt;;
+
+    <span class="attr">#[doc(hidden)]
+    </span><span class="kw">type </span>GlobalTerminalExact:
+        Exact&lt;
+            &lt;<span class="self">Self</span>::GlobalTerminalAssoc <span class="kw">as </span>TerminalAccess&lt;<span class="self">Self</span>&gt;&gt;::Terminal
+        &gt;;
+
+    <span class="attr">#[doc(hidden)]
+    </span><span class="kw">type </span>SelfTerminalAssoc:
+        Example&lt;<span class="self">Self</span>::GlobalTerminalExact, <span class="number">10</span>&gt;;
+}</code></pre></div>
+<p>This module then generates implementation-side metadata:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">impl </span>Example&lt;(U1, U3), <span class="number">10</span>&gt; <span class="kw">for </span>MyType {
+    <span class="kw">type </span>InstanceCounter = u8;
+
+    <span class="attr">#[doc(hidden)]
+    </span><span class="kw">const </span>__COUNTERS_GENERIC_INDEXES_META:
+        <span class="kw-2">&amp;</span><span class="lifetime">'static </span>[usize] = <span class="kw-2">&amp;</span>[<span class="number">0</span>, <span class="number">2</span>];
+
+    <span class="attr">#[doc(hidden)]
+    </span><span class="kw">const </span>__COUNTERS_LEN_META: usize = <span class="number">2</span>;
+
+    <span class="attr">#[doc(hidden)]
+    </span><span class="kw">const </span>__COUNTER_INDEX_0: u8 = <span class="number">1</span>;
+
+    <span class="attr">#[doc(hidden)]
+    </span><span class="kw">const </span>__COUNTER_INDEX_2: u8 = <span class="number">3</span>;
+
+    <span class="attr">#[doc(hidden)]
+    </span><span class="kw">const </span>__COUNTERS_GENERICS_CHECKER: () = {
+        <span class="comment">/* validates generic metadata */
+    </span>};
+
+    <span class="attr">#[doc(hidden)]
+    </span><span class="kw">type </span>GlobalTerminalAssoc = instances::Global;
+
+    <span class="attr">#[doc(hidden)]
+    </span><span class="kw">type </span>GlobalTerminalExact =
+        &lt;instances::Global <span class="kw">as </span>TerminalAccess&lt;<span class="self">Self</span>&gt;&gt;::Terminal;
+
+    <span class="attr">#[doc(hidden)]
+    </span><span class="kw">type </span>SelfTerminalAssoc = MyType;
+}</code></pre></div>
+<p>where:</p>
+<ul>
+<li>
+<p><a href="struct.ImplCountersGenericsIndexesMeta.html" title="struct instances_macros::impls::meta::ImplCountersGenericsIndexesMeta"><code>ImplCountersGenericsIndexesMeta</code></a> reflects the generic indexes
+of extracted implementation-side counters (<code>&amp;[0, 2]</code>).</p>
+</li>
+<li>
+<p><a href="struct.ImplCountersLenMeta.html" title="struct instances_macros::impls::meta::ImplCountersLenMeta"><code>ImplCountersLenMeta</code></a> reflects the total number of extracted
+implementation-side counters (<code>2</code>).</p>
+</li>
+<li>
+<p><a href="struct.ImplOriginalCounterConst.html" title="struct instances_macros::impls::meta::ImplOriginalCounterConst"><code>ImplOriginalCounterConst</code></a> reconstructs the original counter
+values (<code>1</code> and <code>3</code>) of type from <code>type InstanceCounter = &lt;type&gt;</code>
+after typenum transformation has erased the original generic arguments.</p>
+</li>
+<li>
+<p><a href="struct.ImplCountersGenericsChecker.html" title="struct instances_macros::impls::meta::ImplCountersGenericsChecker"><code>ImplCountersGenericsChecker</code></a> validates that implementation-side
+counter metadata matches the metadata reflected by
+<a href="../../traits/meta/struct.CountersGenericsMeta.html" title="struct instances_macros::traits::meta::CountersGenericsMeta"><code>CountersGenericsMeta</code></a>,
+<a href="../../traits/meta/struct.CountersGenericsIndexesMeta.html" title="struct instances_macros::traits::meta::CountersGenericsIndexesMeta"><code>CountersGenericsIndexesMeta</code></a>,
+and <a href="../../traits/meta/struct.CountersLenMeta.html" title="struct instances_macros::traits::meta::CountersLenMeta"><code>CountersLenMeta</code></a>.</p>
+</li>
+<li>
+<p><a href="struct.GlobalTerminalAssocs.html" title="struct instances_macros::impls::meta::GlobalTerminalAssocs"><code>GlobalTerminalAssocs</code></a> provides the global instance, its exact terminal
+counter, and the implementation itself as hidden associated types,
+supplying the impl-side meta information required by sum types.</p>
+</li>
+</ul>
+<p>Together, trait-side reflection and implementation-side validation,
+including the global and terminal-instance boundaries provided by
+<a href="struct.GlobalTerminalAssocs.html" title="struct instances_macros::impls::meta::GlobalTerminalAssocs"><code>GlobalTerminalAssocs</code></a>, form a deterministic synchronization protocol
+that allows instance semantics to remain available even after typenum
+transformation has erased the original counter generics.</p>
+<p>The generated metadata is consumed exclusively by proc-macro
+expansion and is not intended for direct use by library users.</p>
+</div></details><h2 id="structs" class="section-header">Structs<a href="#structs" class="anchor">§</a></h2><dl class="item-table"><dt><a class="struct" href="struct.GlobalTerminalAssocs.html" title="struct instances_macros::impls::meta::GlobalTerminalAssocs">Global<wbr>Terminal<wbr>Assocs</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Provides the meta-level terminal boundaries required by the instance
+implementation’s sum-type machinery.</dd><dt><a class="struct" href="struct.ImplCountersGenericsChecker.html" title="struct instances_macros::impls::meta::ImplCountersGenericsChecker">Impl<wbr>Counters<wbr>Generics<wbr>Checker</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Extends an instance implementation with a hidden associated constant
+used as a structural validation checkpoint for instance-counter
+generic metadata.</dd><dt><a class="struct" href="struct.ImplCountersGenericsIndexesMeta.html" title="struct instances_macros::impls::meta::ImplCountersGenericsIndexesMeta">Impl<wbr>Counters<wbr>Generics<wbr>Indexes<wbr>Meta</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Extends an instance implementation with hidden metadata describing
+the generic indexes of all extracted instance counters.</dd><dt><a class="struct" href="struct.ImplCountersLenMeta.html" title="struct instances_macros::impls::meta::ImplCountersLenMeta">Impl<wbr>Counters<wbr>LenMeta</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Extends an instance implementation with hidden metadata representing
+the total number of extracted instance counters.</dd><dt><a class="struct" href="struct.ImplCumulatedConstChecker.html" title="struct instances_macros::impls::meta::ImplCumulatedConstChecker">Impl<wbr>Cumulated<wbr>Const<wbr>Checker</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Provides the default implementation of <a href="../../traits/meta/struct.CumulatedConstChecker.html" title="struct instances_macros::traits::meta::CumulatedConstChecker"><code>CumulatedConstChecker</code></a>.</dd><dt><a class="struct" href="struct.ImplOriginalCounterConst.html" title="struct instances_macros::impls::meta::ImplOriginalCounterConst">Impl<wbr>Original<wbr>Counter<wbr>Const</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Extends an instance implementation with hidden associated constants
+representing the original extracted counter values.</dd><dt><a class="struct" href="struct.InstanceImplMeta.html" title="struct instances_macros::impls::meta::InstanceImplMeta">Instance<wbr>Impl<wbr>Meta</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Aggregates and executes all impl-side metadata generation and
+validation phases used by the instance-trait proc-macro pipeline.</dd></dl><h2 id="functions" class="section-header">Functions<a href="#functions" class="anchor">§</a></h2><dl class="item-table"><dt><a class="fn" href="fn.counter_generics_checker.html" title="fn instances_macros::impls::meta::counter_generics_checker">counter_<wbr>generics_<wbr>checker</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Builds the impl-side counter-generic validation expression.</dd><dt><a class="fn" href="fn.counter_generics_indexes_meta_expr.html" title="fn instances_macros::impls::meta::counter_generics_indexes_meta_expr">counter_<wbr>generics_<wbr>indexes_<wbr>meta_<wbr>expr</a><span title="Restricted Visibility">&nbsp;🔒</span> </dt><dd>Builds the impl-side counter-generic-index metadata expression.</dd></dl></section></div></main></body></html>

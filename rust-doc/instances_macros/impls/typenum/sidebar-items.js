@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["counters_typenum_arg"],"struct":["InstanceImplTypeNumCounters"]};

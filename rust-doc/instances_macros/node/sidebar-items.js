@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"mod":["access","args","errors","post","publisher","state","subscriber"],"struct":["InstanceNodeImpl","InstanceNodeImplDocTarget","InstanceNodeTrait","InstanceNodeTraitDocTarget","PostInstanceNodeImpl","PostInstanceNodeTrait"],"type":["InstanceImplNode","InstanceTraitNode"]};
