@@ -11,18 +11,18 @@ jobs :
     ci:
         name: Build & Test
         runs-on: ubuntu-latest
-        
+
         steps :
             - uses: actions/checkout@v4
 
             - name: Install system dependencies
               run: |
-                sude apt-get update
+                sudo apt-get update
                 sudo apt-get install -y clang libclang-dev protobuf-compiler libssl-dev pkg-config
-            
-            - name: Install rust toolchain
+
+            - name: Install Rust toolchain
               uses: dtolnay/rust-toolchain@stable
-              with: 
+              with:
                 targets: wasm32-unknown-unknown
                    
             - name: Build (with inst features)
