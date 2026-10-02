@@ -199,7 +199,7 @@ use crate::{
 ///
 /// ## Example
 ///
-/// ```rust
+/// ```ignore
 /// trait Example<T, const A: u8, U, const B: u8> {}
 ///
 /// impl<T, U> Example<T, 4, U, 7> for MyType {}
@@ -257,10 +257,10 @@ pub(crate) struct CounterArg {
 ///
 /// ## Examples
 ///
-/// ```rust
+/// ```ignore
 /// trait MyTrait<const A: u8, T, const B: u8, const C: u8> {}
 ///
-/// impl MyTrait<4, T, 7, 9> for MyType {}
+/// impl<T> MyTrait<4, T, 7, 9> for MyType {}
 /// ```
 ///
 /// If the user selects counters in the order `B, A`, the collected
@@ -275,10 +275,10 @@ pub(crate) struct CounterArg {
 ///
 /// Likewise, when counters are interleaved with other arguments:
 ///
-/// ```rust
+/// ```ignore
 /// trait MyTrait<T, const X: u8, U, const Y: u8> {}
 ///
-/// impl MyTrait<T, 3, U, 8> for MyType {}
+/// impl<T, U> MyTrait<T, 3, U, 8> for MyType {}
 /// ```
 ///
 /// And the user specifies the instance order `Y, X`, the resulting vector

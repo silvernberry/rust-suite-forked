@@ -1,0 +1,33 @@
+name : CI
+
+on :
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs :
+    ci:
+        name: Build & Test
+        runs-on: ubuntu-latest
+        
+        steps :
+            - uses: actions/checkout@v4
+
+            - name: Install system dependencies
+              run: |
+                sude apt-get update
+                sudo apt-get install -y clang libclang-dev protobuf-compiler libssl-dev pkg-config
+            
+            - name: Install rust toolchain
+              uses: dtolnay/rust-toolchain@stable
+              with: 
+                targets: wasm32-unknown-unknown
+                   
+            - name: Build (with inst features)
+              run: cargo build --release --features inst
+
+            - name: Test
+              run: cargo test --features inst
+            

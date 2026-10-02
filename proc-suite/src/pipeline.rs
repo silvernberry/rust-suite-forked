@@ -1173,7 +1173,7 @@ pub trait SupportCrate {
     ///
     /// If no delegated crate is configured, the syntax is left unchanged.
     ///
-    /// ```
+    /// ```ignore
     /// replace_idents(
     ///     from: delegate_crate
     ///     to: support_crate

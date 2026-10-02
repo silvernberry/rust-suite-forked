@@ -91,14 +91,14 @@ pub(crate) struct InstanceTraitArgs {
 ///
 /// Selecting instance counters by **identifier**:
 ///
-/// ```rust
+/// ```ignore
 /// #[_macro_(A, C)]
 /// trait Example<const A: u8, const B: u8, const C: u8> {}
 /// ```
 ///
 /// Selecting the same instance counters by **positional index**:
 ///
-/// ```rust
+/// ```ignore
 /// #[_macro_(0, 2)]
 /// trait Example<const A: u8, const B: u8, const C: u8> {}
 /// ```
@@ -199,7 +199,7 @@ impl Extraction<TokenStream, TokenStream> for InstanceTraitArgs {
 ///
 /// ## Examples
 ///
-/// ```rust
+/// ```ignore
 /// #[instance(0, 2)]
 /// trait Trait<const A: u8, const B: u8, const C: u8> {}
 ///
@@ -211,7 +211,7 @@ impl Extraction<TokenStream, TokenStream> for InstanceTraitArgs {
 /// Or in case if the trait instance is supplied by **identifiers**, still the
 /// impl macro requires its positional indexes.
 ///
-/// ```rust
+/// ```ignore
 /// #[instance(A, C)]
 /// trait Trait<const A: u8, const B: u8, const C: u8> {}
 ///

@@ -1104,7 +1104,7 @@ impl Transformation<ItemTrait> for ItemTypeNodeInst {
 /// Visits const generic parameters and replaces `Self` references with the
 /// generated holder type.
 /// 
-/// ```
+/// ```ignore
 /// Self -> <holder as trait_path>
 /// ```
 ///

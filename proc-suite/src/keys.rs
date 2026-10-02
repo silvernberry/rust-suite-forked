@@ -954,7 +954,7 @@ impl KeyExpect for ValueGroup<ExprList> {
 ///
 /// For a declaration:
 ///
-/// ```rust
+/// ```ignore
 /// key_schema! {
 ///     ExactKeySpec {
 ///         key: "exact",
@@ -976,7 +976,7 @@ impl KeyExpect for ValueGroup<ExprList> {
 ///
 /// the macro expands (conceptually) to:
 ///
-/// ```rust
+/// ```ignore
 /// pub enum ExactKeySpec {
 ///     Empty,
 ///     Indexed(IntList),
@@ -987,7 +987,7 @@ impl KeyExpect for ValueGroup<ExprList> {
 ///
 /// plus a [`KeySpec`] implementation such that:
 ///
-/// ```rust
+/// ```ignore
 /// ExactKeySpec::parse(&KeyInfo) -> Result<ExactKeySpec, TokenStream>
 /// ```
 ///

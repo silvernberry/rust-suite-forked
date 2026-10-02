@@ -222,14 +222,14 @@ use proc_suite::{SupportCrate, misc::*};
 /// - and global/terminal-instance boundaries used by sum types.
 ///
 /// Together with the trait-side metadata phase
-/// ([`InstanceTraitMeta`](crate::traits::meta::InstanceTraitMeta)),
+/// ([`InstanceTraitMeta`]),
 /// this forms the complete reflection and validation layer of the
 /// instance-trait proc-macro pipeline.
 ///
 /// This phase executes after typenum transformation performed by
 /// [`InstanceImplTypeNumCounters`](crate::impls::typenum::InstanceImplTypeNumCounters)
 /// and validates metadata reflected by
-/// [`InstanceTraitMeta`](crate::traits::meta::InstanceTraitMeta).
+/// [`InstanceTraitMeta`].
 ///
 /// The [`GlobalTerminalAssocs`] phase exposes the global instance, its exact
 /// terminal counter, and the implementation itself as associated types,
