@@ -137,7 +137,7 @@ jobs:
                 <img
                   width="36"
                   height="36"
-                  src="https://crates.io/_app/immutable/assets/cargo.HGlGwyXQ.png"
+                  src="https://rustfoundation.org/wp-content/uploads/2024/01/cargo-150x150.png"
                   alt="cargo"
                 >
                 <h1>Crates Documentation</h1>
@@ -163,4 +163,3 @@ jobs:
           publish_dir: ./deploy       
           publish_branch: gh-pages
           force_orphan: false
-          keep_files: true
