@@ -21,13 +21,17 @@ jobs :
                 sudo apt-get install -y clang libclang-dev protobuf-compiler libssl-dev pkg-config
 
             - name: Install Rust toolchain
-              uses: dtolnay/rust-toolchain@stable
-              with:
-                targets: wasm32-unknown-unknown
-                   
-            - name: Build (with inst features)
-              run: cargo build --release --features inst
+              uses: dtolnay/rust-toolchain@stable           
+
+            - name: Build (with inst and dev features)
+              run: cargo build --release --features "inst dev" 
 
             - name: Test
-              run: cargo test --features inst
+              run: cargo test --workspace
+
+            - name: Test (inst features)
+              run: cargo test --workspace --features inst
+
+            - name: Test (dev features)
+              run: cargo test --workspace --features dev
             
