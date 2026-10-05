@@ -49,7 +49,7 @@ jobs:
             -p inst-macros \
             -p instances \
             -p instances-macros \
-            -p proc-suite \
+            -p proc-suite 
 
       - name: Prepare deploy folder
         run: |
